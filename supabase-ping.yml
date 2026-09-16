@@ -11,6 +11,6 @@ jobs:
     steps:
       - name: Send Request to Supabase
         run: |
-          curl -X GET "${{ secrets.https://oneucjsqsdiqwwefdrkc.supabase.co }}/rest/v1/" \
-          -H "apikey: ${{ secrets.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9uZXVjanNxc2RpcXd3ZWZkcmtjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk1NDU0MzEsImV4cCI6MjEwNTEyMTQzMX0.GeHXdooNsiVtlgkB_UH9LoPAEU_15ZKfV7SrrUoKhhU }}" \
+          curl -X GET "${{ secrets.SUPABASE_URL }}/rest/v1/" \
+          -H "apikey: ${{ secrets.SUPABASE_ANON_KEY }}" \
           -H "Authorization: Bearer ${{ secrets.SUPABASE_ANON_KEY }}"
