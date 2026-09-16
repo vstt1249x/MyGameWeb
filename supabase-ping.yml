@@ -1,0 +1,16 @@
+name: Ping Supabase Keep-Alive
+
+on:
+  schedule:
+    - cron: '0 0 */3 * *' # Chạy tự động mỗi 3 ngày một lần vào lúc 00:00 UTC
+  workflow_dispatch: # Cho phép chạy thủ công để kiểm tra
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send Request to Supabase
+        run: |
+          curl -X GET "${{ secrets.https://oneucjsqsdiqwwefdrkc.supabase.co }}/rest/v1/" \
+          -H "apikey: ${{ secrets.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9uZXVjanNxc2RpcXd3ZWZkcmtjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk1NDU0MzEsImV4cCI6MjEwNTEyMTQzMX0.GeHXdooNsiVtlgkB_UH9LoPAEU_15ZKfV7SrrUoKhhU }}" \
+          -H "Authorization: Bearer ${{ secrets.SUPABASE_ANON_KEY }}"
