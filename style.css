@@ -95,7 +95,7 @@ body {
 
 /* Main Container */
 .container {
-    max-width: 1200px;
+    max-width: 1000px;
     margin: 0 auto;
     padding: 20px 5%;
 }
@@ -179,6 +179,237 @@ body {
     background: #ff6b81;
 }
 
+/* --- PHẦN THẢO LUẬN & ĐĂNG ẢNH/VIDEO --- */
+.post-box {
+    background: #15171e;
+    border: 1px solid #2f3542;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 25px;
+}
+
+.post-box h3 {
+    font-size: 16px;
+    margin-bottom: 15px;
+    color: #fff;
+}
+
+.post-box input[type="text"], .post-box textarea {
+    width: 100%;
+    padding: 10px 15px;
+    background: #0d0e12;
+    border: 1px solid #2f3542;
+    border-radius: 6px;
+    color: #fff;
+    font-size: 14px;
+    margin-bottom: 12px;
+    outline: none;
+}
+
+.post-box input:focus, .post-box textarea:focus {
+    border-color: #ff4757;
+}
+
+.media-upload-options {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 15px;
+    flex-wrap: wrap;
+}
+
+.upload-btn {
+    background: #1f222e;
+    border: 1px dashed #4b5563;
+    color: #cbd5e1;
+    padding: 8px 15px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 13px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: 0.2s;
+}
+
+.upload-btn:hover {
+    border-color: #ff4757;
+    color: #ff4757;
+}
+
+.upload-btn input {
+    display: none;
+}
+
+/* Xem trước ảnh/video khi chọn */
+.preview-container {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 15px;
+}
+
+.preview-thumb {
+    width: 70px;
+    height: 70px;
+    border-radius: 6px;
+    overflow: hidden;
+    border: 1px solid #2f3542;
+    background: #0d0e12;
+}
+
+.preview-thumb img, .preview-thumb video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.btn-post {
+    background: #ff4757;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.btn-post:hover {
+    background: #ff6b81;
+}
+
+.posts-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.post-item {
+    background: #15171e;
+    border: 1px solid #2f3542;
+    padding: 18px;
+    border-radius: 10px;
+}
+
+.post-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.post-author {
+    font-weight: bold;
+    color: #38bdf8;
+    font-size: 15px;
+}
+
+.post-time {
+    font-size: 12px;
+    color: #747d8c;
+}
+
+.post-body {
+    font-size: 14px;
+    color: #e2e8f0;
+    margin-bottom: 12px;
+    word-break: break-word;
+}
+
+/* Lưới ảnh hiển thị trong bài viết */
+.post-images-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.post-images-grid img {
+    width: 100%;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 6px;
+    cursor: pointer;
+    border: 1px solid #2f3542;
+    transition: 0.2s;
+}
+
+.post-images-grid img:hover {
+    opacity: 0.8;
+}
+
+.post-video-container {
+    max-width: 100%;
+    max-height: 350px;
+    background: #000;
+    border-radius: 6px;
+    overflow: hidden;
+    margin-bottom: 12px;
+}
+
+.post-video-container video {
+    width: 100%;
+    max-height: 350px;
+    display: block;
+}
+
+/* Khu vực bình luận */
+.comments-section {
+    border-top: 1px solid #2f3542;
+    padding-top: 12px;
+    margin-top: 10px;
+}
+
+.comments-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 10px;
+}
+
+.comment-item {
+    background: #0d0e12;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 13px;
+    color: #cbd5e1;
+    border-left: 3px solid #ff4757;
+}
+
+.comment-input-box {
+    display: flex;
+    gap: 8px;
+}
+
+.comment-input-box input {
+    background: #0d0e12;
+    border: 1px solid #2f3542;
+    padding: 6px 10px;
+    border-radius: 4px;
+    color: #fff;
+    font-size: 13px;
+    outline: none;
+}
+
+.comment-input-box input:focus {
+    border-color: #ff4757;
+}
+
+.comment-input-box button {
+    background: #38bdf8;
+    color: #0d0e12;
+    border: none;
+    padding: 6px 14px;
+    border-radius: 4px;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 13px;
+}
+
+.comment-input-box button:hover {
+    background: #0ea5e9;
+}
+
 /* MODAL DONATE STYLES */
 .modal {
     display: none;
@@ -203,7 +434,6 @@ body {
     padding: 30px;
     position: relative;
     box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-    animation: fadeIn 0.3s ease;
 }
 
 .modal-content h2 {
@@ -280,11 +510,6 @@ body {
     color: #ff4757;
 }
 
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(-10px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
 /* Footer */
 footer {
     text-align: center;
@@ -314,3 +539,61 @@ footer {
 .youtube { background: #ff0000; }
 .tiktok { background: #000000; border: 1px solid #444; }
 .facebook { background: #1877f2; }
+/* HIỆU ỨNG TÊN ADMIN VÀNG SÁNG NỔI BẬT */
+.admin-badge-name {
+    color: #f1c40f !important;
+    font-weight: bold;
+    font-size: 15px;
+    text-shadow: 0 0 8px rgba(241, 196, 15, 0.8), 0 0 15px rgba(255, 204, 0, 0.5);
+    animation: adminGlow 1.5s infinite alternate;
+}
+
+@keyframes adminGlow {
+    from {
+        text-shadow: 0 0 5px rgba(241, 196, 15, 0.6);
+    }
+    to {
+        text-shadow: 0 0 12px rgba(255, 215, 0, 1), 0 0 20px rgba(255, 165, 0, 0.8);
+    }
+}
+
+/* Nút quản trị dành riêng cho Admin */
+.btn-admin-action {
+    background: linear-gradient(135deg, #f1c40f, #e67e22);
+    color: #0d0e12;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 15px;
+    box-shadow: 0 4px 15px rgba(241, 196, 15, 0.3);
+    transition: 0.2s;
+}
+
+.btn-admin-action:hover {
+    opacity: 0.9;
+    transform: scale(1.05);
+}
+
+.btn-delete-game {
+    background: #e74c3c;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+    margin-top: 8px;
+    width: 100%;
+}
+
+.btn-delete-post {
+    background: #e74c3c;
+    color: white;
+    border: none;
+    padding: 3px 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 11px;
+}
