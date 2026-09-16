@@ -18,7 +18,7 @@
             <a href="#" class="active" onclick="filterCategory('all', event)">Trang chủ</a>
             <a href="#" onclick="filterCategory('mobile', event)">Mobile</a>
             <a href="#" onclick="filterCategory('emulator', event)">Emulator</a>
-            <a href="#donate" onclick="showDonate(event)">Donate</a>
+            <a href="#donate" onclick="openDonate(event)">Donate</a>
             <a href="#discuss" onclick="showDiscuss(event)">Thảo luận</a>
         </nav>
     </header>
@@ -83,6 +83,31 @@
         </div>
     </main>
 
+    <!-- POPUP DONATE -->
+    <div id="donateModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeDonate()">&times;</span>
+            <h2>☕ Thông Tin Donate</h2>
+            
+            <div class="donate-body">
+                <div class="donate-qr">
+                    <!-- Bạn hãy tải ảnh QR từ điện thoại lên GitHub đặt tên là qr-momo.jpg hoặc thay link ảnh vào đây -->
+                    <img src="qr-momo.jpg" alt="QR Momo Vũ Tiến Lộc" onerror="this.src='https://via.placeholder.com/200?text=QR+Momo+Vu+Tien+Loc'">
+                    <p class="acc-name">Vũ Tiến Lộc</p>
+                    <p class="acc-num">STK / SĐT: <strong>0378487294</strong></p>
+                </div>
+                
+                <div class="donate-text">
+                    <p><strong>Tất cả đều miễn phí !</strong></p>
+                    <p>Mọi file mình cung cấp đều miễn phí kể cả file Việt Hoá dù là bản chất lượng hay kém chất lượng AI hay người dịch .....</p>
+                    <p>Mình không thu phí dưới bất kì hình thức nào nhưng nếu các bạn <strong>DONATE</strong> thì mình vẫn đớp ,cơ mà của ít thì lòng vòng !</p>
+                    <p>Các file Việt Hoá Mình đều lượm nhặt từ trên mạng mình không dịch và nó cũng không phải là của mình.</p>
+                    <p>Đối với các file game đi kèm mình đều lấy từ nguồn link download của bên thứ 3.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Footer -->
     <footer>
         <div class="social-links">
@@ -93,44 +118,46 @@
         <p>&copy; 2026 Kho Game Việt Hóa. All rights reserved.</p>
     </footer>
 
-    <!-- JavaScript phụ trợ tìm kiếm và chuyển tab -->
+    <!-- JavaScript xử lý Modal và tìm kiếm -->
     <script>
         function searchGames() {
             let input = document.getElementById('searchInput').value.toLowerCase();
             let cards = document.getElementsByClassName('game-card');
-            
             for (let i = 0; i < cards.length; i++) {
                 let name = cards[i].getAttribute('data-name');
-                if (name.includes(input)) {
-                    cards[i].style.display = "block";
-                } else {
-                    cards[i].style.display = "none";
-                }
+                cards[i].style.display = name.includes(input) ? "block" : "none";
             }
         }
 
         function filterCategory(category, event) {
             event.preventDefault();
             let cards = document.getElementsByClassName('game-card');
-            
-            // Đổi style menu active
             let links = document.querySelectorAll('.nav-links a');
             links.forEach(l => l.classList.remove('active'));
             event.target.classList.add('active');
 
             for (let i = 0; i < cards.length; i++) {
                 let cat = cards[i].getAttribute('data-category');
-                if (category === 'all' || cat === category) {
-                    cards[i].style.display = "block";
-                } else {
-                    cards[i].style.display = "none";
-                }
+                cards[i].style.display = (category === 'all' || cat === category) ? "block" : "none";
             }
         }
 
-        function showDonate(event) {
+        // Mở / Đóng bảng Donate
+        function openDonate(event) {
             event.preventDefault();
-            alert("Cảm ơn bạn đã ủng hộ quỹ duy trì website! Thông tin Momo/Bank: 09xx.xxx.xxx (Admin Kho Game).");
+            document.getElementById('donateModal').style.display = "flex";
+        }
+
+        function closeDonate() {
+            document.getElementById('donateModal').style.display = "none";
+        }
+
+        // Đóng khi bấm ra ngoài khung modal
+        window.onclick = function(event) {
+            let modal = document.getElementById('donateModal');
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
         }
 
         function showDiscuss(event) {
