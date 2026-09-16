@@ -1,0 +1,177 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: #0d0e12;
+    color: #f1f2f6;
+    line-height: 1.6;
+}
+
+/* Header */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 5%;
+    background: #15171e;
+    border-bottom: 1px solid #2f3542;
+}
+
+.logo {
+    font-size: 22px;
+    font-weight: bold;
+    color: #ff4757;
+}
+
+.nav-links a {
+    color: #a4b0be;
+    text-decoration: none;
+    margin-left: 20px;
+    font-weight: 500;
+    transition: 0.3s;
+}
+
+.nav-links a:hover, .nav-links a.active {
+    color: #ff4757;
+}
+
+/* Hero Section */
+.hero {
+    text-align: center;
+    padding: 50px 20px;
+    background: linear-gradient(135deg, #1e1b4b, #311026);
+    margin: 20px 5%;
+    border-radius: 12px;
+    border: 1px solid #2f3542;
+}
+
+.hero h1 {
+    font-size: 32px;
+    margin-bottom: 10px;
+    color: #fff;
+}
+
+.hero p {
+    color: #a4b0be;
+    font-size: 16px;
+}
+
+/* Main Container */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px 5%;
+}
+
+.section-title {
+    font-size: 20px;
+    margin-bottom: 20px;
+    border-left: 4px solid #ff4757;
+    padding-left: 10px;
+}
+
+/* Game Grid */
+.game-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+.game-card {
+    background: #15171e;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid #2f3542;
+    transition: transform 0.3s;
+}
+
+.game-card:hover {
+    transform: translateY(-5px);
+    border-color: #ff4757;
+}
+
+.game-img {
+    height: 150px;
+    background: #1f222e;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+.badge {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: #ff4757;
+    color: white;
+    font-size: 11px;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-weight: bold;
+}
+
+.game-info {
+    padding: 15px;
+}
+
+.game-info h3 {
+    font-size: 18px;
+    margin-bottom: 5px;
+}
+
+.version {
+    font-size: 13px;
+    color: #a4b0be;
+    margin-bottom: 15px;
+}
+
+.btn-download {
+    display: block;
+    text-align: center;
+    background: #ff4757;
+    color: white;
+    text-decoration: none;
+    padding: 8px;
+    border-radius: 6px;
+    font-weight: bold;
+    transition: 0.2s;
+}
+
+.btn-download:hover {
+    background: #ff6b81;
+}
+
+/* Footer */
+footer {
+    text-align: center;
+    padding: 40px 20px;
+    background: #15171e;
+    margin-top: 50px;
+    border-top: 1px solid #2f3542;
+    color: #747d8c;
+    font-size: 14px;
+}
+
+.social-links {
+    margin-bottom: 15px;
+}
+
+.social-links a {
+    color: white;
+    text-decoration: none;
+    padding: 8px 15px;
+    border-radius: 6px;
+    margin: 0 5px;
+    display: inline-block;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.youtube { background: #ff0000; }
+.tiktok { background: #000000; border: 1px solid #444; }
+.facebook { background: #1877f2; }
