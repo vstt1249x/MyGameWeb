@@ -15,11 +15,11 @@
             <i class="fa-solid fa-gamepad"></i> KHO GAME VIỆT HÓA
         </div>
         <nav class="nav-links">
-            <a href="#" class="active">Trang chủ</a>
-            <a href="#">Mobile</a>
-            <a href="#">Emulator</a>
-            <a href="#">Donate</a>
-            <a href="#">Thảo luận</a>
+            <a href="#" class="active" onclick="filterCategory('all', event)">Trang chủ</a>
+            <a href="#" onclick="filterCategory('mobile', event)">Mobile</a>
+            <a href="#" onclick="filterCategory('emulator', event)">Emulator</a>
+            <a href="#donate" onclick="showDonate(event)">Donate</a>
+            <a href="#discuss" onclick="showDiscuss(event)">Thảo luận</a>
         </nav>
     </header>
 
@@ -28,40 +28,115 @@
         <div class="hero-content">
             <h1>Kho Game Việt Hóa Đỉnh Cao</h1>
             <p>Cộng đồng chia sẻ game Port Android & Emulator Việt hóa chất lượng cao hoàn toàn miễn phí.</p>
+            
+            <!-- Ô tìm kiếm -->
+            <div class="search-box">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" id="searchInput" placeholder="Nhập tên game bạn muốn tìm..." onkeyup="searchGames()">
+            </div>
         </div>
     </section>
 
     <!-- Danh sách game -->
-    <main class="container">
+    <main class="container" id="mainContent">
         <h2 class="section-title"><i class="fa-solid fa-fire"></i> DANH SÁCH GAME MỚI CẬP NHẬT</h2>
         
-        <div class="game-grid">
-            <!-- Game Item 1 -->
-            <div class="game-card">
+        <div class="game-grid" id="gameGrid">
+            <!-- Game 1 -->
+            <div class="game-card" data-category="mobile" data-name="gta 5 mobile viet hoa">
                 <div class="game-img">
-                    <i class="fa-solid fa-gamepad" style="font-size: 50px; color: #ff4757;"></i>
+                    <i class="fa-solid fa-car-burst" style="font-size: 45px; color: #ff4757;"></i>
                     <span class="badge">MOBILE</span>
                 </div>
                 <div class="game-info">
-                    <h3>GTA 5 Mobile - Việt Hóa</h3>
+                    <h3>GTA 5 Mobile</h3>
                     <p class="version">Phiên bản v1.61 - Full Việt Hóa</p>
-                    <a href="#" class="btn-download"><i class="fa-solid fa-download"></i> Tải Về</a>
+                    <a href="#" class="btn-download" onclick="alert('Chuyển hướng đến link tải GTA 5 Mobile!')"><i class="fa-solid fa-download"></i> Tải Về</a>
                 </div>
             </div>
 
-            <!-- Bạn có thể copy thêm game-card ở đây khi muốn thêm game mới -->
+            <!-- Game 2 -->
+            <div class="game-card" data-category="emulator" data-name="god of war emulator viet hoa">
+                <div class="game-img">
+                    <i class="fa-solid fa-khanda" style="font-size: 45px; color: #ffa502;"></i>
+                    <span class="badge" style="background: #ffa502;">EMULATOR</span>
+                </div>
+                <div class="game-info">
+                    <h3>God of War II</h3>
+                    <p class="version">Bản giả lập PS2 - Việt Hóa Ngữ Cảnh</p>
+                    <a href="#" class="btn-download" onclick="alert('Chuyển hướng đến link tải God of War!')"><i class="fa-solid fa-download"></i> Tải Về</a>
+                </div>
+            </div>
+
+            <!-- Game 3 -->
+            <div class="game-card" data-category="mobile" data-name="resident evil android viet hoa">
+                <div class="game-img">
+                    <i class="fa-solid fa-biohazard" style="font-size: 45px; color: #2ed573;"></i>
+                    <span class="badge" style="background: #2ed573;">MOBILE</span>
+                </div>
+                <div class="game-info">
+                    <h3>Resident Evil 4</h3>
+                    <p class="version">Port Android - Việt Hóa Cốt Truyện</p>
+                    <a href="#" class="btn-download" onclick="alert('Chuyển hướng đến link tải Resident Evil 4!')"><i class="fa-solid fa-download"></i> Tải Về</a>
+                </div>
+            </div>
         </div>
     </main>
 
     <!-- Footer -->
     <footer>
         <div class="social-links">
-            <a href="#" class="youtube"><i class="fa-brands fa-youtube"></i> YouTube</a>
-            <a href="#" class="tiktok"><i class="fa-brands fa-tiktok"></i> TikTok</a>
-            <a href="#" class="facebook"><i class="fa-brands fa-facebook"></i> Facebook</a>
+            <a href="https://youtube.com" target="_blank" class="youtube"><i class="fa-brands fa-youtube"></i> YouTube</a>
+            <a href="https://tiktok.com" target="_blank" class="tiktok"><i class="fa-brands fa-tiktok"></i> TikTok</a>
+            <a href="https://facebook.com" target="_blank" class="facebook"><i class="fa-brands fa-facebook"></i> Facebook</a>
         </div>
         <p>&copy; 2026 Kho Game Việt Hóa. All rights reserved.</p>
     </footer>
 
+    <!-- JavaScript phụ trợ tìm kiếm và chuyển tab -->
+    <script>
+        function searchGames() {
+            let input = document.getElementById('searchInput').value.toLowerCase();
+            let cards = document.getElementsByClassName('game-card');
+            
+            for (let i = 0; i < cards.length; i++) {
+                let name = cards[i].getAttribute('data-name');
+                if (name.includes(input)) {
+                    cards[i].style.display = "block";
+                } else {
+                    cards[i].style.display = "none";
+                }
+            }
+        }
+
+        function filterCategory(category, event) {
+            event.preventDefault();
+            let cards = document.getElementsByClassName('game-card');
+            
+            // Đổi style menu active
+            let links = document.querySelectorAll('.nav-links a');
+            links.forEach(l => l.classList.remove('active'));
+            event.target.classList.add('active');
+
+            for (let i = 0; i < cards.length; i++) {
+                let cat = cards[i].getAttribute('data-category');
+                if (category === 'all' || cat === category) {
+                    cards[i].style.display = "block";
+                } else {
+                    cards[i].style.display = "none";
+                }
+            }
+        }
+
+        function showDonate(event) {
+            event.preventDefault();
+            alert("Cảm ơn bạn đã ủng hộ quỹ duy trì website! Thông tin Momo/Bank: 09xx.xxx.xxx (Admin Kho Game).");
+        }
+
+        function showDiscuss(event) {
+            event.preventDefault();
+            alert("Tham gia nhóm cộng đồng hoặc để lại bình luận ở các video hướng dẫn nhé!");
+        }
+    </script>
 </body>
 </html>
