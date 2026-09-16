@@ -6,20 +6,127 @@
     <title>Kho Game Việt Hóa - Tải Game Mobile & Port Miễn Phí</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <style>
+        .visitor-counter { background: #14161f; border-bottom: 1px solid #1e222d; padding: 8px 5%; font-size: 13px; color: #a4b0be; display: flex; justify-content: flex-end; align-items: center; gap: 20px; }
+        .visitor-counter span { color: #2ed573; font-weight: 600; }
+        .game-stats { display: flex; gap: 12px; font-size: 12px; color: #a4b0be; margin: 8px 0 12px 0; }
+        
+        .game-thumb-preview { width: 100%; height: 220px; object-fit: contain; background: #0b0c10; border-radius: 6px 6px 0 0; }
+        
+        .btn-edit-game { background: #ffa502; color: #fff; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 12px; margin-top: 5px; margin-right: 5px; }
+        .btn-delete-game { background: #ff4757; color: #fff; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 12px; margin-top: 5px; }
+
+        @keyframes rainbowGlow {
+            0% { color: #ff4757; text-shadow: 0 0 8px rgba(255, 71, 87, 0.6); }
+            33% { color: #2ed573; text-shadow: 0 0 8px rgba(46, 213, 115, 0.6); }
+            66% { color: #1e90ff; text-shadow: 0 0 8px rgba(30, 144, 255, 0.6); }
+            100% { color: #ffa502; text-shadow: 0 0 8px rgba(255, 165, 2, 0.6); }
+        }
+        .vip-badge-name { font-weight: 900; animation: rainbowGlow 4s infinite linear; display: inline-flex; align-items: center; gap: 4px; }
+        .superadmin-badge-name { color: #ff3838; font-weight: 900; text-shadow: 0 0 10px rgba(255, 56, 56, 0.8); }
+        .admin-badge-name { color: #f1c40f; font-weight: 900; text-shadow: 0 0 8px rgba(241, 196, 15, 0.6); }
+        .member-badge-name { color: #70a1ff; font-weight: 700; }
+
+        /* Giao diện Trang Chi Tiết Game */
+        .game-detail-page {
+            background: #12141c;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        .game-detail-header-bg {
+            background: linear-gradient(135deg, #ff4757 0%, #2f3542 100%);
+            padding: 40px 30px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 40px;
+            align-items: center;
+        }
+        .game-detail-img-box {
+            width: 260px;
+            height: 340px;
+            background: #000;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+            flex-shrink: 0;
+        }
+        .game-detail-img-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+        .custom-link-btn {
+            display: block;
+            background: #1a1d24;
+            color: #fff;
+            text-align: center;
+            padding: 14px 20px;
+            border-radius: 6px;
+            margin-bottom: 12px;
+            font-weight: bold;
+            text-decoration: none;
+            border: 1px solid #2f3542;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+        }
+        .custom-link-btn:hover {
+            background: #ff4757;
+            border-color: #ff4757;
+            transform: translateY(-2px);
+        }
+
+        /* --- ÉP CĂN LỀ ĐỀU 2 BÊN (JUSTIFY) CHO PHẦN HƯỚNG DẪN CÀI ĐẶT --- */
+        .guide-content-box {
+            color: #dcdde1 !important;
+            line-height: 1.9 !important;
+            font-size: 15px !important;
+            padding: 10px 15px !important;
+            text-align: justify !important;
+            word-spacing: normal !important;
+        }
+        .guide-content-box * {
+            text-align: justify !important;
+        }
+        .guide-content-box ol, .guide-content-box ul {
+            display: block !important;
+            margin-block-start: 1em !important;
+            margin-block-end: 1em !important;
+            padding-inline-start: 35px !important;
+            text-align: justify !important;
+        }
+        .guide-content-box li {
+            display: list-item !important;
+            margin-bottom: 14px !important;
+            text-align: justify !important;
+            padding-left: 5px;
+        }
+        .guide-content-box p {
+            display: block !important;
+            margin-bottom: 16px !important;
+            text-align: justify !important;
+        }
+    </style>
 </head>
 <body>
 
+    <div class="visitor-counter">
+        <span><i class="fa-solid fa-users"></i> Lượt truy cập trực tuyến: <b id="onlineCount">1</b></span>
+        <span><i class="fa-solid fa-chart-line"></i> Tổng lượt truy cập Web: <b id="totalVisits">0</b></span>
+    </div>
+
     <header class="header">
-        <div class="logo">
-            <i class="fa-solid fa-gamepad"></i> KHO GAME VIỆT HÓA
-        </div>
+        <div class="logo"><i class="fa-solid fa-gamepad"></i> KHO GAME VIỆT HÓA</div>
         <nav class="nav-links">
             <a href="#" class="active" onclick="switchTab('home', event)">Trang chủ</a>
             <a href="#" onclick="switchTab('mobile', event)">Mobile</a>
             <a href="#" onclick="switchTab('emulator', event)">Emulator</a>
             <a href="#" onclick="openDonate(event)">Donate</a>
             <a href="#" onclick="switchTab('discuss', event)">Thảo luận</a>
-            <a href="#" id="adminNavBtn" onclick="openAdminModal(event)" style="color: #f1c40f;"><i class="fa-solid fa-shield-halved"></i> Đăng Nhập Admin</a>
+            <div id="authNavContainer" style="display: flex; gap: 10px; align-items: center; margin-left: 10px;"></div>
         </nav>
     </header>
 
@@ -27,129 +134,111 @@
         <div class="hero-content">
             <h1>Kho Game Việt Hóa Đỉnh Cao</h1>
             <p>Cộng đồng chia sẻ game Port Android & Emulator Việt hóa chất lượng cao hoàn toàn miễn phí.</p>
-            
             <div class="search-box">
                 <i class="fa-solid fa-magnifying-glass"></i>
                 <input type="text" id="searchInput" placeholder="Nhập tên game bạn muốn tìm..." onkeyup="searchGames()">
             </div>
-
             <div id="adminHeroActions" style="display: none; margin-top: 20px;">
                 <button onclick="openAddGameModal()" class="btn-admin-action"><i class="fa-solid fa-plus-circle"></i> + Đăng Tải Game Mới</button>
             </div>
         </div>
     </section>
 
+    <!-- Danh sách Game -->
     <main class="container" id="homeContent">
         <h2 class="section-title"><i class="fa-solid fa-fire"></i> DANH SÁCH GAME MỚI CẬP NHẬT</h2>
-        
-        <div class="game-grid" id="gameGrid">
-            <div class="game-card" data-category="mobile" data-name="gta 5 mobile viet hoa">
-                <div class="game-img">
-                    <i class="fa-solid fa-car-burst" style="font-size: 45px; color: #ff4757;"></i>
-                    <span class="badge">MOBILE</span>
-                </div>
-                <div class="game-info">
-                    <h3>GTA 5 Mobile</h3>
-                    <p class="version">Phiên bản v1.61 - Full Việt Hóa</p>
-                    <a href="#" class="btn-download" onclick="alert('Chuyển hướng đến link tải GTA 5 Mobile!')"><i class="fa-solid fa-download"></i> Tải Về</a>
-                </div>
-            </div>
+        <div class="game-grid" id="gameGrid"></div>
+    </main>
 
-            <div class="game-card" data-category="emulator" data-name="god of war emulator viet hoa">
-                <div class="game-img">
-                    <i class="fa-solid fa-khanda" style="font-size: 45px; color: #ffa502;"></i>
-                    <span class="badge" style="background: #ffa502;">EMULATOR</span>
-                </div>
-                <div class="game-info">
-                    <h3>God of War II</h3>
-                    <p class="version">Bản giả lập PS2 - Việt Hóa Ngữ Cảnh</p>
-                    <a href="#" class="btn-download" onclick="alert('Chuyển hướng đến link tải God of War!')"><i class="fa-solid fa-download"></i> Tải Về</a>
-                </div>
-            </div>
-
-            <div class="game-card" data-category="mobile" data-name="resident evil android viet hoa">
-                <div class="game-img">
-                    <i class="fa-solid fa-biohazard" style="font-size: 45px; color: #2ed573;"></i>
-                    <span class="badge" style="background: #2ed573;">MOBILE</span>
-                </div>
-                <div class="game-info">
-                    <h3>Resident Evil 4</h3>
-                    <p class="version">Port Android - Việt Hóa Cốt Truyện</p>
-                    <a href="#" class="btn-download" onclick="alert('Chuyển hướng đến link tải Resident Evil 4!')"><i class="fa-solid fa-download"></i> Tải Về</a>
-                </div>
-            </div>
-        </div>
+    <!-- Trang Chi Tiết Game -->
+    <main class="container" id="gameDetailPageContainer" style="display: none; padding-top: 20px;">
+        <button onclick="backToHome()" style="background: #2f3542; color: #fff; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; margin-bottom: 20px; font-weight: bold;"><i class="fa-solid fa-arrow-left"></i> Quay lại trang chủ</button>
+        <div id="gameDetailMainWrapper"></div>
     </main>
 
     <main class="container" id="discussContent" style="display: none;">
         <h2 class="section-title"><i class="fa-solid fa-comments"></i> KHU VỰC THẢO LUẬN & BÁO LỖI GAME</h2>
         
-        <div class="post-box">
-            <h3>Đăng bài viết, chia sẻ hoặc báo lỗi game mới:</h3>
-            <input type="text" id="postAuthor" placeholder="Tên hoặc biệt danh của bạn..." maxlength="30">
-            <textarea id="postContent" placeholder="Nhập nội dung thảo luận, mô tả lỗi game tại đây..." rows="4"></textarea>
-            
-            <div class="media-upload-options">
-                <label class="upload-btn">
-                    <i class="fa-solid fa-images"></i> Chọn Ảnh (Tối đa 5): 
-                    <input type="file" id="imageInput" accept="image/*" multiple onchange="previewImages(this)">
-                </label>
-                <label class="upload-btn">
-                    <i class="fa-solid fa-video"></i> Chọn Video (Tối đa 1): 
-                    <input type="file" id="videoInput" accept="video/*" onchange="previewVideo(this)">
-                </label>
+        <div id="superAdminPanel" style="display: none; background: #161922; border: 1px solid #ff3838; padding: 20px; border-radius: 8px; margin-bottom: 20px; color: #fff;">
+            <h3 style="color: #ff3838; margin-bottom: 10px;"><i class="fa-solid fa-shield-halved"></i> Bảng Quản Lý Quyền Thành Viên</h3>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                <input type="email" id="targetUserEmail" placeholder="Nhập email thành viên..." style="flex: 1; min-width: 200px; padding: 10px; background: #0d0e12; border: 1px solid #2f3542; color: #fff; border-radius: 6px;">
+                <select id="targetUserRole" style="padding: 10px; background: #0d0e12; border: 1px solid #2f3542; color: #fff; border-radius: 6px;">
+                    <option value="member">Thành viên (Member)</option>
+                    <option value="vip">Thành viên VIP</option>
+                    <option value="admin">Quản trị viên (Mod)</option>
+                    <option value="superadmin">Super Admin</option>
+                </select>
+                <button onclick="applyUserRoleOnWeb()" style="background: #ff4757; color: #fff; border: none; padding: 10px 20px; border-radius: 6px; font-weight: bold; cursor: pointer;">Cập Nhật Quyền</button>
             </div>
-
-            <div id="mediaPreviewContainer" class="preview-container"></div>
-
-            <button onclick="addNewPost()" class="btn-post"><i class="fa-solid fa-paper-plane"></i> Đăng Bài Ngay</button>
         </div>
 
+        <div id="postBoxContainer"></div>
         <div id="postsList" class="posts-container"></div>
     </main>
 
-    <div id="adminModal" class="modal">
-        <div class="modal-content" style="max-width: 400px;">
-            <span class="close-btn" onclick="closeAdminModal()">&times;</span>
-            <h2><i class="fa-solid fa-lock"></i> Đăng Nhập Admin</h2>
-            <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 15px;">
-                <input type="password" id="adminPasswordInput" placeholder="Nhập mật khẩu Admin..." style="padding: 10px; background: #0d0e12; border: 1px solid #2f3542; color: #fff; border-radius: 6px; outline: none;">
-                <button onclick="loginAdmin()" class="btn-post">Xác Nhận Đăng Nhập</button>
-            </div>
-        </div>
-    </div>
-
+    <!-- Modal Thêm / Sửa Game -->
     <div id="addGameModal" class="modal">
-        <div class="modal-content" style="max-width: 500px;">
+        <div class="modal-content" style="max-width: 550px; max-height: 90vh; overflow-y: auto;">
             <span class="close-btn" onclick="closeAddGameModal()">&times;</span>
-            <h2><i class="fa-solid fa-gamepad"></i> Thêm Game Mới</h2>
+            <h2 id="gameModalTitle"><i class="fa-solid fa-gamepad"></i> Thêm Game Mới</h2>
             <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 15px;">
-                <input type="text" id="newGameName" placeholder="Tên game (VD: GTA San Andreas)..." style="padding: 10px; background: #0d0e12; border: 1px solid #2f3542; color: #fff; border-radius: 6px; outline: none;">
-                <select id="newGameCategory" style="padding: 10px; background: #0d0e12; border: 1px solid #2f3542; color: #fff; border-radius: 6px; outline: none;">
+                <input type="hidden" id="editGameId">
+                <input type="text" id="newGameName" placeholder="Tên game (VD: GTA 5)..." style="padding: 10px; background: #0d0e12; border: 1px solid #2f3542; color: #fff; border-radius: 6px;">
+                <select id="newGameCategory" style="padding: 10px; background: #0d0e12; border: 1px solid #2f3542; color: #fff; border-radius: 6px;">
                     <option value="mobile">Mobile</option>
                     <option value="emulator">Emulator</option>
                 </select>
-                <input type="text" id="newGameVersion" placeholder="Phiên bản & mô tả (VD: v2.0 - Việt Hóa Full)..." style="padding: 10px; background: #0d0e12; border: 1px solid #2f3542; color: #fff; border-radius: 6px; outline: none;">
-                <input type="text" id="newGameLink" placeholder="Link tải file (Google Drive, Mega...)..." style="padding: 10px; background: #0d0e12; border: 1px solid #2f3542; color: #fff; border-radius: 6px; outline: none;">
-                <button onclick="saveNewGame()" class="btn-post">Đăng Tải Lên Web</button>
+                <input type="text" id="newGameVersion" placeholder="Phiên bản (Ví dụ: v1.61 - Full Việt Hóa)..." style="padding: 10px; background: #0d0e12; border: 1px solid #2f3542; color: #fff; border-radius: 6px;">
+                
+                <!-- Ô tùy chỉnh Tiêu đề Hướng dẫn cài đặt -->
+                <input type="text" id="newGameGuideTitle" placeholder="Tiêu đề hướng dẫn (VD: HƯỚNG DẪN CÀI ĐẶT VIỆT HÓA CHO GTA 5)..." style="padding: 10px; background: #0d0e12; border: 1px solid #ffa502; color: #fff; border-radius: 6px; font-weight: bold;">
+
+                <!-- Quản lý nhiều Link tải -->
+                <div style="background: #111319; padding: 12px; border-radius: 6px; border: 1px solid #2f3542;">
+                    <label style="font-weight: bold; color: #ffa502; display: block; margin-bottom: 8px;"><i class="fa-solid fa-link"></i> Danh sách các Link Tải (Nhiều nút):</label>
+                    <div id="linksContainer" style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 8px;"></div>
+                    <button type="button" onclick="addLinkInputRow('', '')" style="background: #2f3542; color: #fff; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 12px;"><i class="fa-solid fa-plus"></i> + Thêm link tải</button>
+                </div>
+
+                <textarea id="newGameGuide" placeholder="Nội dung hướng dẫn cài đặt chi tiết (Dùng các thẻ <ol>, <li>, <p>)..." rows="6" style="padding: 10px; background: #0d0e12; border: 1px solid #2f3542; color: #fff; border-radius: 6px;"></textarea>
+
+                <div>
+                    <label style="font-size: 13px; color: #a4b0be;">Ảnh Thumbnail Game:</label>
+                    <input type="file" id="newGameThumb" accept="image/*" style="margin-top: 5px; color: #fff;" onchange="previewGameThumb(this)">
+                </div>
+                <div id="thumbPreviewContainer" style="margin-top: 5px;"></div>
+                
+                <button onclick="saveGameData()" class="btn-post" style="margin-top: 10px;">Lưu Lên Hệ Thống</button>
             </div>
         </div>
     </div>
 
+    <!-- Modal Đăng Nhập / Đăng Ký -->
+    <div id="authModal" class="modal">
+        <div class="modal-content" style="max-width: 400px;">
+            <span class="close-btn" onclick="closeAuthModal()">&times;</span>
+            <h2 id="authModalTitle" style="color: #ff4757; margin-bottom: 15px;"><i class="fa-solid fa-right-to-bracket"></i> Đăng Nhập</h2>
+            <div style="display: flex; flex-direction: column; gap: 12px;">
+                <input type="text" id="authUsername" placeholder="Tên hiển thị (Nickname)..." style="padding: 10px; background: #0d0e12; border: 1px solid #2f3542; color: #fff; border-radius: 6px;">
+                <input type="email" id="authEmail" placeholder="Nhập địa chỉ Email..." style="padding: 10px; background: #0d0e12; border: 1px solid #2f3542; color: #fff; border-radius: 6px;">
+                <input type="password" id="authPassword" placeholder="Mật khẩu..." style="padding: 10px; background: #0d0e12; border: 1px solid #2f3542; color: #fff; border-radius: 6px;">
+                <button onclick="handleAuthSubmit()" id="authSubmitBtn" class="btn-post">Đăng Nhập</button>
+                <p id="authSwitchText" style="text-align: center; font-size: 13px; color: #a4b0be; cursor: pointer; margin-top: 5px;" onclick="toggleAuthMode()">Chưa có tài khoản? <b>Đăng ký ngay</b></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Donate -->
     <div id="donateModal" class="modal">
         <div class="modal-content">
             <span class="close-btn" onclick="closeDonate()">&times;</span>
             <h2>☕ Thông Tin Donate</h2>
             <div class="donate-body">
                 <div class="donate-qr">
-                    <img src="qr-momo.jpg" alt="QR Momo Vũ Tiến Lộc" onerror="this.src='https://via.placeholder.com/200?text=QR+Momo+Vu+Tien+Loc'">
+                    <img src="qr-momo.jpg" alt="QR Momo" onerror="this.src='https://via.placeholder.com/200?text=QR+Momo'">
                     <p class="acc-name">Vũ Tiến Lộc</p>
                     <p class="acc-num">STK / SĐT: <strong>0378487294</strong></p>
-                </div>
-                <div class="donate-text">
-                    <p><strong>Tất cả đều miễn phí !</strong></p>
-                    <p>Mọi file mình cung cấp đều miễn phí kể cả file Việt Hoá dù là bản chất lượng hay kém chất lượng AI hay người dịch .....</p>
-                    <p>Mình không thu phí dưới bất kì hình thức nào nhưng nếu các bạn <strong>DONATE</strong> thì mình vẫn đớp cơ mà ít thì lòng vòng !</p>
                 </div>
             </div>
         </div>
@@ -158,161 +247,209 @@
     <footer>
         <div class="social-links">
             <a href="https://www.youtube.com/@liquidsgaming7294" target="_blank" class="youtube"><i class="fa-brands fa-youtube"></i> YouTube</a>
-            <a href="https://www.tiktok.com/@vtl729x?lang=vi-VN" target="_blank" class="tiktok"><i class="fa-brands fa-tiktok"></i> TikTok</a>
+            <a href="https://www.tiktok.com/@vtl729x" target="_blank" class="tiktok"><i class="fa-brands fa-tiktok"></i> TikTok</a>
             <a href="https://www.facebook.com/vutien7294" target="_blank" class="facebook"><i class="fa-brands fa-facebook"></i> Facebook</a>
         </div>
         <p>&copy; 2026 Kho Game Việt Hóa. All rights reserved.</p>
     </footer>
 
     <script>
-        let selectedImagesData = [];
-        let selectedVideoData = null;
-        let isAdminLoggedIn = localStorage.getItem('isAdminLoggedIn') === 'true';
+        const SUPABASE_URL = 'https://oneucjsqsdiqwwefdrkc.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9uZXVjanNxc2RpcXd3ZWZkcmtjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk1NDU0MzEsImV4cCI6MjEwNTEyMTQzMX0.GeHXdooNsiVtlgkB_UH9LoPAEU_15ZKfV7SrrUoKhhU';
+        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        // Mã băm SHA-256 tương ứng với mật khẩu "Vstt729x" (Hoàn toàn không lộ mật khẩu thô dạng code cứng)
-        const ADMIN_HASH_PASS = "1b8042456c2438914b43343c68dfb700f1c9c0490b4bf5a8eb2b93aa7513b692";
+        let tempGameThumbData = '';
+        let currentUser = null; 
+        let isRegisterMode = false;
 
-        // Hàm băm mật khẩu chuẩn bằng Web Crypto API (SHA-256)
-        async function hashPassword(string) {
-            const utf8 = new TextEncoder().encode(string);
-            const hashBuffer = await crypto.subtle.digest('SHA-256', utf8);
-            const hashArray = Array.from(new Uint8Array(hashBuffer));
-            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-        }
-
-        // Kiểm tra trạng thái khi tải trang
-        window.onload = function() {
-            checkAdminUI();
+        window.onload = async function() {
+            initVisitorStats();
+            await checkSupabaseSession();
             loadCustomGames();
             loadPosts();
+            renderPostBox();
         };
 
-        function checkAdminUI() {
-            let adminBtn = document.getElementById('adminNavBtn');
-            let adminHero = document.getElementById('adminHeroActions');
-            if (isAdminLoggedIn) {
-                adminBtn.innerHTML = `<i class="fa-solid fa-shield-check"></i> Admin (Đã đăng nhập)`;
-                adminBtn.style.color = "#2ed573";
-                adminHero.style.display = "block";
-            } else {
-                adminBtn.innerHTML = `<i class="fa-solid fa-shield-halved"></i> Đăng Nhập Admin`;
-                adminBtn.style.color = "#f1c40f";
-                adminHero.style.display = "none";
-            }
+        async function checkSupabaseSession() {
+            let { data: { session } } = await _supabase.auth.getSession();
+            if (session && session.user) {
+                let meta = session.user.user_metadata || {};
+                currentUser = {
+                    id: session.user.id,
+                    email: session.user.email,
+                    username: meta.display_name || session.user.email.split('@')[0],
+                    role: meta.role || 'member'
+                };
+            } else { currentUser = null; }
+            updateAuthUI();
         }
 
-        function openAdminModal(e) {
-            e.preventDefault();
-            if (isAdminLoggedIn) {
-                if (confirm("Bạn có muốn đăng xuất tài khoản Admin không?")) {
-                    isAdminLoggedIn = false;
-                    localStorage.setItem('isAdminLoggedIn', 'false');
-                    checkAdminUI();
-                    loadPosts();
-                    loadCustomGames();
-                    alert("Đã đăng xuất Admin!");
+        function initVisitorStats() {
+            let total = localStorage.getItem('khoGameTotalVisits');
+            if (!total) { total = 1250; } else { total = parseInt(total) + 1; }
+            localStorage.setItem('khoGameTotalVisits', total);
+            document.getElementById('totalVisits').innerText = total.toLocaleString();
+            document.getElementById('onlineCount').innerText = Math.floor(Math.random() * 5) + 3;
+        }
+
+        function updateAuthUI() {
+            let authContainer = document.getElementById('authNavContainer');
+            let adminHero = document.getElementById('adminHeroActions');
+            let adminPanel = document.getElementById('superAdminPanel');
+            if (!authContainer) return;
+
+            let isAnyAdmin = currentUser && (currentUser.role === 'superadmin' || currentUser.role === 'admin');
+            let isSuperAdmin = currentUser && currentUser.role === 'superadmin';
+
+            if (adminPanel) adminPanel.style.display = isSuperAdmin ? 'block' : 'none';
+
+            if (isAnyAdmin) {
+                adminHero.style.display = "block";
+                authContainer.innerHTML = `<span style="font-size: 13px; color: #fff;">Quản trị: <b style="color: #ff3838;">${escapeHtml(currentUser.username)}</b></span><button onclick="logoutAccount()" style="background: #ff4757; color: #fff; border: none; padding: 6px 12px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 13px;">Đăng Xuất</button>`;
+            } else if (currentUser) {
+                adminHero.style.display = "none";
+                let badgeClass = currentUser.role === 'vip' ? 'vip-badge-name' : 'member-badge-name';
+                let roleLabel = currentUser.role === 'vip' ? ' ⭐ VIP' : ' (Thành viên)';
+                authContainer.innerHTML = `<span style="font-size: 13px; color: #fff;">Chào, <b class="${badgeClass}">${escapeHtml(currentUser.username)}${roleLabel}</b></span><button onclick="logoutAccount()" style="background: #ff4757; color: #fff; border: none; padding: 6px 12px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 13px;">Đăng Xuất</button>`;
+            } else {
+                adminHero.style.display = "none";
+                authContainer.innerHTML = `<button onclick="openAuthModal('login')" style="background: #2f3542; color: #fff; border: none; padding: 6px 14px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 13px;">Đăng Nhập</button><button onclick="openAuthModal('register')" style="background: #ff4757; color: #fff; border: none; padding: 6px 14px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 13px;">Đăng Ký</button>`;
+            }
+            renderPostBox();
+            loadPosts();
+        }
+
+        async function applyUserRoleOnWeb() {
+            let email = document.getElementById('targetUserEmail').value.trim();
+            let role = document.getElementById('targetUserRole').value;
+            if (!email) { alert("Vui lòng nhập email!"); return; }
+            let { error } = await _supabase.rpc('update_user_role', { target_email: email, new_role: role });
+            if (error) alert("Lỗi: " + error.message);
+            else { alert(`Đã cập nhật quyền thành công!`); document.getElementById('targetUserEmail').value = ''; }
+        }
+
+        function addLinkInputRow(title = '', url = '') {
+            let container = document.getElementById('linksContainer');
+            let div = document.createElement('div');
+            div.style.cssText = "display: flex; gap: 8px;";
+            div.innerHTML = `
+                <input type="text" placeholder="Tên nút (VD: File APK v1.61)..." value="${title}" class="link-title-input" style="flex: 1; padding: 8px; background: #0d0e12; border: 1px solid #2f3542; color: #fff; border-radius: 4px;">
+                <input type="text" placeholder="Đường dẫn URL..." value="${url}" class="link-url-input" style="flex: 1.5; padding: 8px; background: #0d0e12; border: 1px solid #2f3542; color: #fff; border-radius: 4px;">
+                <button type="button" onclick="this.parentElement.remove()" style="background: #ff4757; color: #fff; border: none; padding: 0 10px; border-radius: 4px; cursor: pointer;"><i class="fa-solid fa-trash"></i></button>
+            `;
+            container.appendChild(div);
+        }
+
+        function openAddGameModal(editId = null) {
+            document.getElementById('addGameModal').style.display = "flex";
+            document.getElementById('linksContainer').innerHTML = '';
+            if (editId) {
+                document.getElementById('gameModalTitle').innerHTML = `<i class="fa-solid fa-pen-to-square"></i> Chỉnh Sửa Game`;
+                let games = JSON.parse(localStorage.getItem('khoGameCustomList')) || [];
+                let g = games.find(item => item.id === editId);
+                if (g) {
+                    document.getElementById('editGameId').value = g.id;
+                    document.getElementById('newGameName').value = g.name;
+                    document.getElementById('newGameCategory').value = g.category;
+                    document.getElementById('newGameVersion').value = g.version;
+                    document.getElementById('newGameGuideTitle').value = g.guideTitle || (`HƯỚNG DẪN CÀI ĐẶT VIỆT HÓA CHO ` + g.name.toUpperCase());
+                    document.getElementById('newGameGuide').value = g.guide || '';
+                    tempGameThumbData = g.thumbnail || '';
+                    if(tempGameThumbData) {
+                        document.getElementById('thumbPreviewContainer').innerHTML = `<img src="${tempGameThumbData}" style="width: 80px; height: 60px; object-fit: contain; background:#000; border-radius: 4px;">`;
+                    }
+                    if (g.links && Array.isArray(g.links)) {
+                        g.links.forEach(l => addLinkInputRow(l.title, l.url));
+                    }
                 }
             } else {
-                document.getElementById('adminModal').style.display = "flex";
+                document.getElementById('gameModalTitle').innerHTML = `<i class="fa-solid fa-gamepad"></i> Thêm Game Mới`;
+                document.getElementById('editGameId').value = '';
+                document.getElementById('newGameName').value = '';
+                document.getElementById('newGameVersion').value = '';
+                document.getElementById('newGameGuideTitle').value = 'HƯỚNG DẪN CÀI ĐẶT VIỆT HÓA CHO GAME';
+                document.getElementById('newGameGuide').value = `
+<ol>
+    <li>Cài đặt file <b>APK</b>.</li>
+    <li>Sao chép thư mục <b>Games</b> vào thư mục gốc của bộ nhớ trong điện thoại.</li>
+    <li>Khởi động trò chơi.</li>
+    <li><b>Hướng dẫn Việt hóa:</b> Giải nén file Việt hoá > Sao chép các file dữ liệu vào thư mục OBB hoặc thư mục game tương ứng.</li>
+    <li>File save (lưu game) được đặt tại thư mục hệ thống game nếu cần thiết.</li>
+</ol>
+<p>Đây là bản port không chính thức và mang tính thử nghiệm. Các lỗi văng game (crash) và lỗi đồ họa có thể xảy ra.</p>
+<p>– <b>Vi xử lý (Chipset):</b> Khuyến nghị dùng các dòng Qualcomm Snapdragon gần đây.</p>
+<p>– <b>Bộ nhớ (Storage):</b> Đảm bảo đủ dung lượng trống để giải nén.</p>
+                `.trim();
+                document.getElementById('newGameThumb').value = '';
+                tempGameThumbData = '';
+                document.getElementById('thumbPreviewContainer').innerHTML = '';
+                addLinkInputRow('Tải File APK', '#');
+                addLinkInputRow('Tải File Dữ Liệu OBB', '#');
+                addLinkInputRow('Tải File Việt Hoá', '#');
             }
         }
 
-        function closeAdminModal() {
-            document.getElementById('adminModal').style.display = "none";
-        }
+        function closeAddGameModal() { document.getElementById('addGameModal').style.display = "none"; }
 
-        async function loginAdmin() {
-            let passInput = document.getElementById('adminPasswordInput').value;
-            let hashedInput = await hashPassword(passInput);
-
-            if (hashedInput === ADMIN_HASH_PASS) {
-                isAdminLoggedIn = true;
-                localStorage.setItem('isAdminLoggedIn', 'true');
-                checkAdminUI();
-                closeAdminModal();
-                document.getElementById('adminPasswordInput').value = '';
-                loadPosts();
-                loadCustomGames();
-                alert("Đăng nhập Admin thành công!");
-            } else {
-                alert("Mật khẩu không chính xác!");
+        function previewGameThumb(input) {
+            if (input.files && input.files[0]) {
+                let reader = new FileReader();
+                reader.onload = function(e) {
+                    tempGameThumbData = e.target.result;
+                    document.getElementById('thumbPreviewContainer').innerHTML = `<img src="${tempGameThumbData}" style="width: 80px; height: 60px; object-fit: contain; background:#000; border-radius: 4px;">`;
+                }
+                reader.readAsDataURL(input.files[0]);
             }
         }
 
-        // Quản lý Đăng game mới
-        function openAddGameModal() {
-            document.getElementById('addGameModal').style.display = "flex";
-        }
-        function closeAddGameModal() {
-            document.getElementById('addGameModal').style.display = "none";
-        }
-
-        function saveNewGame() {
+        function saveGameData() {
+            let editId = document.getElementById('editGameId').value;
             let name = document.getElementById('newGameName').value.trim();
             let category = document.getElementById('newGameCategory').value;
             let version = document.getElementById('newGameVersion').value.trim();
-            let link = document.getElementById('newGameLink').value.trim();
+            let guideTitle = document.getElementById('newGameGuideTitle').value.trim() || ('HƯỚNG DẪN CÀI ĐẶT VIỆT HÓA CHO ' + name.toUpperCase());
+            let guide = document.getElementById('newGameGuide').value.trim();
 
-            if (!name || !version || !link) {
-                alert("Vui lòng điền đầy đủ thông tin game!");
-                return;
-            }
-
-            let newGame = { id: Date.now(), name, category, version, link };
-            let games = JSON.parse(localStorage.getItem('khoGameCustomList')) || [];
-            games.unshift(newGame);
-            localStorage.setItem('khoGameCustomList', JSON.stringify(games));
-
-            closeAddGameModal();
-            document.getElementById('newGameName').value = '';
-            document.getElementById('newGameVersion').value = '';
-            document.getElementById('newGameLink').value = '';
-            loadCustomGames();
-            alert("Đăng tải game mới thành công!");
-        }
-
-        function loadCustomGames() {
-            let grid = document.getElementById('gameGrid');
-            let games = JSON.parse(localStorage.getItem('khoGameCustomList')) || [];
-            
-            let customHtml = '';
-            games.forEach(g => {
-                let badgeColor = g.category === 'mobile' ? '#ff4757' : '#ffa502';
-                customHtml += `
-                    <div class="game-card" data-category="${g.category}" data-name="${g.name.toLowerCase()}">
-                        <div class="game-img">
-                            <i class="fa-solid fa-gamepad" style="font-size: 45px; color: ${badgeColor};"></i>
-                            <span class="badge" style="background: ${badgeColor};">${g.category.toUpperCase()}</span>
-                        </div>
-                        <div class="game-info">
-                            <h3>${escapeHtml(g.name)}</h3>
-                            <p class="version">${escapeHtml(g.version)}</p>
-                            <a href="${escapeHtml(g.link)}" target="_blank" class="btn-download"><i class="fa-solid fa-download"></i> Tải Về</a>
-                            ${isAdminLoggedIn ? `<button onclick="deleteCustomGame(${g.id})" class="btn-delete-game">Xóa Game</button>` : ''}
-                        </div>
-                    </div>
-                `;
+            let linkRows = document.querySelectorAll('#linksContainer > div');
+            let linksList = [];
+            linkRows.forEach(row => {
+                let t = row.querySelector('.link-title-input').value.trim();
+                let u = row.querySelector('.link-url-input').value.trim();
+                if(t && u) linksList.push({ title: t, url: u });
             });
 
-            let defaultCardsHTML = `
-                <div class="game-card" data-category="mobile" data-name="gta 5 mobile viet hoa">
-                    <div class="game-img"><i class="fa-solid fa-car-burst" style="font-size: 45px; color: #ff4757;"></i><span class="badge">MOBILE</span></div>
-                    <div class="game-info"><h3>GTA 5 Mobile</h3><p class="version">Phiên bản v1.61 - Full Việt Hóa</p><a href="#" class="btn-download" onclick="alert('Chuyển hướng đến link tải GTA 5 Mobile!')"><i class="fa-solid fa-download"></i> Tải Về</a></div>
-                </div>
-                <div class="game-card" data-category="emulator" data-name="god of war emulator viet hoa">
-                    <div class="game-img"><i class="fa-solid fa-khanda" style="font-size: 45px; color: #ffa502;"></i><span class="badge" style="background: #ffa502;">EMULATOR</span></div>
-                    <div class="game-info"><h3>God of War II</h3><p class="version">Bản giả lập PS2 - Việt Hóa Ngữ Cảnh</p><a href="#" class="btn-download" onclick="alert('Chuyển hướng đến link tải God of War!')"><i class="fa-solid fa-download"></i> Tải Về</a></div>
-                </div>
-                <div class="game-card" data-category="mobile" data-name="resident evil android viet hoa">
-                    <div class="game-img"><i class="fa-solid fa-biohazard" style="font-size: 45px; color: #2ed573;"></i><span class="badge" style="background: #2ed573;">MOBILE</span></div>
-                    <div class="game-info"><h3>Resident Evil 4</h3><p class="version">Port Android - Việt Hóa Cốt Truyện</p><a href="#" class="btn-download" onclick="alert('Chuyển hướng đến link tải Resident Evil 4!')"><i class="fa-solid fa-download"></i> Tải Về</a></div>
-                </div>
-            `;
-            grid.innerHTML = customHtml + defaultCardsHTML;
+            if (!name || !version) { alert("Vui lòng điền tên và phiên bản game!"); return; }
+
+            let games = JSON.parse(localStorage.getItem('khoGameCustomList')) || [];
+            if (editId) {
+                let index = games.findIndex(g => g.id == editId);
+                if (index !== -1) {
+                    games[index].name = name;
+                    games[index].category = category;
+                    games[index].version = version;
+                    games[index].guideTitle = guideTitle;
+                    games[index].guide = guide;
+                    games[index].links = linksList;
+                    if(tempGameThumbData) games[index].thumbnail = tempGameThumbData;
+                }
+                alert("Cập nhật thành công!");
+            } else {
+                let newGame = {
+                    id: Date.now(), name, category, version, guideTitle, guide, links: linksList,
+                    thumbnail: tempGameThumbData || 'https://via.placeholder.com/300x200?text=No+Image',
+                    downloads: 0, likes: 0, ratingSum: 5, ratingCount: 1
+                };
+                games.unshift(newGame);
+                alert("Đăng game thành công!");
+            }
+            localStorage.setItem('khoGameCustomList', JSON.stringify(games));
+            closeAddGameModal();
+            loadCustomGames();
         }
 
-        function deleteCustomGame(id) {
-            if (confirm("Bạn có chắc muốn xóa game này không?")) {
+        function deleteCustomGame(id, event) {
+            event.stopPropagation();
+            if (confirm("Xóa tựa game này?")) {
                 let games = JSON.parse(localStorage.getItem('khoGameCustomList')) || [];
                 games = games.filter(g => g.id !== id);
                 localStorage.setItem('khoGameCustomList', JSON.stringify(games));
@@ -320,13 +457,145 @@
             }
         }
 
-        // Chuyển Tab
+        function editCustomGame(id, event) { event.stopPropagation(); openAddGameModal(id); }
+
+        function loadCustomGames() {
+            let grid = document.getElementById('gameGrid');
+            let games = JSON.parse(localStorage.getItem('khoGameCustomList')) || [];
+            
+            if (games.length === 0) {
+                games = [
+                    { 
+                        id: 1, name: "GTA 5 Mobile", category: "mobile", version: "v1.61 - Full Việt Hóa", 
+                        thumbnail: "", downloads: 1421, likes: 85, ratingSum: 48, ratingCount: 10,
+                        guideTitle: "HƯỚNG DẪN CÀI ĐẶT VIỆT HÓA CHO GTA 5",
+                        links: [
+                            {title: "Download GTA 5 - APK - v1.61", url: "#"}, 
+                            {title: "File OBB 63 GB", url: "#"}, 
+                            {title: "File Việt Hoá", url: "#"},
+                            {title: "GTA 5 - Save Games", url: "#"}
+                        ],
+                        guide: `
+<ol>
+    <li>Cài đặt file <b>APK</b>.</li>
+    <li>Sao chép thư mục <b>Games</b> vào thư mục gốc của bộ nhớ trong điện thoại.</li>
+    <li>Khởi động trò chơi.</li>
+    <li><b>Hướng dẫn Việt hóa:</b> Giải nén file Việt hoá > Sao chép 2 file ( update.rpf & update2.rpf ) vừa giải nén vào thư mục OBB theo đường dẫn sau: Games/GTAV/update.</li>
+    <li>File save (lưu game) được đặt tại Games/GTAV/save/. Do lỗi ở phần mở đầu (prologue), bạn có thể không tiếp tục tiến triển được. Hãy sử dụng nút màu đỏ bên dưới để tải xuống file save đã hoàn thành phần mở đầu và tiếp tục chơi.</li>
+    <li>Tùy chọn: Sử dụng các file <b>Cập nhật (Update)</b> nếu cần thiết.</li>
+</ol>
+<p>Đây là bản port GTA V không chính thức và mang tính thử nghiệm dành cho Android. Các lỗi, tình trạng văng game (crash) và lỗi đồ họa có thể xảy ra.</p>
+<p>– <b>Vi xử lý (Chipset):</b> Khuyến nghị dùng các dòng Qualcomm Snapdragon gần đây. Chip MediaTek Dimensity hiện tại chưa được hỗ trợ trong bản beta này.</p>
+<p>– <b>RAM / Android:</b> Yêu cầu tối thiểu chưa được xác nhận chính thức.</p>
+<p>– <b>Bộ nhớ (Storage):</b> Toàn bộ gói cài đặt khoảng 63 GB. Có thể cần thêm dung lượng trống để giải nén.</p>
+<p>– <b>Khả năng tương thích:</b> Chưa có danh sách thiết bị hỗ trợ chính thức được kiểm chứng; không đảm bảo khởi động thành công trên mọi máy.</p>
+<p>Hãy sử dụng file APK và dữ liệu game từ cùng một phiên bản phát hành, đồng thời tuân theo hướng dẫn cài đặt của gói đó. Các thiết lập của Winlator và GameHub không áp dụng cho bản dựng native (nguyên bản) này.</p>
+                        `.trim()
+                    }
+                ];
+                localStorage.setItem('khoGameCustomList', JSON.stringify(games));
+            }
+
+            let isAnyAdmin = currentUser && (currentUser.role === 'superadmin' || currentUser.role === 'admin');
+            let html = '';
+            games.forEach(g => {
+                let badgeColor = g.category === 'mobile' ? '#ff4757' : '#ffa502';
+                let avgRating = (g.ratingSum / (g.ratingCount || 1)).toFixed(1);
+                let thumbImg = g.thumbnail ? g.thumbnail : 'https://via.placeholder.com/300x200?text=' + encodeURIComponent(g.name);
+
+                html += `
+                    <div class="game-card" data-category="${g.category}" data-name="${g.name.toLowerCase()}" onclick="openGameDetailPage(${g.id})" style="cursor: pointer;">
+                        <div class="game-img" style="position: relative;">
+                            <img src="${thumbImg}" class="game-thumb-preview">
+                            <span class="badge" style="background: ${badgeColor}; position: absolute; top: 8px; right: 8px; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: bold; color: #fff;">${g.category.toUpperCase()}</span>
+                        </div>
+                        <div class="game-info">
+                            <h3>${escapeHtml(g.name)}</h3>
+                            <p class="version">${escapeHtml(g.version)}</p>
+                            <div class="game-stats">
+                                <span><i class="fa-solid fa-download"></i> ${g.downloads || 0}</span>
+                                <span><i class="fa-solid fa-heart" style="color: #ff4757;"></i> ${g.likes || 0}</span>
+                                <span><i class="fa-solid fa-star" style="color: #ffa502;"></i> ${avgRating}</span>
+                            </div>
+                            <button onclick="event.stopPropagation(); openGameDetailPage(${g.id})" class="btn-download" style="width:100%; text-align:center;"><i class="fa-solid fa-download"></i> Tải Về</button>
+                            ${isAnyAdmin ? `
+                                <div style="margin-top: 8px; border-top: 1px solid #2f3542; padding-top: 5px;">
+                                    <button onclick="editCustomGame(${g.id}, event)" class="btn-edit-game"><i class="fa-solid fa-pen"></i> Sửa</button>
+                                    <button onclick="deleteCustomGame(${g.id}, event)" class="btn-delete-game"><i class="fa-solid fa-trash"></i> Xóa</button>
+                                </div>
+                            ` : ''}
+                        </div>
+                    </div>
+                `;
+            });
+            grid.innerHTML = html;
+        }
+
+        function openGameDetailPage(id) {
+            let games = JSON.parse(localStorage.getItem('khoGameCustomList')) || [];
+            let g = games.find(item => item.id === id);
+            if (!g) return;
+
+            g.downloads = (g.downloads || 0) + 1;
+            localStorage.setItem('khoGameCustomList', JSON.stringify(games));
+
+            document.getElementById('homeContent').style.display = 'none';
+            document.getElementById('heroSection').style.display = 'none';
+            document.getElementById('discussContent').style.display = 'none';
+            
+            let detailContainer = document.getElementById('gameDetailPageContainer');
+            detailContainer.style.display = 'block';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            let thumbImg = g.thumbnail ? g.thumbnail : 'https://via.placeholder.com/300x400';
+            
+            let linksHtml = '';
+            let gameLinks = g.links || [];
+            gameLinks.forEach(l => {
+                linksHtml += `<a href="${escapeHtml(l.url)}" target="_blank" class="custom-link-btn">${escapeHtml(l.title)}</a>`;
+            });
+
+            let displayGuideTitle = g.guideTitle || (`HƯỚNG DẪN CÀI ĐẶT VIỆT HÓA CHO ` + g.name.toUpperCase());
+
+            let wrapper = document.getElementById('gameDetailMainWrapper');
+            wrapper.innerHTML = `
+                <div class="game-detail-page">
+                    <div class="game-detail-header-bg">
+                        <div class="game-detail-img-box">
+                            <img src="${thumbImg}" alt="${escapeHtml(g.name)}">
+                        </div>
+                        <div style="flex: 1; min-width: 280px;">
+                            <h1 style="color: #fff; font-size: 32px; margin-bottom: 10px;">${escapeHtml(g.name)} VIỆT HÓA</h1>
+                            <p style="color: #f1f2f6; font-size: 16px; margin-bottom: 20px;">Phiên bản: <strong>${escapeHtml(g.version)}</strong></p>
+                            <div style="margin-top: 20px;">
+                                ${linksHtml}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div style="padding: 30px;">
+                        <h2 style="color: #fff; margin-bottom: 20px; font-size: 22px; border-bottom: 2px solid #2f3542; padding-bottom: 10px;"><i class="fa-solid fa-book"></i> ${escapeHtml(displayGuideTitle)}</h2>
+                        <div class="guide-content-box">
+                            ${g.guide ? g.guide : '<p>Chưa có hướng dẫn cài đặt chi tiết cho game này.</p>'}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function backToHome() {
+            document.getElementById('gameDetailPageContainer').style.display = 'none';
+            document.getElementById('homeContent').style.display = 'block';
+            document.getElementById('heroSection').style.display = 'block';
+            loadCustomGames();
+        }
+
         function switchTab(tabName, event) {
             event.preventDefault();
-            let links = document.querySelectorAll('.nav-links a');
-            links.forEach(l => { if(l.id !== 'adminNavBtn') l.classList.remove('active'); });
-            if(event.target.id !== 'adminNavBtn') event.target.classList.add('active');
+            document.querySelectorAll('.nav-links a').forEach(l => l.classList.remove('active'));
+            event.target.classList.add('active');
 
+            document.getElementById('gameDetailPageContainer').style.display = 'none';
             let homeContent = document.getElementById('homeContent');
             let discussContent = document.getElementById('discussContent');
             let heroSection = document.getElementById('heroSection');
@@ -363,168 +632,73 @@
             }
         }
 
-        // Xử lý xem trước Ảnh & Video
-        function previewImages(input) {
-            if (input.files.length > 5) { alert("Tối đa 5 ảnh!"); input.value = ""; return; }
-            selectedImagesData = [];
-            for (let i = 0; i < input.files.length; i++) {
-                let reader = new FileReader();
-                reader.onload = function(e) {
-                    selectedImagesData.push(e.target.result);
-                    renderPreviews();
-                }
-                reader.readAsDataURL(input.files[i]);
+        function openAuthModal(mode) {
+            isRegisterMode = (mode === 'register');
+            document.getElementById('authModalTitle').innerHTML = isRegisterMode ? `Đăng Ký Tài Khoản` : `Đăng Nhập`;
+            document.getElementById('authSubmitBtn').innerText = isRegisterMode ? "Đăng Ký Ngay" : "Đăng Nhập";
+            document.getElementById('authUsername').style.display = isRegisterMode ? "block" : "none";
+            document.getElementById('authModal').style.display = "flex";
+        }
+        function closeAuthModal() { document.getElementById('authModal').style.display = "none"; }
+        function toggleAuthMode() { isRegisterMode = !isRegisterMode; openAuthModal(isRegisterMode ? 'register' : 'login'); }
+
+        async function handleAuthSubmit() {
+            let email = document.getElementById('authEmail').value.trim();
+            let password = document.getElementById('authPassword').value.trim();
+            let username = document.getElementById('authUsername').value.trim() || email.split('@')[0];
+            if (!email || !password) { alert("Nhập đủ thông tin!"); return; }
+
+            if (isRegisterMode) {
+                let { error } = await _supabase.auth.signUp({ email, password, options: { data: { display_name: username, role: 'member' } } });
+                if (error) { alert("Lỗi: " + error.message); return; }
+                alert("Đăng ký thành công!"); toggleAuthMode();
+            } else {
+                let { error } = await _supabase.auth.signInWithPassword({ email, password });
+                if (error) { alert("Sai tài khoản hoặc mật khẩu!"); return; }
+                alert("Đăng nhập thành công!"); closeAuthModal(); await checkSupabaseSession();
             }
         }
 
-        function previewVideo(input) {
-            if (input.files.length > 0) {
-                let reader = new FileReader();
-                reader.onload = function(e) {
-                    selectedVideoData = e.target.result;
-                    renderPreviews();
-                }
-                reader.readAsDataURL(input.files[0]);
+        async function logoutAccount() {
+            await _supabase.auth.signOut();
+            currentUser = null;
+            updateAuthUI();
+            alert("Đã đăng xuất!");
+        }
+
+        function renderPostBox() {
+            let container = document.getElementById('postBoxContainer');
+            if (!container) return;
+            if (currentUser) {
+                container.innerHTML = `<div class="post-box"><h3>Đăng bài viết hoặc báo lỗi:</h3><textarea id="postContent" placeholder="Nhập nội dung..." rows="3"></textarea><button onclick="addNewPost()" class="btn-post">Đăng Bài</button></div>`;
+            } else {
+                container.innerHTML = `<div class="post-box" style="text-align:center;"><p>Bạn cần đăng nhập để thảo luận.</p><button onclick="openAuthModal('login')" class="btn-post" style="max-width:150px;">Đăng Nhập</button></div>`;
             }
         }
 
-        function renderPreviews() {
-            let container = document.getElementById('mediaPreviewContainer');
-            let html = '';
-            selectedImagesData.forEach((img) => { html += `<div class="preview-thumb"><img src="${img}"></div>`; });
-            if (selectedVideoData) { html += `<div class="preview-thumb"><video src="${selectedVideoData}"></video></div>`; }
-            container.innerHTML = html;
-        }
-
-        // Đăng bài thảo luận
         function addNewPost() {
-            let authorInput = document.getElementById('postAuthor');
-            let contentInput = document.getElementById('postContent');
-
-            let author = authorInput.value.trim() || (isAdminLoggedIn ? "👑 ADMIN" : "Thành viên ẩn danh");
-            if (isAdminLoggedIn) author = "👑 ADMIN";
-
-            let content = contentInput.value.trim();
-            if (!content && selectedImagesData.length === 0 && !selectedVideoData) {
-                alert("Vui lòng nhập nội dung hoặc đính kèm ảnh/video!");
-                return;
-            }
-
-            let newPost = {
-                id: Date.now(),
-                author: author,
-                isAdmin: isAdminLoggedIn,
-                content: content,
-                images: [...selectedImagesData],
-                video: selectedVideoData,
-                time: new Date().toLocaleString('vi-VN'),
-                comments: []
-            };
-
+            let content = document.getElementById('postContent').value.trim();
+            if (!content) return;
             let posts = JSON.parse(localStorage.getItem('khoGamePosts')) || [];
-            posts.unshift(newPost);
+            posts.unshift({ id: Date.now(), author: currentUser.username, role: currentUser.role, content, time: new Date().toLocaleString('vi-VN'), likes: 0, comments: [] });
             localStorage.setItem('khoGamePosts', JSON.stringify(posts));
-
-            authorInput.value = '';
-            contentInput.value = '';
-            document.getElementById('imageInput').value = '';
-            document.getElementById('videoInput').value = '';
-            selectedImagesData = [];
-            selectedVideoData = null;
-            document.getElementById('mediaPreviewContainer').innerHTML = '';
+            document.getElementById('postContent').value = '';
             loadPosts();
         }
 
         function loadPosts() {
             let container = document.getElementById('postsList');
+            if(!container) return;
             let posts = JSON.parse(localStorage.getItem('khoGamePosts')) || [];
-
-            if (posts.length === 0) {
-                container.innerHTML = `<p style="color: #747d8c; text-align: center; padding: 20px;">Chưa có bài thảo luận nào.</p>`;
-                return;
-            }
-
+            if (posts.length === 0) { container.innerHTML = `<p style="text-align:center; color:#747d8c;">Chưa có bài viết.</p>`; return; }
             let html = '';
-            posts.forEach(post => {
-                let authorClass = post.isAdmin ? "admin-badge-name" : "post-author";
-                html += `
-                    <div class="post-item">
-                        <div class="post-header">
-                            <span class="${authorClass}"><i class="fa-solid fa-user-circle"></i> ${escapeHtml(post.author)}</span>
-                            <div style="display: flex; gap: 10px; align-items: center;">
-                                <span class="post-time">${post.time}</span>
-                                ${isAdminLoggedIn ? `<button onclick="deletePost(${post.id})" class="btn-delete-post">Xóa</button>` : ''}
-                            </div>
-                        </div>
-                        <p class="post-body">${escapeHtml(post.content)}</p>
-                `;
-
-                if (post.images && post.images.length > 0) {
-                    html += `<div class="post-images-grid">`;
-                    post.images.forEach(img => { html += `<img src="${img}">`; });
-                    html += `</div>`;
-                }
-
-                if (post.video) {
-                    html += `<div class="post-video-container"><video controls src="${post.video}"></video></div>`;
-                }
-
-                html += `
-                        <div class="comments-section">
-                            <div class="comments-list">
-                `;
-                if(post.comments && post.comments.length > 0) {
-                    post.comments.forEach(cm => {
-                        let cmAuthorClass = cm.isAdmin ? "admin-badge-name" : "";
-                        html += `<div class="comment-item"><strong class="${cmAuthorClass}">${escapeHtml(cm.author)}:</strong> ${escapeHtml(cm.text)}</div>`;
-                    });
-                } else {
-                    html += `<div style="color: #747d8c; font-size: 13px;">Chưa có bình luận.</div>`;
-                }
-
-                html += `
-                            </div>
-                            <div class="comment-input-box">
-                                <input type="text" id="c-text-${post.id}" placeholder="Viết bình luận..." onkeypress="if(event.key==='Enter') addComment(${post.id})" />
-                                <button onclick="addComment(${post.id})">Gửi</button>
-                            </div>
-                        </div>
-                    </div>
-                `;
+            posts.forEach(p => {
+                html += `<div class="post-item"><div class="post-header"><strong>${escapeHtml(p.author)}</strong> <span style="font-size:12px; color:#747d8c;">${p.time}</span></div><p>${escapeHtml(p.content)}</p></div>`;
             });
             container.innerHTML = html;
         }
 
-        function addComment(postId) {
-            let textInput = document.getElementById(`c-text-${postId}`);
-            let text = textInput.value.trim();
-            if (!text) return;
-
-            let author = isAdminLoggedIn ? "👑 ADMIN" : "Ẩn danh";
-            let posts = JSON.parse(localStorage.getItem('khoGamePosts')) || [];
-            let post = posts.find(p => p.id === postId);
-            if (post) {
-                if (!post.comments) post.comments = [];
-                post.comments.push({ author: author, isAdmin: isAdminLoggedIn, text: text });
-                localStorage.setItem('khoGamePosts', JSON.stringify(posts));
-                loadPosts();
-            }
-        }
-
-        function deletePost(postId) {
-            if (confirm("Xóa bài viết này?")) {
-                let posts = JSON.parse(localStorage.getItem('khoGamePosts')) || [];
-                posts = posts.filter(p => p.id !== postId);
-                localStorage.setItem('khoGamePosts', JSON.stringify(posts));
-                loadPosts();
-            }
-        }
-
-        function escapeHtml(text) {
-            if(!text) return '';
-            return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
-        }
-
+        function escapeHtml(text) { if(!text) return ''; return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
         function openDonate(event) { event.preventDefault(); document.getElementById('donateModal').style.display = "flex"; }
         function closeDonate() { document.getElementById('donateModal').style.display = "none"; }
     </script>
