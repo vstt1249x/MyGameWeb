@@ -3,556 +3,65 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kho Game Việt Hóa - Cổng Chia Sẻ Game Port & Emulator</title>
-    <style>
-        /* CSS Reset & Toàn cục Theme */
-        *, *::before, *::after { box-sizing: border-box; }
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #0b0f19;
-            color: #f1f5f9;
-            margin: 0;
-            padding: 0;
-            line-height: 1.6;
-        }
-
-        /* Layout Tổng Thể */
-        .page-wrapper {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
-
-        /* Header / Navbar của Theme */
-        header.theme-header {
-            background: #131b2e;
-            border: 1px solid #1e2738;
-            border-radius: 12px;
-            padding: 15px 25px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 15px;
-            margin-bottom: 25px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-        }
-        .theme-logo {
-            margin: 0;
-            color: #ff3366;
-            font-size: 22px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-weight: 800;
-            letter-spacing: 0.5px;
-        }
-        .theme-nav {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-        .theme-nav a {
-            color: #cbd5e1;
-            text-decoration: none;
-            padding: 8px 14px;
-            border-radius: 6px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            background: #0b0f19;
-            border: 1px solid #1e2738;
-            font-size: 14px;
-        }
-        .theme-nav a:hover, .theme-nav a.active {
-            color: #fff;
-            background: #ff3366;
-            border-color: #ff3366;
-        }
-
-        /* Main Content Container */
-        main.theme-main {
-            flex: 1;
-        }
-
-        /* Sections Toggle */
-        .kg-section { display: none; }
-        .kg-section.active { display: block; animation: fadeIn 0.3s ease-in-out; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* Hero Banner */
-        .kg-hero {
-            background: linear-gradient(135deg, #1e1b4b, #31103f);
-            padding: 40px 20px;
-            border-radius: 12px;
-            text-align: center;
-            margin-bottom: 30px;
-            border: 1px solid #2e2a5e;
-        }
-        .kg-hero h1 { color: #fff; margin: 0 0 10px 0; font-size: 28px; }
-        .kg-hero p { color: #94a3b8; margin: 0; font-size: 15px; }
-
-        /* Section Headings */
-        .section-title {
-            border-left: 4px solid #ff3366;
-            padding-left: 10px;
-            font-size: 18px;
-            margin-top: 0;
-            margin-bottom: 20px;
-            color: #fff;
-            font-weight: 700;
-        }
-
-        /* Game Grid & Cards */
-        .game-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 20px;
-            margin-bottom: 25px;
-        }
-        .game-card {
-            background: #131b2e;
-            border: 1px solid #1e2738;
-            border-radius: 10px;
-            padding: 15px;
-            display: flex;
-            gap: 15px;
-            align-items: center;
-            transition: transform 0.2s, border-color 0.2s;
-        }
-        .game-card:hover { border-color: #ff3366; transform: translateY(-2px); }
-        .game-card img {
-            width: 90px;
-            height: 90px;
-            object-fit: cover;
-            border-radius: 8px;
-            border: 1px solid #2a3447;
-            flex-shrink: 0;
-        }
-        .game-info { flex: 1; min-width: 0; }
-        .game-badge {
-            display: inline-block;
-            background: #ff3366;
-            color: #fff;
-            font-size: 10px;
-            padding: 2px 8px;
-            border-radius: 4px;
-            font-weight: bold;
-            text-transform: uppercase;
-            margin-bottom: 5px;
-        }
-        .game-title {
-            margin: 0 0 5px 0;
-            font-size: 16px;
-            font-weight: bold;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        .game-title a { color: #fff; text-decoration: none; }
-        .game-title a:hover { color: #ff3366; }
-        .game-sub {
-            color: #94a3b8;
-            font-size: 13px;
-            margin: 0 0 8px 0;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        .btn-download {
-            display: inline-block;
-            background: #ff3366;
-            color: #fff;
-            padding: 6px 14px;
-            border-radius: 6px;
-            text-decoration: none;
-            font-weight: bold;
-            font-size: 12px;
-            transition: background 0.2s;
-        }
-        .btn-download:hover { background: #e02e5b; }
-
-        /* Pagination */
-        .pagination {
-            display: flex;
-            gap: 8px;
-            justify-content: center;
-            margin-top: 30px;
-            align-items: center;
-        }
-        .pagination button {
-            background: #131b2e;
-            color: #fff;
-            border: 1px solid #1e2738;
-            padding: 8px 14px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: bold;
-            font-size: 14px;
-            transition: all 0.2s;
-        }
-        .pagination button:hover:not(:disabled) { background: #1e2738; border-color: #ff3366; }
-        .pagination button.active { background: #ff3366; border-color: #ff3366; }
-        .pagination button:disabled { opacity: 0.4; cursor: not-allowed; }
-
-        /* Social Icons Section */
-        .social-section {
-            margin-top: 40px;
-            border-top: 1px solid #1e2738;
-            padding-top: 25px;
-            text-align: center;
-        }
-        .social-section h3 { margin-bottom: 15px; font-size: 18px; color: #f1f5f9; }
-        .social-icons {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            flex-wrap: wrap;
-        }
-        .social-btn {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 10px 20px;
-            border-radius: 8px;
-            color: #fff;
-            text-decoration: none;
-            font-weight: bold;
-            font-size: 14px;
-            transition: opacity 0.2s;
-        }
-        .social-btn.youtube { background: #ff0000; }
-        .social-btn.tiktok { background: #000000; border: 1px solid #333; }
-        .social-btn.facebook { background: #1877f2; }
-        .social-btn:hover { opacity: 0.9; }
-
-        /* Donate Section */
-        .donate-box {
-            display: flex;
-            gap: 30px;
-            background: #131b2e;
-            padding: 30px;
-            border-radius: 12px;
-            align-items: center;
-            border: 1px solid #1e2738;
-            flex-wrap: wrap;
-        }
-        .donate-qr-container {
-            text-align: center;
-            background: #fff;
-            padding: 15px;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-            margin: 0 auto;
-        }
-        .donate-qr-container img { width: 190px; height: 190px; object-fit: contain; display: block; }
-        .donate-qr-container p { color: #000; font-weight: bold; margin: 8px 0 0 0; font-size: 12px; letter-spacing: 0.5px; }
-        .donate-info { flex: 1; min-width: 280px; }
-        .donate-info h3 {
-            color: #ff3366;
-            margin-top: 0;
-            font-size: 20px;
-            border-left: 4px solid #ff3366;
-            padding-left: 10px;
-        }
-        .donate-quote {
-            color: #cbd5e1;
-            font-style: italic;
-            line-height: 1.6;
-            background: #0b0f19;
-            padding: 15px;
-            border-radius: 8px;
-            border-left: 3px solid #38bdf8;
-            margin-bottom: 15px;
-            font-size: 14px;
-        }
-        .donate-desc { color: #94a3b8; font-size: 13px; line-height: 1.5; margin: 0; }
-
-        /* Discussions Section */
-        .disc-form {
-            background: #131b2e;
-            padding: 20px;
-            border-radius: 10px;
-            border: 1px solid #1e2738;
-            margin-bottom: 25px;
-        }
-        .disc-form h4 { margin-top: 0; color: #f1f5f9; font-size: 16px; margin-bottom: 15px; }
-        .disc-input, .disc-textarea {
-            width: 100%;
-            padding: 12px;
-            margin-bottom: 12px;
-            background: #0b0f19;
-            border: 1px solid #1e2738;
-            color: #fff;
-            border-radius: 6px;
-            font-family: inherit;
-            font-size: 14px;
-        }
-        .disc-input:focus, .disc-textarea:focus { border-color: #ff3366; outline: none; }
-        .disc-textarea { height: 90px; resize: vertical; }
-        .disc-btn {
-            background: #ff3366;
-            color: #fff;
-            border: none;
-            padding: 10px 22px;
-            font-weight: bold;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 14px;
-            transition: background 0.2s;
-        }
-        .disc-btn:hover { background: #e02e5b; }
-        
-        .disc-item {
-            background: #131b2e;
-            padding: 16px;
-            border-radius: 10px;
-            border: 1px solid #1e2738;
-            margin-bottom: 12px;
-        }
-        .disc-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
-        .disc-author { font-weight: bold; color: #38bdf8; font-size: 14px; }
-        .disc-time { color: #64748b; font-size: 12px; }
-        .disc-body { margin: 0; color: #e2e8f0; font-size: 14px; line-height: 1.5; word-break: break-word; }
-
-        /* Footer của Theme */
-        footer.theme-footer {
-            margin-top: 40px;
-            border-top: 1px solid #1e2738;
-            padding: 20px 0;
-            text-align: center;
-            color: #64748b;
-            font-size: 13px;
-        }
-    </style>
+    <title>Kho Game Việt Hóa - Tải Game Mobile & Port Miễn Phí</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
 
-    <div class="page-wrapper">
-        <!-- HEADER / NAVIGATION CỦA THEME -->
-        <header class="theme-header">
-            <h1 class="theme-logo">🎮 KHO GAME VIỆT HÓA</h1>
-            <nav class="theme-nav">
-                <a onclick="kgSwitchTab('home')" id="nav-home" class="active">Trang chủ</a>
-                <a onclick="kgSwitchTab('mobile')" id="nav-mobile">Mobile</a>
-                <a onclick="kgSwitchTab('emulator')" id="nav-emulator">Emulator</a>
-                <a onclick="kgSwitchTab('donate')" id="nav-donate">Donate</a>
-                <a onclick="kgSwitchTab('discussions')" id="nav-discussions">Thảo Luận</a>
-            </nav>
-        </header>
+    <!-- Header / Menu -->
+    <header class="header">
+        <div class="logo">
+            <i class="fa-solid fa-gamepad"></i> KHO GAME VIỆT HÓA
+        </div>
+        <nav class="nav-links">
+            <a href="#" class="active">Trang chủ</a>
+            <a href="#">Mobile</a>
+            <a href="#">Emulator</a>
+            <a href="#">Donate</a>
+            <a href="#">Thảo luận</a>
+        </nav>
+    </header>
 
-        <!-- MAIN CONTENT -->
-        <main class="theme-main">
-            
-            <!-- 1. TAB TRANG CHỦ (Tự động phân trang tối đa 15 game/trang & Mạng xã hội) -->
-            <div id="tab-home" class="kg-section active">
-                <div class="kg-hero">
-                    <h1>Kho Game Việt Hóa Đỉnh Cao</h1>
-                    <p>Cộng đồng chia sẻ game Port Android & Emulator Việt hóa chất lượng cao hoàn toàn miễn phí.</p>
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Kho Game Việt Hóa Đỉnh Cao</h1>
+            <p>Cộng đồng chia sẻ game Port Android & Emulator Việt hóa chất lượng cao hoàn toàn miễn phí.</p>
+        </div>
+    </section>
+
+    <!-- Danh sách game -->
+    <main class="container">
+        <h2 class="section-title"><i class="fa-solid fa-fire"></i> DANH SÁCH GAME MỚI CẬP NHẬT</h2>
+        
+        <div class="game-grid">
+            <!-- Game Item 1 -->
+            <div class="game-card">
+                <div class="game-img">
+                    <i class="fa-solid fa-gamepad" style="font-size: 50px; color: #ff4757;"></i>
+                    <span class="badge">MOBILE</span>
                 </div>
-
-                <h3 class="section-title">DANH SÁCH GAME MỚI CẬP NHẬT</h3>
-                
-                <!-- Danh sách chứa các thẻ game. Hệ thống sẽ tự động phân trang (15 game/trang) -->
-                <div id="kg-game-list" class="game-grid">
-                    <div class="kg-game-item" data-category="mobile">
-                        <div class="game-card">
-                            <img src="https://i.imgur.com/placeholder.jpg" alt="GTA 5 Mobile" />
-                            <div class="game-info">
-                                <span class="game-badge">Mobile</span>
-                                <h4 class="game-title"><a href="#">GTA 5 Mobile - Việt Hóa</a></h4>
-                                <p class="game-sub">Phiên bản v1.61 - Full Việt Hóa</p>
-                                <a href="#" class="btn-download">Tải Về</a>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Bạn có thể nhân bản thêm các thẻ .kg-game-item tại đây. Vượt quá 15 game sẽ tự động phân trang -->
-                </div>
-
-                <!-- Phân trang tự động -->
-                <div class="pagination" id="kg-pagination"></div>
-
-                <!-- Mạng xã hội đầy đủ icon -->
-                <div class="social-section">
-                    <h3>Kết Nối Với Tôi</h3>
-                    <div class="social-icons">
-                        <a href="https://www.youtube.com/@liquidsgaming7294" target="_blank" class="social-btn youtube">🔴 YouTube</a>
-                        <a href="https://www.tiktok.com/@vtl729x?lang=vi-VN" target="_blank" class="social-btn tiktok">⚫ TikTok</a>
-                        <a href="https://www.facebook.com/vutien7294" target="_blank" class="social-btn facebook">🔵 Facebook</a>
-                    </div>
+                <div class="game-info">
+                    <h3>GTA 5 Mobile - Việt Hóa</h3>
+                    <p class="version">Phiên bản v1.61 - Full Việt Hóa</p>
+                    <a href="#" class="btn-download"><i class="fa-solid fa-download"></i> Tải Về</a>
                 </div>
             </div>
 
-            <!-- 2. TAB MOBILE -->
-            <div id="tab-mobile" class="kg-section">
-                <h3 class="section-title">📱 Game Mobile Việt Hóa</h3>
-                <p style="color: #94a3b8; margin-bottom: 20px;">Tổng hợp các tựa game Mobile port trực tiếp cho Android.</p>
-                <div id="kg-mobile-list" class="game-grid"></div>
-            </div>
+            <!-- Bạn có thể copy thêm game-card ở đây khi muốn thêm game mới -->
+        </div>
+    </main>
 
-            <!-- 3. TAB EMULATOR -->
-            <div id="tab-emulator" class="kg-section">
-                <h3 class="section-title">💻 Game Emulator Việt Hóa</h3>
-                <p style="color: #94a3b8; margin-bottom: 20px;">Tổng hợp các tựa game giả lập và công cụ hỗ trợ.</p>
-                <div id="kg-emulator-list" class="game-grid"></div>
-            </div>
+    <!-- Footer -->
+    <footer>
+        <div class="social-links">
+            <a href="#" class="youtube"><i class="fa-brands fa-youtube"></i> YouTube</a>
+            <a href="#" class="tiktok"><i class="fa-brands fa-tiktok"></i> TikTok</a>
+            <a href="#" class="facebook"><i class="fa-brands fa-facebook"></i> Facebook</a>
+        </div>
+        <p>&copy; 2026 Kho Game Việt Hóa. All rights reserved.</p>
+    </footer>
 
-            <!-- 4. TAB DONATE (Mã QR & Thông tin chuẩn) -->
-            <div id="tab-donate" class="kg-section">
-                <h3 class="section-title">THÔNG TIN & DONATE</h3>
-                <div class="donate-box">
-                    <div class="donate-qr-container">
-                        <!-- THAY LINK ẢNH MÃ QR CỦA BẠN VÀO ĐÂY -->
-                        <img src="https://i.imgur.com/your_qr_code_here.png" alt="Mã QR Donate" />
-                        <p>VIETQR / NAPAS 247</p>
-                    </div>
-                    <div class="donate-info">
-                        <h3>TẤT CẢ ĐỀU MIỄN PHÍ !</h3>
-                        <div class="donate-quote">
-                            " Mọi file mình cung cấp đều miễn phí kể cả file Việt Hoá dù là bản chất lượng hay kém chất lượng AI hay người dịch .....<br>
-                            Mình không thu phí dưới bất kì hình thức nào nhưng nếu các bạn DONATE thì mình vẫn đớp cơ mà ít thì lòng vòng ! "
-                        </div>
-                        <p class="donate-desc">
-                            Các file Việt Hoá mình đều lượm nhặt từ trên mạng mình không dịch và nó cũng không phải là của mình.<br>
-                            Đối với các file game đi kèm mình đều lấy từ nguồn link download của bên thứ 3.
-                        </p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 5. TAB THẢO LUẬN (Tương tác trực tiếp) -->
-            <div id="tab-discussions" class="kg-section">
-                <h3 class="section-title">💬 THẢO LUẬN & TRÒ CHUYỆN CỘNG ĐỒNG</h3>
-                <div class="disc-form">
-                    <h4>Đăng bài hoặc thảo luận mới:</h4>
-                    <input type="text" id="kg-disc-name" class="disc-input" placeholder="Tên của bạn..." />
-                    <textarea id="kg-disc-msg" class="disc-textarea" placeholder="Nhập nội dung thảo luận, báo lỗi game hoặc chia sẻ ý kiến..."></textarea>
-                    <button onclick="kgPostDiscussion()" class="disc-btn">Đăng Bài Thảo Luận</button>
-                </div>
-                <div id="kg-disc-board">
-                    <div class="disc-item">
-                        <div class="disc-header">
-                            <span class="disc-author">Admin Kho Game</span>
-                            <span class="disc-time">Vừa xong</span>
-                        </div>
-                        <p class="disc-body">Chào mừng các bạn đến với cộng đồng Việt Hóa! Hãy thảo luận lịch sự và chia sẻ các tựa game hay nhé.</p>
-                    </div>
-                </div>
-            </div>
-
-        </main>
-
-        <!-- FOOTER CỦA THEME -->
-        <footer class="theme-footer">
-            <p>&copy; 2026 Kho Game Việt Hóa. All rights reserved.</p>
-        </footer>
-    </div>
-
-    <!-- JAVASCRIPT ĐIỀU HƯỚNG, PHÂN TRANG & THẢO LUẬN -->
-    <script>
-        const KG_ITEMS_PER_PAGE = 15;
-        let kgCurrentPage = 1;
-
-        function kgSwitchTab(tabId) {
-            document.querySelectorAll('.kg-section').forEach(sec => sec.classList.remove('active'));
-            document.querySelectorAll('.theme-nav a').forEach(a => a.classList.remove('active'));
-            
-            document.getElementById('tab-' + tabId).classList.add('active');
-            document.getElementById('nav-' + tabId).classList.add('active');
-
-            if (tabId === 'mobile') {
-                kgRenderFilteredGames('mobile', 'kg-mobile-list');
-            } else if (tabId === 'emulator') {
-                kgRenderFilteredGames('emulator', 'kg-emulator-list');
-            } else if (tabId === 'home') {
-                kgRenderPagination(1);
-            }
-        }
-
-        function kgRenderPagination(page) {
-            kgCurrentPage = page;
-            const allItems = Array.from(document.querySelectorAll('#kg-game-list .kg-game-item'));
-            const totalPages = Math.ceil(allItems.length / KG_ITEMS_PER_PAGE) || 1;
-            
-            if (kgCurrentPage > totalPages) kgCurrentPage = totalPages;
-            if (kgCurrentPage < 1) kgCurrentPage = 1;
-
-            const startIndex = (kgCurrentPage - 1) * KG_ITEMS_PER_PAGE;
-            const endIndex = startIndex + KG_ITEMS_PER_PAGE;
-
-            allItems.forEach((item, index) => {
-                item.style.display = (index >= startIndex && index < endIndex) ? 'block' : 'none';
-            });
-
-            const paginationContainer = document.getElementById('kg-pagination');
-            let paginationHTML = '';
-            
-            if (totalPages > 1) {
-                paginationHTML += `<button onclick="kgRenderPagination(${kgCurrentPage - 1})" ${kgCurrentPage === 1 ? 'disabled' : ''}>« Trước</button>`;
-                for (let i = 1; i <= totalPages; i++) {
-                    paginationHTML += `<button onclick="kgRenderPagination(${i})" class="${i === kgCurrentPage ? 'active' : ''}">${i}</button>`;
-                }
-                paginationHTML += `<button onclick="kgRenderPagination(${kgCurrentPage + 1})" ${kgCurrentPage === totalPages ? 'disabled' : ''}>Sau »</button>`;
-            }
-            paginationContainer.innerHTML = paginationHTML;
-        }
-
-        function kgRenderFilteredGames(category, containerId) {
-            const container = document.getElementById(containerId);
-            const allItems = document.querySelectorAll('#kg-game-list .kg-game-item');
-            container.innerHTML = '';
-            
-            let count = 0;
-            allItems.forEach(item => {
-                if (item.getAttribute('data-category') === category) {
-                    container.appendChild(item.cloneNode(true));
-                    count++;
-                }
-            });
-
-            if (count === 0) {
-                container.innerHTML = '<p style="color: #64748b; grid-column: 1/-1; text-align: center; padding: 20px;">Chưa có game nào trong danh mục này.</p>';
-            }
-        }
-
-        function kgPostDiscussion() {
-            const nameInput = document.getElementById('kg-disc-name');
-            const msgInput = document.getElementById('kg-disc-msg');
-            const board = document.getElementById('kg-disc-board');
-
-            const author = nameInput.value.trim() || 'Thành viên ẩn danh';
-            const content = msgInput.value.trim();
-
-            if (!content) {
-                alert('Vui lòng nhập nội dung thảo luận!');
-                return;
-            }
-
-            const newPost = document.createElement('div');
-            newPost.className = 'disc-item';
-            newPost.innerHTML = `
-                <div class="disc-header">
-                    <span class="disc-author">${escapeHtml(author)}</span>
-                    <span class="disc-time">Vừa xong</span>
-                </div>
-                <p class="disc-body">${escapeHtml(content)}</p>
-            `;
-
-            board.prepend(newPost);
-            msgInput.value = '';
-        }
-
-        function escapeHtml(text) {
-            return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
-        }
-
-        document.addEventListener("DOMContentLoaded", function() {
-            kgRenderPagination(1);
-        });
-    </script>
 </body>
 </html>
