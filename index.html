@@ -169,14 +169,14 @@
                     <input type="hidden" id="announcementId">
                     <textarea id="announcementInput" maxlength="500" rows="4" placeholder="Nhập nội dung thông báo (tối đa 500 ký tự)..." oninput="updateAnnouncementPreview()"></textarea>
                     <p class="announcement-char-count"><span id="announcementCharCount">0</span>/500</p>
-                <div>
-                    <label class="announcement-field-label">Màu thông báo:</label>
-                    <div class="announcement-options">
-                        <label><input type="radio" name="announcementColor" value="blue" checked onchange="updateAnnouncementPreview()"> Xanh</label>
-                        <label><input type="radio" name="announcementColor" value="red" onchange="updateAnnouncementPreview()"> Đỏ</label>
-                        <label><input type="radio" name="announcementColor" value="yellow" onchange="updateAnnouncementPreview()"> Vàng</label>
+                    <div>
+                        <label class="announcement-field-label">Màu thông báo:</label>
+                        <div class="announcement-options">
+                            <label><input type="radio" name="announcementColor" value="blue" checked onchange="updateAnnouncementPreview()"> Xanh</label>
+                            <label><input type="radio" name="announcementColor" value="red" onchange="updateAnnouncementPreview()"> Đỏ</label>
+                            <label><input type="radio" name="announcementColor" value="yellow" onchange="updateAnnouncementPreview()"> Vàng</label>
+                        </div>
                     </div>
-                </div>
                     <label class="announcement-field-label">Mức độ:</label>
                     <select id="announcementPriority" onchange="updateAnnouncementPreview()"><option value="normal">Bình thường</option><option value="urgent">Khẩn cấp</option></select>
                     <div class="announcement-date-grid">
@@ -192,7 +192,7 @@
 
     <!-- Modal Donate -->
     <div id="donateModal" class="modal">
-        <div class="modal-content">
+        <div class="modal-content" style="max-width: 600px;">
             <span class="close-btn" onclick="closeDonate()">&times;</span>
             <h2>☕ Thông Tin Donate</h2>
             <div class="donate-body">
@@ -200,6 +200,13 @@
                     <img src="qr-momo.jpg" alt="Mã QR Momo nhận donate" onerror="this.src='https://via.placeholder.com/200?text=QR+Momo'">
                     <p class="acc-name">Vũ Tiến Lộc</p>
                     <p class="acc-num">STK / SĐT: <strong>0378487294</strong></p>
+                </div>
+                <div style="text-align: left; background: #0d0e12; padding: 15px; border-radius: 8px; border: 1px solid #2f3542; margin-top: 15px; font-size: 14px; line-height: 1.6; color: #dcdde1; white-space: pre-line;">
+Tất cả đều miễn phí !
+Mọi file mình cung cấp đều miễn phí kể cả file Việt Hoá dù là bản chất lượng hay kém chất lượng AI hay người dịch .....
+Mình không thu phí dưới bất kì hình thức nào nhưng nếu các bạn DONATE thì mình vẫn đớp của ít thì lòng vòng !
+Các file Việt Hoá Mình đều lượm nhặt từ trên mạng mình không dịch và nó cũng không phải là của mình
+Đối với các file game đi kèm mình đều lấy từ nguồn link download của bên thứ 3
                 </div>
             </div>
         </div>
