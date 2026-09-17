@@ -3,38 +3,130 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thông báo thay đổi nội dung - Trang web đang bảo trì</title>
+    <title>Thông Báo Bảo Trì & Đổi Định Hướng Website</title>
     <style>
         body { 
             font-family: Arial, sans-serif; 
             text-align: center; 
-            padding: 50px 20px; 
+            padding: 40px 20px; 
             background-color: #f4f4f9; 
-            color: #333; 
-            max-width: 800px; 
+            color: #222; 
+            max-width: 900px; 
             margin: 0 auto; 
+            line-height: 1.6;
         }
-        h1 { color: #e74c3c; }
+        .fb-btn {
+            display: inline-block;
+            background-color: #1877f2;
+            color: white;
+            padding: 12px 25px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 18px;
+            margin-bottom: 25px;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.15);
+            transition: background 0.3s;
+        }
+        .fb-btn:hover {
+            background-color: #145dbf;
+        }
+        h1 { 
+            color: #e74c3c; 
+            font-size: 32px; 
+            margin-bottom: 15px; 
+        }
+        .intro {
+            font-size: 19px;
+            color: #444;
+            margin-bottom: 15px;
+        }
+        .time-box {
+            font-size: 20px;
+            font-weight: bold;
+            color: #d35400;
+            margin-bottom: 25px;
+            background: #fff3e0;
+            display: inline-block;
+            padding: 10px 20px;
+            border-radius: 6px;
+            border: 1px dashed #e67e22;
+        }
         .notice { 
-            font-size: 22px; 
-            font-weight: bold; 
+            text-align: left;
+            font-size: 18px; 
             color: #2c3e50; 
-            margin-top: 30px; 
-            line-height: 1.5; 
             background: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            margin-top: 10px;
         }
-        p { font-size: 16px; color: #555; }
+        .notice h3 {
+            margin-top: 0;
+            color: #c0392b;
+            font-size: 24px;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+        /* Làm nổi bật riêng điều khoản bản quyền */
+        .copyright-highlight {
+            background-color: #fde8e8;
+            border-left: 6px solid #e74c3c;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 4px;
+            font-weight: bold;
+            color: #900c3f;
+            font-size: 19px;
+        }
+        .notice ul {
+            padding-left: 20px;
+            margin-top: 15px;
+        }
+        .notice li {
+            margin-bottom: 16px;
+        }
+        .footer {
+            margin-top: 35px;
+            font-size: 20px;
+            font-weight: bold;
+            color: #27ae60;
+        }
     </style>
 </head>
 <body>
-    <h1>Website Đang Bảo Trì & Cập Nhật</h1>
-    <p>Tôi đang tiến hành cấu trúc lại nội dung trang web để phù hợp với định hướng mới.</p>
+
+    <!-- Nút liên kết Facebook ở đầu trang -->
+    <a href="https://www.facebook.com/vutien7294" class="fb-btn" target="_blank" rel="noopener">💬 Liên hệ qua Facebook của tôi</a>
+
+    <h1>🛠️ THÔNG BÁO BẢO TRÌ & ĐỔI ĐỊNH HƯỚNG WEBSITE 🛠️</h1>
+    <div class="intro">Chào mọi người, trang web của mình đang tạm dừng hoạt động để tiến hành bảo trì và cấu trúc lại toàn bộ nội dung nhằm tuân thủ các quy định về bản quyền.</div>
     
-    <div class="notice">
-        Thông báo chính thức: Từ thời điểm này, trang web của tôi chỉ cung cấp các tệp bản dịch Việt hóa. Tôi hoàn toàn không lưu trữ, cung cấp hay phân phối bất kỳ tệp dữ liệu game gốc nào có bản quyền.
+    <div class="time-box">
+        ⏳ Thời gian dự kiến hoàn thành (giao diện bảo trì): 2 ngày
     </div>
+
+    <div class="notice">
+        <h3>📌 Thông báo chính thức & Định hướng mới:</h3>
+        
+        <!-- Khung chú ý đặc biệt về bản quyền -->
+        <div class="copyright-highlight">
+            🚨 Từ thời điểm này, website của tôi CHỈ CUNG CẤP CÁC TỆP BẢN DỊCH VIỆT HÓA, tuyệt đối không lưu trữ, cung cấp hay phân phối bất kỳ tệp dữ liệu game gốc nào có bản quyền.
+        </div>
+
+        <ul>
+            <li>Đối với những file Việt hóa đóng gói sẵn trước đây giờ sẽ được tách ra.</li>
+            <li>1 launcher mới sẽ được phát triển để cài đặt Việt hóa một cách dễ dàng với 1 nút bấm. <em>(Thời gian dự kiến cho launcher: 1 tuần)</em>.</li>
+            <li><strong>Cam kết 100% miễn phí</strong> cho tất cả các bản dịch.</li>
+            <li>Đối với những bản dịch bị leak của các nhóm Việt hóa, giờ đây sẽ được ghi nguồn đầy đủ nếu có, nhưng vẫn đảm bảo thông tin bảo mật của người leak.</li>
+            <li>Từ nay mình sẽ hạn chế đăng bài tại các nhóm, mọi thông tin cập nhật sẽ có trong mục <strong>"Thảo Luận Của Web"</strong>.</li>
+        </ul>
+    </div>
+
+    <div class="footer">
+        Cảm ơn mọi người đã đồng hành và ủng hộ! Web sẽ sớm quay trở lại. 🚀
+    </div>
+
 </body>
 </html>
