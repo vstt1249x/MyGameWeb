@@ -41,12 +41,21 @@
         <div class="hero-content">
             <h1>Kho Game Việt Hóa Đỉnh Cao</h1>
             <p>Cộng đồng chia sẻ game Port Android & Emulator Việt hóa chất lượng cao hoàn toàn miễn phí.</p>
+            <div class="site-announcement" id="siteAnnouncement" style="display: none;" aria-live="polite">
+                <i class="fa-solid fa-bullhorn"></i>
+                <div class="announcement-viewport" id="announcementViewport">
+                    <span class="announcement-track" id="announcementText"></span>
+                </div>
+                <div class="announcement-dots" id="announcementDots" aria-hidden="true"></div>
+                <i class="fa-solid fa-pen announcement-edit-btn" id="announcementEditBtn" style="display: none;" onclick="openAnnouncementModal()" title="Sửa thông báo"></i>
+            </div>
             <div class="search-box">
                 <i class="fa-solid fa-magnifying-glass"></i>
                 <input type="text" id="searchInput" placeholder="Nhập tên game bạn muốn tìm..." onkeyup="searchGames()">
             </div>
             <div id="adminHeroActions" style="display: none; margin-top: 20px;">
                 <button onclick="openAddGameModal()" class="btn-admin-action"><i class="fa-solid fa-plus-circle"></i> + Đăng Tải Game Mới</button>
+                <button onclick="openAnnouncementModal()" class="btn-admin-announcement"><i class="fa-solid fa-bullhorn"></i> Quản Lý Thông Báo</button>
             </div>
         </div>
     </section>
@@ -143,6 +152,44 @@
         </div>
     </div>
 
+    <!-- Modal Thông Báo Admin -->
+    <div id="announcementModal" class="modal">
+        <div class="modal-content announcement-modal-content">
+            <span class="close-btn" onclick="closeAnnouncementModal()">&times;</span>
+            <h2 style="color: #ff4757; margin-bottom: 15px;"><i class="fa-solid fa-bullhorn"></i> Thông Báo Admin</h2>
+            <div class="announcement-admin-layout">
+                <section class="announcement-manager-panel">
+                    <div class="announcement-panel-heading"><h3>Đang quản lý</h3><button type="button" class="announcement-secondary-btn" onclick="resetAnnouncementForm()"><i class="fa-solid fa-plus"></i> Thêm mới</button></div>
+                    <div id="announcementList" class="announcement-list"></div>
+                    <h3 class="announcement-history-title">Lịch sử thông báo</h3>
+                    <div id="announcementHistory" class="announcement-history"></div>
+                </section>
+                <section class="announcement-form-panel">
+                    <h3 id="announcementFormTitle">Thêm thông báo</h3>
+                    <input type="hidden" id="announcementId">
+                    <textarea id="announcementInput" maxlength="500" rows="4" placeholder="Nhập nội dung thông báo (tối đa 500 ký tự)..." oninput="updateAnnouncementPreview()"></textarea>
+                    <p class="announcement-char-count"><span id="announcementCharCount">0</span>/500</p>
+                <div>
+                    <label class="announcement-field-label">Màu thông báo:</label>
+                    <div class="announcement-options">
+                        <label><input type="radio" name="announcementColor" value="blue" checked onchange="updateAnnouncementPreview()"> Xanh</label>
+                        <label><input type="radio" name="announcementColor" value="red" onchange="updateAnnouncementPreview()"> Đỏ</label>
+                        <label><input type="radio" name="announcementColor" value="yellow" onchange="updateAnnouncementPreview()"> Vàng</label>
+                    </div>
+                </div>
+                    <label class="announcement-field-label">Mức độ:</label>
+                    <select id="announcementPriority" onchange="updateAnnouncementPreview()"><option value="normal">Bình thường</option><option value="urgent">Khẩn cấp</option></select>
+                    <div class="announcement-date-grid">
+                        <label>Bắt đầu<input type="datetime-local" id="announcementStart" onchange="updateAnnouncementPreview()"></label>
+                        <label>Kết thúc<input type="datetime-local" id="announcementEnd" onchange="updateAnnouncementPreview()"></label>
+                    </div>
+                    <div class="announcement-preview-wrap"><span>Xem trước</span><div id="announcementPreview" class="site-announcement announcement-blue announcement-preview"><i class="fa-solid fa-bullhorn"></i><div class="announcement-viewport"><span class="announcement-track">Nội dung xem trước</span></div></div></div>
+                    <div class="announcement-form-actions"><button onclick="saveAnnouncement()" class="btn-post">Lưu thông báo</button><button onclick="deleteAnnouncement()" class="announcement-delete-btn">Xóa thông báo</button></div>
+                </section>
+            </div>
+        </div>
+    </div>
+
     <!-- Modal Donate -->
     <div id="donateModal" class="modal">
         <div class="modal-content">
@@ -182,10 +229,15 @@
         let currentPage = 1;
         const PAGE_SIZE = 8;
         let searchDebounceTimer = null;
+        let activeAnnouncements = [];
+        let announcementIndex = 0;
+        let announcementCarouselTimer = null;
+        let announcementRefreshTimer = null;
 
         window.onload = async function() {
             await initVisitorStats();
             setupPresence();
+            await loadAnnouncement();
             await checkSupabaseSession();
             _supabase.auth.onAuthStateChange(async () => {
                 await checkSupabaseSession();
@@ -305,6 +357,8 @@
             const isSuperAdmin = currentUser && currentUser.role === 'superadmin';
 
             if (adminPanel) adminPanel.style.display = isSuperAdmin ? 'block' : 'none';
+            const announcementEditBtn = document.getElementById('announcementEditBtn');
+            if (announcementEditBtn) announcementEditBtn.style.display = isAnyAdmin ? 'inline-block' : 'none';
 
             if (isAnyAdmin) {
                 adminHero.style.display = "block";
@@ -320,6 +374,7 @@
             }
             renderPostBox();
             loadPosts();
+            loadAnnouncement();
             currentPage = 1;
             loadCustomGames();
         }
@@ -549,7 +604,7 @@
                 linksHtml += `<a href="${escapeHtml(l.url)}" target="_blank" rel="noopener" class="custom-link-btn">${escapeHtml(l.title)}</a>`;
             });
 
-            const displayGuideTitle = g.guide_title || (`HƯỚNG DẪN CÀI ĐẶT ` + g.name.toUpperCase());
+            const displayGuideTitle = g.guide_title || (`HƯỚNG DẪN CÀI ĐẶT VIỆT HÓA CHO ` + g.name.toUpperCase());
 
             const wrapper = document.getElementById('gameDetailMainWrapper');
             wrapper.innerHTML = `
@@ -559,7 +614,7 @@
                             <img src="${escapeHtml(thumbImg)}" alt="Ảnh bìa game ${escapeHtml(g.name)}">
                         </div>
                         <div style="flex: 1; min-width: 280px;">
-                            <h1 style="color: #fff; font-size: 32px; margin-bottom: 10px;">${escapeHtml(g.name)} </h1>
+                            <h1 style="color: #fff; font-size: 32px; margin-bottom: 10px;">${escapeHtml(g.name)} VIỆT HÓA</h1>
                             <p style="color: #f1f2f6; font-size: 16px; margin-bottom: 20px;">Phiên bản: <strong>${escapeHtml(g.version)}</strong></p>
                             <div style="margin-top: 20px;">
                                 ${linksHtml}
@@ -882,6 +937,158 @@
                     </div>
                 `;
             }).join('');
+        }
+
+        /* ================= THÔNG BÁO ADMIN ================= */
+
+        function isAnnouncementActive(announcement, now = new Date()) {
+            const starts = !announcement.start_time || new Date(announcement.start_time) <= now;
+            const ends = !announcement.end_time || new Date(announcement.end_time) >= now;
+            return starts && ends && Boolean(announcement.message);
+        }
+
+        function announcementSort(a, b) {
+            if ((a.priority === 'urgent') !== (b.priority === 'urgent')) return a.priority === 'urgent' ? -1 : 1;
+            return new Date(b.created_at || 0) - new Date(a.created_at || 0);
+        }
+
+        function renderAnnouncementItem(announcement, index, history = false) {
+            const active = isAnnouncementActive(announcement);
+            const dateRange = [announcement.start_time ? new Date(announcement.start_time).toLocaleString('vi-VN') : 'Ngay', announcement.end_time ? new Date(announcement.end_time).toLocaleString('vi-VN') : 'không giới hạn'].join(' - ');
+            const editor = announcement.updated_by === currentUser?.id ? currentUser.username : (announcement.updated_by || announcement.created_by || 'Không rõ');
+            return `<div class="announcement-admin-item ${active ? 'is-active' : 'is-expired'}">
+                <div><strong>${escapeHtml(announcement.message.slice(0, 90))}${announcement.message.length > 90 ? '...' : ''}</strong><small><span class="announcement-chip ${escapeHtml(announcement.color || 'blue')}">${escapeHtml(announcement.color || 'blue')}</span><span class="announcement-chip">${announcement.priority === 'urgent' ? 'Khẩn cấp' : 'Bình thường'}</span> ${active ? 'Đang hiển thị' : 'Đã hết hạn / ẩn'}</small><small>${escapeHtml(dateRange)}</small><small>Cập nhật: ${escapeHtml(String(editor))} - ${new Date(announcement.updated_at || announcement.created_at).toLocaleString('vi-VN')}</small></div>
+                <div class="announcement-item-actions"><button onclick="editAnnouncement(${index}, ${history})">Sửa</button><button class="danger" onclick="deleteAnnouncement('${announcement.id}')">Xóa</button></div>
+            </div>`;
+        }
+
+        function applyAnnouncementMarquee(root) {
+            const viewport = root?.querySelector('.announcement-viewport');
+            const track = root?.querySelector('.announcement-track');
+            if (!viewport || !track) return;
+            track.classList.toggle('is-marquee', track.scrollWidth > viewport.clientWidth + 8);
+        }
+
+        function renderAnnouncementBar() {
+            const bar = document.getElementById('siteAnnouncement');
+            const textEl = document.getElementById('announcementText');
+            const dots = document.getElementById('announcementDots');
+            if (!bar || !textEl) return;
+            if (!activeAnnouncements.length) {
+                bar.style.display = 'none';
+                if (announcementCarouselTimer) clearInterval(announcementCarouselTimer);
+                return;
+            }
+            const announcement = activeAnnouncements[announcementIndex % activeAnnouncements.length];
+            bar.className = `site-announcement announcement-${announcement.color || 'blue'}${announcement.priority === 'urgent' ? ' urgent-announcement' : ''}`;
+            textEl.textContent = announcement.message;
+            bar.style.display = 'flex';
+            dots.innerHTML = activeAnnouncements.length > 1 ? activeAnnouncements.map((_, index) => `<span class="announcement-dot ${index === announcementIndex ? 'active' : ''}"></span>`).join('') : '';
+            requestAnimationFrame(() => applyAnnouncementMarquee(bar));
+            if (activeAnnouncements.length > 1 && !announcementCarouselTimer) {
+                announcementCarouselTimer = setInterval(() => {
+                    announcementIndex = (announcementIndex + 1) % activeAnnouncements.length;
+                    bar.classList.add('announcement-changing');
+                    setTimeout(() => { renderAnnouncementBar(); bar.classList.remove('announcement-changing'); }, 220);
+                }, 5000);
+            }
+        }
+
+        async function loadAnnouncement() {
+            const now = new Date().toISOString();
+            try {
+                const { data, error } = await _supabase.from('announcements').select('*').or(`start_time.is.null,start_time.lte.${now}`).or(`end_time.is.null,end_time.gte.${now}`).order('created_at', { ascending: false });
+                if (error) throw error;
+                activeAnnouncements = (data || []).filter(item => isAnnouncementActive(item)).sort(announcementSort);
+                announcementIndex = activeAnnouncements.length ? announcementIndex % activeAnnouncements.length : 0;
+                renderAnnouncementBar();
+            } catch (err) {
+                console.error('Lỗi tải thông báo:', err);
+                activeAnnouncements = [];
+                renderAnnouncementBar();
+            }
+            if (!announcementRefreshTimer) announcementRefreshTimer = setInterval(loadAnnouncement, 45000);
+        }
+
+        function resetAnnouncementForm() {
+            document.getElementById('announcementId').value = '';
+            document.getElementById('announcementFormTitle').textContent = 'Thêm thông báo';
+            document.getElementById('announcementInput').value = '';
+            document.getElementById('announcementPriority').value = 'normal';
+            document.getElementById('announcementStart').value = '';
+            document.getElementById('announcementEnd').value = '';
+            document.querySelector('input[name="announcementColor"][value="blue"]').checked = true;
+            updateAnnouncementPreview();
+        }
+
+        function localDateTimeValue(value) { return value ? new Date(value).toISOString().slice(0, 16) : ''; }
+
+        function editAnnouncement(index, history = false) {
+            const source = history ? window.announcementHistoryData[index] : window.announcementAdminData[index];
+            if (!source) return;
+            document.getElementById('announcementId').value = source.id;
+            document.getElementById('announcementFormTitle').textContent = 'Sửa thông báo';
+            document.getElementById('announcementInput').value = source.message || '';
+            document.getElementById('announcementPriority').value = source.priority || 'normal';
+            document.getElementById('announcementStart').value = localDateTimeValue(source.start_time);
+            document.getElementById('announcementEnd').value = localDateTimeValue(source.end_time);
+            document.querySelectorAll('input[name="announcementColor"]').forEach(r => r.checked = r.value === (source.color || 'blue'));
+            updateAnnouncementPreview();
+        }
+
+        function updateAnnouncementPreview() {
+            const input = document.getElementById('announcementInput');
+            const preview = document.getElementById('announcementPreview');
+            if (!input || !preview) return;
+            const color = document.querySelector('input[name="announcementColor"]:checked')?.value || 'blue';
+            const priority = document.getElementById('announcementPriority').value;
+            const track = preview.querySelector('.announcement-track');
+            document.getElementById('announcementCharCount').textContent = input.value.length;
+            preview.className = `site-announcement announcement-preview announcement-${color}${priority === 'urgent' ? ' urgent-announcement' : ''}`;
+            track.textContent = input.value || 'Nội dung xem trước';
+            requestAnimationFrame(() => applyAnnouncementMarquee(preview));
+        }
+
+        async function loadAnnouncementAdminData() {
+            const { data, error } = await _supabase.from('announcements').select('*').order('created_at', { ascending: false });
+            if (error) { showToast('Không thể tải danh sách thông báo: ' + error.message, 'error'); return; }
+            const all = data || [];
+            window.announcementAdminData = all.filter(isAnnouncementActive);
+            window.announcementHistoryData = all;
+            document.getElementById('announcementList').innerHTML = window.announcementAdminData.length ? window.announcementAdminData.map((item, index) => renderAnnouncementItem(item, index)).join('') : '<p class="announcement-empty">Chưa có thông báo đang hoạt động.</p>';
+            document.getElementById('announcementHistory').innerHTML = all.length ? all.map((item, index) => renderAnnouncementItem(item, index, true)).join('') : '<p class="announcement-empty">Chưa có lịch sử.</p>';
+        }
+
+        async function openAnnouncementModal() {
+            if (!currentUser || !['admin', 'superadmin'].includes(currentUser.role)) return;
+            document.getElementById('announcementModal').style.display = 'flex';
+            resetAnnouncementForm();
+            await loadAnnouncementAdminData();
+        }
+        function closeAnnouncementModal() { document.getElementById('announcementModal').style.display = 'none'; }
+
+        async function saveAnnouncement() {
+            const message = document.getElementById('announcementInput').value.trim().slice(0, 500);
+            if (!message) { showToast('Vui lòng nhập nội dung thông báo!', 'error'); return; }
+            const id = document.getElementById('announcementId').value;
+            const values = { message, color: document.querySelector('input[name="announcementColor"]:checked')?.value || 'blue', priority: document.getElementById('announcementPriority').value, start_time: document.getElementById('announcementStart').value ? new Date(document.getElementById('announcementStart').value).toISOString() : null, end_time: document.getElementById('announcementEnd').value ? new Date(document.getElementById('announcementEnd').value).toISOString() : null, updated_by: currentUser.id, updated_at: new Date().toISOString() };
+            if (!id) values.created_by = currentUser.id;
+            const query = id ? _supabase.from('announcements').update(values).eq('id', id) : _supabase.from('announcements').insert(values);
+            const { error } = await query;
+            if (error) { showToast('Lỗi lưu thông báo: ' + error.message, 'error'); return; }
+            showToast('Đã lưu thông báo!', 'success');
+            closeAnnouncementModal();
+            await loadAnnouncement();
+        }
+
+        async function deleteAnnouncement(id = document.getElementById('announcementId').value) {
+            if (!id) { resetAnnouncementForm(); return; }
+            const { error } = await _supabase.from('announcements').delete().eq('id', id);
+            if (error) { showToast('Lỗi xóa thông báo: ' + error.message, 'error'); return; }
+            showToast('Đã xóa thông báo.', 'info');
+            await loadAnnouncementAdminData();
+            resetAnnouncementForm();
+            await loadAnnouncement();
         }
 
         /* ================= DONATE ================= */
