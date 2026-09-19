@@ -1148,9 +1148,13 @@
             if (!container) return;
             const totalPages = Math.max(1, Math.ceil(totalCount / PAGE_SIZE));
             if (totalPages <= 1) { container.innerHTML = ''; return; }
+            const pageButtons = Array.from({ length: totalPages }, (_, index) => {
+                const page = index + 1;
+                return `<button class="page-number ${page === currentPage ? 'active' : ''}" onclick="changeGamePage(${page})" aria-label="Trang ${page}">${page}</button>`;
+            }).join('');
             container.innerHTML = `
                 <button onclick="changeGamePage(${currentPage - 1})" ${currentPage <= 1 ? 'disabled' : ''}><i class="fa-solid fa-chevron-left"></i> Trước</button>
-                <span class="page-indicator">Trang ${currentPage} / ${totalPages}</span>
+                <span class="page-number-list">${pageButtons}</span>
                 <button onclick="changeGamePage(${currentPage + 1})" ${currentPage >= totalPages ? 'disabled' : ''}>Sau <i class="fa-solid fa-chevron-right"></i></button>
             `;
         }
@@ -1171,10 +1175,16 @@
             }
 
             const allGames = data || [];
-            const mostDownloaded = [...allGames].sort((a, b) => (b.downloads || 0) - (a.downloads || 0)).slice(0, 4);
-            const newestIds = new Set(mostDownloaded.map(game => String(game.id)));
-            const newest = [...allGames].sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
-                .filter(game => !newestIds.has(String(game.id))).slice(0, 4);
+            const sortedGames = [...allGames].sort((a, b) => {
+                if (currentSort === 'downloads') return (b.downloads || 0) - (a.downloads || 0);
+                return new Date(b.created_at) - new Date(a.created_at);
+            });
+            const totalPages = Math.max(1, Math.ceil(sortedGames.length / PAGE_SIZE));
+            if (currentPage > totalPages) currentPage = totalPages;
+            const pageStart = (currentPage - 1) * PAGE_SIZE;
+            const pageGames = sortedGames.slice(pageStart, pageStart + PAGE_SIZE);
+            const mostDownloaded = pageGames.slice(0, Math.ceil(PAGE_SIZE / 2));
+            const newest = pageGames.slice(Math.ceil(PAGE_SIZE / 2));
             const visibleGames = [...mostDownloaded, ...newest];
             if (visibleGames.length) {
                 const { data: mirrors, error: mirrorError } = await _supabase.from('game_links').select('game_id').in('game_id', visibleGames.map(game => game.id)).eq('is_active', true);
@@ -1184,7 +1194,7 @@
             const isAnyAdmin = currentUser && (currentUser.role === 'superadmin' || currentUser.role === 'admin');
             grids[0].innerHTML = mostDownloaded.length ? mostDownloaded.map(game => renderGameCard(game, isAnyAdmin)).join('') : '<p style="color:#747d8c; grid-column:1/-1;">Chưa có game nào.</p>';
             grids[1].innerHTML = newest.length ? newest.map(game => renderGameCard(game, isAnyAdmin)).join('') : '<p style="color:#747d8c; grid-column:1/-1;">Chưa có game mới.</p>';
-            document.getElementById('gamePagination').innerHTML = '';
+            renderPagination(sortedGames.length);
         }
 
         async function openGameDetailPage(id, updateUrl = true) {
@@ -1531,7 +1541,7 @@
             if (error) { showToast('Không đăng được bài: ' + error.message, 'error'); return; }
             resetPostEditor();
             showToast(editId ? 'Đã cập nhật bài viết!' : 'Đăng bài thành công!', 'success');
-            if (!editId && savedPost?.id) showPostLink(savedPost.id);
+            if (!editId && savedPost?.id && currentUser.role === 'superadmin') showPostLink(savedPost.id);
             loadPosts();
         }
 
@@ -1741,7 +1751,7 @@
                             </button>
                             ${pinButton}
                             ${canEditPost ? `<button class="btn-edit-post" onclick="editPost('${p.id}')"><i class="fa-solid fa-pen"></i> Sửa bài</button>` : ''}
-                            <button class="btn-share-post" onclick="copyPostLink('${p.id}')"><i class="fa-solid fa-link"></i> Lấy link</button>
+                            ${currentUser?.role === 'superadmin' ? `<button class="btn-share-post" onclick="copyPostLink('${p.id}')"><i class="fa-solid fa-link"></i> Lấy link</button>` : ''}
                             ${canDeletePost ? `<button class="btn-delete-post" onclick="deletePost('${p.id}')"><i class="fa-solid fa-trash"></i> Xóa bài</button>` : ''}
                         </div>
 
