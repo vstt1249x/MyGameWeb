@@ -357,7 +357,11 @@
             await checkSupabaseSession();
             const gameIdFromPath = getGameIdFromPath();
             if (gameIdFromPath) await openGameDetailPage(gameIdFromPath, false);
-            else renderRouteFromHash();
+            else {
+                renderRouteFromHash();
+                const postIdFromUrl = getPostIdFromUrl();
+                if (postIdFromUrl) openDiscussionPost(postIdFromUrl);
+            }
             _supabase.auth.onAuthStateChange(async () => {
                 await checkSupabaseSession();
             });
@@ -366,9 +370,14 @@
         window.addEventListener('popstate', () => {
             const gameIdFromPath = getGameIdFromPath();
             if (gameIdFromPath) openGameDetailPage(gameIdFromPath, false);
+            else if (getPostIdFromUrl()) openDiscussionPost(getPostIdFromUrl());
+            else if (window.location.hash) renderRouteFromHash();
             else backToHome(false);
         });
-        window.addEventListener('hashchange', renderRouteFromHash);
+        window.addEventListener('hashchange', () => {
+            if (getPostIdFromUrl()) openDiscussionPost(getPostIdFromUrl());
+            else renderRouteFromHash();
+        });
 
         function getTabFromHash() {
             const hash = window.location.hash.replace(/^#/, '').toLowerCase();
@@ -394,6 +403,11 @@
             const queryGameId = new URLSearchParams(window.location.search).get('game');
             if (/^\d+$/.test(queryGameId || '')) return queryGameId;
             return window.location.pathname.match(/\/(\d+)\/?$/)?.[1] || null;
+        }
+
+        function getPostIdFromUrl() {
+            const postId = new URLSearchParams(window.location.search).get('post');
+            return /^\d+$/.test(postId || '') ? postId : null;
         }
 
         function getSiteBasePath() {
@@ -1202,7 +1216,7 @@
             const activeLinks = gameLinks.filter(link => link.is_active);
             const linksHtml = activeLinks.length ? activeLinks.map(link => `
                 <div class="mirror-link-row" id="mirror-row-${escapeHtml(link.id)}">
-                    <a href="${escapeHtml(link.url)}" target="_blank" rel="noopener" class="custom-link-btn"><i class="fa-solid fa-download"></i> Tải qua ${escapeHtml(link.label)}</a>
+                    <a href="${escapeHtml(link.url)}" target="_blank" rel="noopener" class="custom-link-btn">${escapeHtml(link.label)}</a>
                     <button type="button" class="report-link-btn" data-link-id="${escapeHtml(link.id)}" onclick="reportDeadLink('${escapeHtml(link.id)}', this)"><i class="fa-solid fa-flag"></i> Báo lỗi link</button>
                 </div>`).join('') : `<span class="coming-soon-badge"><i class="fa-solid fa-clock"></i> ${escapeHtml(g.no_link_label || 'Sắp Có Link Tải')}</span>`;
 
@@ -1511,13 +1525,47 @@
             };
             const result = editId
                 ? await _supabase.from('posts').update({ title, content, link_label: payload.link_label, link_url: payload.link_url, link_visibility: payload.link_visibility, image_url: payload.image_url }).eq('id', editId)
-                : await _supabase.from('posts').insert(payload);
-            const { error } = result;
+                : await _supabase.from('posts').insert(payload).select('id').single();
+            const { data: savedPost, error } = result;
 
             if (error) { showToast('Không đăng được bài: ' + error.message, 'error'); return; }
             resetPostEditor();
             showToast(editId ? 'Đã cập nhật bài viết!' : 'Đăng bài thành công!', 'success');
+            if (!editId && savedPost?.id) showPostLink(savedPost.id);
             loadPosts();
+        }
+
+        function getPostShareUrl(postId) {
+            const url = new URL(window.location.href);
+            url.search = `?post=${encodeURIComponent(postId)}`;
+            url.hash = 'thaoluan-id';
+            return url.href;
+        }
+
+        async function copyPostLink(postId) {
+            const url = getPostShareUrl(postId);
+            try {
+                await navigator.clipboard.writeText(url);
+                showToast('Đã sao chép link bài viết.', 'success');
+            } catch (err) {
+                window.prompt('Sao chép link bài viết:', url);
+            }
+        }
+
+        function showPostLink(postId) {
+            const url = getPostShareUrl(postId);
+            showToast(`Link bài viết: ${url}`, 'success');
+            copyPostLink(postId);
+        }
+
+        async function openDiscussionPost(postId) {
+            switchTab('discuss', null, false);
+            await loadPosts();
+            const postElement = document.getElementById(`post-${postId}`);
+            if (!postElement) { showToast('Không tìm thấy bài viết này.', 'error'); return; }
+            postElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            postElement.classList.add('post-highlight');
+            setTimeout(() => postElement.classList.remove('post-highlight'), 2600);
         }
 
         async function previewPostImage(input) {
@@ -1677,7 +1725,7 @@
                     : p.link_is_hidden ? '<span class="post-link-hidden"><i class="fa-solid fa-lock"></i> Liên kết giới hạn quyền xem</span>' : '';
 
                 return `
-                    <div class="post-item" style="${postStyle}">
+                    <div class="post-item" id="post-${p.id}" style="${postStyle}">
                         <div class="post-header">
                             <span>${pinBadge}<strong class="post-author ${badgeClass}" style="${authorStyle}">${escapeHtml(p.author_name)}</strong> <span class="post-role-label">(${roleLabel})</span></span>
                             <span class="post-time">${new Date(p.created_at).toLocaleString('vi-VN')}</span>
@@ -1693,6 +1741,7 @@
                             </button>
                             ${pinButton}
                             ${canEditPost ? `<button class="btn-edit-post" onclick="editPost('${p.id}')"><i class="fa-solid fa-pen"></i> Sửa bài</button>` : ''}
+                            <button class="btn-share-post" onclick="copyPostLink('${p.id}')"><i class="fa-solid fa-link"></i> Lấy link</button>
                             ${canDeletePost ? `<button class="btn-delete-post" onclick="deletePost('${p.id}')"><i class="fa-solid fa-trash"></i> Xóa bài</button>` : ''}
                         </div>
 
