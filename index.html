@@ -300,6 +300,8 @@
             <label>Link game <span>(nếu có)</span><input id="projectUrlInput" type="url" placeholder="https://..."></label>
             <label>Nền tảng<select id="projectPlatformInput"><option value="pc">PC</option><option value="android">Android</option></select></label>
             <label>Thông tin thêm <span>(không bắt buộc)</span><textarea id="projectDescriptionInput" maxlength="500" rows="4" placeholder="Phiên bản, mong muốn cụ thể..."></textarea></label>
+            <label>Ảnh dự án <span>(không bắt buộc)</span><input id="projectImageInput" type="file" accept="image/*" onchange="previewProjectRequestImage(this)"></label>
+            <div id="projectImagePreview"></div>
             <button type="button" class="btn-post" onclick="submitProjectRequest()"><i class="fa-solid fa-paper-plane"></i> Gửi lên</button>
         </div>
     </div>
@@ -319,6 +321,7 @@
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         let tempGameThumbData = '';
+        let tempProjectImageData = '';
         let currentUser = null;
         let isRegisterMode = false;
 
@@ -351,10 +354,28 @@
             setupPresence();
             await loadAnnouncement();
             await checkSupabaseSession();
+            const gameIdFromPath = getGameIdFromPath();
+            if (gameIdFromPath) await openGameDetailPage(gameIdFromPath, false);
             _supabase.auth.onAuthStateChange(async () => {
                 await checkSupabaseSession();
             });
         };
+
+        window.addEventListener('popstate', () => {
+            const gameIdFromPath = getGameIdFromPath();
+            if (gameIdFromPath) openGameDetailPage(gameIdFromPath, false);
+            else backToHome(false);
+        });
+
+        function getGameIdFromPath() {
+            return window.location.pathname.match(/\/(\d+)\/?$/)?.[1] || null;
+        }
+
+        function getSiteBasePath() {
+            const marker = '/MyGameWeb';
+            const markerIndex = window.location.pathname.indexOf(marker);
+            return markerIndex >= 0 ? window.location.pathname.slice(0, markerIndex) + marker : '';
+        }
 
         /* ================= TIỆN ÍCH CHUNG ================= */
 
@@ -898,31 +919,47 @@
             const description = document.getElementById('projectDescriptionInput').value.trim() || null;
             if (!title) { showToast('Vui lòng nhập tên game.', 'error'); return; }
             if (gameUrl && !/^https?:\/\//i.test(gameUrl)) { showToast('Link game phải bắt đầu bằng http:// hoặc https://.', 'error'); return; }
-            const { error } = await _supabase.from('project_requests').insert({ title, game_url: gameUrl, platform, description, status: 'requested', created_by: currentUser.id });
+            const payload = { title, game_url: gameUrl, platform, description, status: 'requested', created_by: currentUser.id, created_by_name: currentUser.username, created_by_role: currentUser.role };
+            if (tempProjectImageData) payload.image_url = tempProjectImageData;
+            const { error } = await _supabase.from('project_requests').insert(payload);
             if (error) { showToast('Không gửi được yêu cầu: ' + error.message, 'error'); return; }
             document.getElementById('projectTitleInput').value = '';
             document.getElementById('projectUrlInput').value = '';
             document.getElementById('projectDescriptionInput').value = '';
+            document.getElementById('projectImageInput').value = '';
+            document.getElementById('projectImagePreview').innerHTML = '';
+            tempProjectImageData = '';
             closeProjectRequestModal();
             showToast('Đã gửi yêu cầu dự án.', 'success');
             loadProjects();
         }
 
+        async function previewProjectRequestImage(input) {
+            if (!input.files?.[0]) return;
+            try {
+                tempProjectImageData = await compressImage(input.files[0]);
+                document.getElementById('projectImagePreview').innerHTML = `<img class="admin-project-image-preview" src="${tempProjectImageData}" alt="Xem trước ảnh dự án">`;
+            } catch (error) { showToast('Không đọc được ảnh dự án.', 'error'); }
+        }
+
         function renderProjectCard(project, votedIds, isAdmin) {
             const statusLabels = { requested: 'Đề xuất', in_progress: 'Đang Việt hóa', completed: 'Đã hoàn thành' };
             const voted = votedIds.has(String(project.id));
-            const creator = project.created_by ? 'Thành viên cộng đồng' : 'Admin';
+            const creator = project.created_by_role === 'superadmin' ? 'SuperAdmin' : project.created_by_role === 'admin' ? 'Admin' : project.created_by_name || 'Thành viên cộng đồng';
+            const progress = Math.min(100, Math.max(0, Number(project.progress_percent) || (project.status === 'completed' ? 100 : 0)));
             return `<article class="project-card ${project.status === 'in_progress' ? 'is-progress' : ''}">
                 <div class="project-card-main">
                     <div class="project-card-top"><span class="project-status status-${project.status}">${statusLabels[project.status] || statusLabels.requested}</span><span class="project-platform"><i class="fa-solid fa-${project.platform === 'pc' ? 'desktop' : 'mobile-screen-button'}"></i> ${project.platform === 'pc' ? 'PC' : 'Android'}</span></div>
+                    ${project.image_url ? `<img class="project-image" src="${escapeHtml(project.image_url)}" alt="Ảnh dự án ${escapeHtml(project.title)}" loading="lazy">` : ''}
                     <h3>${escapeHtml(project.title)}</h3>
                     <p class="project-meta">Đề xuất bởi ${escapeHtml(creator)} · ${new Date(project.created_at).toLocaleDateString('vi-VN')}</p>
                     ${project.description ? `<p class="project-description">${escapeHtml(project.description)}</p>` : ''}
+                    <div class="project-progress" aria-label="Tiến độ hoàn thành ${progress}%"><div class="project-progress-heading"><span>Tiến độ hoàn thành</span><strong>${progress}%</strong></div><div class="project-progress-track"><span style="width: ${progress}%"></span></div></div>
                     ${project.game_url ? `<a class="project-link" href="${escapeHtml(safeHttpUrl(project.game_url))}" target="_blank" rel="noopener"><i class="fa-solid fa-link"></i> Xem link game</a>` : '<span class="project-no-link">Chưa có link game</span>'}
                 </div>
                 <div class="project-card-actions">
                     <button type="button" class="project-vote-button ${voted ? 'is-voted' : ''}" onclick="toggleProjectVote(${project.id})"><i class="fa-solid fa-heart"></i><strong>${project.votes_count || 0}</strong><span>${voted ? 'Đã bình chọn' : 'Bình chọn'}</span></button>
-                    ${isAdmin ? `<label class="project-admin-status">Trạng thái<select onchange="updateProjectStatus(${project.id}, this.value)"><option value="requested" ${project.status === 'requested' ? 'selected' : ''}>Đề xuất</option><option value="in_progress" ${project.status === 'in_progress' ? 'selected' : ''}>Đang làm</option><option value="completed" ${project.status === 'completed' ? 'selected' : ''}>Hoàn thành</option></select></label><button type="button" class="project-delete-button" onclick="deleteProject(${project.id})" title="Xóa dự án"><i class="fa-solid fa-trash"></i></button>` : ''}
+                    ${isAdmin ? `<button type="button" class="project-edit-button" onclick="editProject(${project.id})"><i class="fa-solid fa-pen"></i> Sửa</button><button type="button" class="project-delete-button" onclick="deleteProject(${project.id})" title="Xóa dự án"><i class="fa-solid fa-trash"></i></button>` : ''}
                 </div>
             </article>`;
         }
@@ -931,18 +968,46 @@
             const container = document.getElementById('adminProjectBox');
             if (!container) return;
             if (!currentUser || !['admin', 'superadmin'].includes(currentUser.role)) { container.innerHTML = ''; return; }
-            container.innerHTML = `<section class="admin-project-box"><h3><i class="fa-solid fa-pen-to-square"></i> Đăng dự án đang thực hiện</h3><div class="admin-project-form"><input id="adminProjectTitle" maxlength="160" placeholder="Tên game đang làm..."><input id="adminProjectUrl" type="url" placeholder="Link game (không bắt buộc)"><select id="adminProjectPlatform"><option value="pc">PC</option><option value="android">Android</option></select><input id="adminProjectDescription" maxlength="500" placeholder="Tiến độ hoặc thông tin muốn chia sẻ..."><button type="button" class="btn-post" onclick="submitAdminProject()"><i class="fa-solid fa-plus"></i> Đăng dự án</button></div></section>`;
+            container.innerHTML = `<section class="admin-project-box"><h3 id="adminProjectFormTitle"><i class="fa-solid fa-pen-to-square"></i> Đăng dự án đang thực hiện</h3><input type="hidden" id="adminProjectId"><div class="admin-project-form"><input id="adminProjectTitle" maxlength="160" placeholder="Tên game đang làm..."><input id="adminProjectUrl" type="url" placeholder="Link game (không bắt buộc)"><select id="adminProjectPlatform"><option value="pc">PC</option><option value="android">Android</option></select><input id="adminProjectProgress" type="number" min="0" max="100" placeholder="Tiến độ (%)"><input id="adminProjectDescription" maxlength="500" placeholder="Thông tin muốn chia sẻ..."><label class="admin-project-image-label">Ảnh (không bắt buộc)<input id="adminProjectImage" type="file" accept="image/*" onchange="previewProjectImage(this)"></label><button type="button" class="btn-post" onclick="submitAdminProject()"><i class="fa-solid fa-plus"></i> Đăng dự án</button></div><div id="adminProjectImagePreview"></div></section>`;
+        }
+
+        async function previewProjectImage(input) {
+            if (!input.files?.[0]) return;
+            try {
+                tempProjectImageData = await compressImage(input.files[0]);
+                document.getElementById('adminProjectImagePreview').innerHTML = `<img class="admin-project-image-preview" src="${tempProjectImageData}" alt="Xem trước ảnh dự án">`;
+            } catch (error) { showToast('Không đọc được ảnh dự án.', 'error'); }
         }
 
         async function submitAdminProject() {
+            const editId = document.getElementById('adminProjectId').value;
             const title = document.getElementById('adminProjectTitle').value.trim();
             const gameUrl = document.getElementById('adminProjectUrl').value.trim() || null;
+            const progress = Math.min(100, Math.max(0, Number(document.getElementById('adminProjectProgress').value) || 0));
             if (!title) { showToast('Vui lòng nhập tên game.', 'error'); return; }
             if (gameUrl && !/^https?:\/\//i.test(gameUrl)) { showToast('Link game không hợp lệ.', 'error'); return; }
-            const { error } = await _supabase.from('project_requests').insert({ title, game_url: gameUrl, platform: document.getElementById('adminProjectPlatform').value, description: document.getElementById('adminProjectDescription').value.trim() || null, status: 'in_progress', created_by: currentUser.id });
+            const payload = { title, game_url: gameUrl, platform: document.getElementById('adminProjectPlatform').value, description: document.getElementById('adminProjectDescription').value.trim() || null, progress_percent: progress, status: progress === 100 ? 'completed' : 'in_progress', created_by: currentUser.id, created_by_name: currentUser.username, created_by_role: currentUser.role };
+            if (tempProjectImageData) payload.image_url = tempProjectImageData;
+            const result = editId ? await _supabase.from('project_requests').update(payload).eq('id', editId) : await _supabase.from('project_requests').insert(payload);
+            const error = result.error;
             if (error) { showToast('Không đăng được dự án: ' + error.message, 'error'); return; }
-            showToast('Đã đăng dự án đang thực hiện.', 'success');
+            showToast(editId ? 'Đã cập nhật dự án.' : 'Đã đăng dự án đang thực hiện.', 'success');
             loadProjects();
+        }
+
+        async function editProject(projectId) {
+            const { data: project, error } = await _supabase.from('project_requests').select('*').eq('id', projectId).single();
+            if (error || !project) { showToast('Không tải được dự án.', 'error'); return; }
+            document.getElementById('adminProjectId').value = project.id;
+            document.getElementById('adminProjectTitle').value = project.title || '';
+            document.getElementById('adminProjectUrl').value = project.game_url || '';
+            document.getElementById('adminProjectPlatform').value = project.platform || 'pc';
+            document.getElementById('adminProjectProgress').value = project.progress_percent || 0;
+            document.getElementById('adminProjectDescription').value = project.description || '';
+            tempProjectImageData = project.image_url || '';
+            document.getElementById('adminProjectImagePreview').innerHTML = tempProjectImageData ? `<img class="admin-project-image-preview" src="${escapeHtml(tempProjectImageData)}" alt="Ảnh dự án">` : '';
+            document.getElementById('adminProjectFormTitle').innerHTML = '<i class="fa-solid fa-pen-to-square"></i> Chỉnh sửa dự án';
+            document.getElementById('adminProjectTitle').focus();
         }
 
         async function loadProjects() {
@@ -1072,9 +1137,10 @@
             document.getElementById('gamePagination').innerHTML = '';
         }
 
-        async function openGameDetailPage(id) {
+        async function openGameDetailPage(id, updateUrl = true) {
             const { data: g, error } = await _supabase.from('games').select('*').eq('id', id).single();
             if (error || !g) { showToast('Không tìm thấy game này.', 'error'); return; }
+            if (updateUrl) window.history.pushState({ gameId: g.id }, '', `${getSiteBasePath()}/${g.id}`);
 
             const { data: normalizedLinks, error: linksError } = await _supabase
                 .from('game_links')
@@ -1178,7 +1244,8 @@
             showToast('Cảm ơn bạn đã báo lỗi link.', 'success');
         }
 
-        function backToHome() {
+        function backToHome(updateUrl = true) {
+            if (updateUrl) window.history.pushState({}, '', getSiteBasePath() || '/');
             document.getElementById('gameDetailPageContainer').style.display = 'none';
             document.getElementById('homeContent').style.display = 'block';
             document.getElementById('heroSection').style.display = 'block';
