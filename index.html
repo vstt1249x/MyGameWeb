@@ -3,130 +3,1576 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thông Báo Bảo Trì & Đổi Định Hướng Website</title>
-    <style>
-        body { 
-            font-family: Arial, sans-serif; 
-            text-align: center; 
-            padding: 40px 20px; 
-            background-color: #f4f4f9; 
-            color: #222; 
-            max-width: 900px; 
-            margin: 0 auto; 
-            line-height: 1.6;
-        }
-        .fb-btn {
-            display: inline-block;
-            background-color: #1877f2;
-            color: white;
-            padding: 12px 25px;
-            border-radius: 6px;
-            text-decoration: none;
-            font-weight: bold;
-            font-size: 18px;
-            margin-bottom: 25px;
-            box-shadow: 0 3px 6px rgba(0,0,0,0.15);
-            transition: background 0.3s;
-        }
-        .fb-btn:hover {
-            background-color: #145dbf;
-        }
-        h1 { 
-            color: #e74c3c; 
-            font-size: 32px; 
-            margin-bottom: 15px; 
-        }
-        .intro {
-            font-size: 19px;
-            color: #444;
-            margin-bottom: 15px;
-        }
-        .time-box {
-            font-size: 20px;
-            font-weight: bold;
-            color: #d35400;
-            margin-bottom: 25px;
-            background: #fff3e0;
-            display: inline-block;
-            padding: 10px 20px;
-            border-radius: 6px;
-            border: 1px dashed #e67e22;
-        }
-        .notice { 
-            text-align: left;
-            font-size: 18px; 
-            color: #2c3e50; 
-            background: #fff;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-            margin-top: 10px;
-        }
-        .notice h3 {
-            margin-top: 0;
-            color: #c0392b;
-            font-size: 24px;
-            border-bottom: 2px solid #eee;
-            padding-bottom: 10px;
-        }
-        /* Làm nổi bật riêng điều khoản bản quyền */
-        .copyright-highlight {
-            background-color: #fde8e8;
-            border-left: 6px solid #e74c3c;
-            padding: 15px;
-            margin-bottom: 15px;
-            border-radius: 4px;
-            font-weight: bold;
-            color: #900c3f;
-            font-size: 19px;
-        }
-        .notice ul {
-            padding-left: 20px;
-            margin-top: 15px;
-        }
-        .notice li {
-            margin-bottom: 16px;
-        }
-        .footer {
-            margin-top: 35px;
-            font-size: 20px;
-            font-weight: bold;
-            color: #27ae60;
-        }
-    </style>
+    <meta name="description" content="Kho Game Việt Hóa - Cộng đồng chia sẻ game Port Android & Emulator Việt hóa chất lượng cao, hoàn toàn miễn phí.">
+    <meta property="og:title" content="Kho Game Việt Hóa - Tải Game Mobile & Port Miễn Phí">
+    <meta property="og:description" content="Cộng đồng chia sẻ game Port Android & Emulator Việt hóa chất lượng cao hoàn toàn miễn phí.">
+    <meta property="og:type" content="website">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8E%AE%3C/text%3E%3C/svg%3E">
+    <title>Kho Game Việt Hóa - Tải Game Mobile & Port Miễn Phí</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
-<body>
+<body class="site-notice-locked">
 
-    <!-- Nút liên kết Facebook ở đầu trang -->
-    <a href="https://www.facebook.com/vutien7294" class="fb-btn" target="_blank" rel="noopener">💬 Liên hệ qua Facebook của tôi</a>
-
-    <h1>🛠️ THÔNG BÁO BẢO TRÌ & ĐỔI ĐỊNH HƯỚNG WEBSITE 🛠️</h1>
-    <div class="intro">Chào mọi người, trang web của mình đang tạm dừng hoạt động để tiến hành bảo trì và cấu trúc lại toàn bộ nội dung nhằm tuân thủ các quy định về bản quyền.</div>
-    
-    <div class="time-box">
-        ⏳ Thời gian dự kiến hoàn thành (giao diện bảo trì): 2 ngày
+    <div id="siteNoticeModal" class="site-notice-modal" role="dialog" aria-modal="true" aria-labelledby="siteNoticeTitle">
+        <div class="site-notice-content">
+            <div class="site-notice-icon"><i class="fa-solid fa-circle-info"></i></div>
+            <h2 id="siteNoticeTitle">📌 Thông báo chính thức &amp; Định hướng mới</h2>
+            <div class="site-notice-body">
+                <p class="site-notice-alert"><strong><i class="fa-solid fa-triangle-exclamation"></i> Từ thời điểm này, website của tôi CHỈ CUNG CẤP CÁC TỆP BẢN DỊCH VIỆT HÓA</strong>, tuyệt đối không lưu trữ, cung cấp hay phân phối bất kỳ tệp dữ liệu game gốc nào có bản quyền!</p>
+                <ul>
+                    <li>Đối với những file Việt hóa đóng gói sẵn trước đây giờ sẽ được tách ra.</li>
+                    <li>Một launcher mới đang được phát triển để cài đặt Việt hóa dễ dàng với một nút bấm.</li>
+                    <li><strong>Cam kết 100% miễn phí</strong> cho tất cả các bản dịch.</li>
+                    <li>Từ nay mình sẽ hạn chế đăng bài tại các nhóm, mọi thông tin cập nhật sẽ có trong mục <strong>"Thảo Luận Của Web"</strong>.</li>
+                </ul>
+            </div>
+            <button type="button" class="site-notice-confirm" onclick="confirmSiteNotice()"><i class="fa-solid fa-check"></i> Xác Nhận &amp; Đồng Ý</button>
+        </div>
     </div>
 
-    <div class="notice">
-        <h3>📌 Thông báo chính thức & Định hướng mới:</h3>
-        
-        <!-- Khung chú ý đặc biệt về bản quyền -->
-        <div class="copyright-highlight">
-            🚨 Từ thời điểm này, website của tôi CHỈ CUNG CẤP CÁC TỆP BẢN DỊCH VIỆT HÓA, tuyệt đối không lưu trữ, cung cấp hay phân phối bất kỳ tệp dữ liệu game gốc nào có bản quyền.
+    <div class="toast-stack" id="toastStack"></div>
+
+    <div id="chatWidget" class="chat-widget" style="display: none;">
+        <button type="button" id="chatToggleButton" class="chat-toggle-button" onclick="toggleChatPanel()" aria-label="Mở chat với Admin" title="Chat với Admin">
+            <i class="fa-solid fa-comments"></i><span class="chat-unread-badge" id="chatUnreadBadge" hidden>0</span>
+        </button>
+        <section id="chatPanel" class="chat-panel" aria-label="Chat với Admin" hidden>
+            <div class="chat-panel-header">
+                <div><strong><i class="fa-solid fa-headset"></i> Chat với Admin</strong><small id="chatStatusText">Đang kết nối...</small></div>
+                <button type="button" onclick="toggleChatPanel()" aria-label="Đóng chat"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div id="chatMessages" class="chat-messages"><p class="chat-empty">Hãy gửi tin nhắn cho Admin.</p></div>
+            <form class="chat-compose" onsubmit="sendChatMessage(event)">
+                <input id="chatInput" type="text" maxlength="1000" placeholder="Nhập tin nhắn..." autocomplete="off">
+                <button type="submit" aria-label="Gửi tin nhắn"><i class="fa-solid fa-paper-plane"></i></button>
+            </form>
+        </section>
+    </div>
+
+    <div class="visitor-counter">
+        <span><i class="fa-solid fa-users"></i> Lượt truy cập trực tuyến: <b id="onlineCount">1</b></span>
+        <span><i class="fa-solid fa-chart-line"></i> Tổng lượt truy cập Web: <b id="totalVisits">0</b></span>
+    </div>
+
+    <header class="header">
+        <div class="logo"><i class="fa-solid fa-gamepad"></i> KHO GAME VIỆT HÓA</div>
+        <div class="header-social-links" aria-label="Mạng xã hội">
+            <a href="https://www.youtube.com/@liquidsgaming7294" target="_blank" rel="noopener" class="youtube" aria-label="YouTube" title="YouTube"><i class="fa-brands fa-youtube"></i></a>
+            <a href="https://www.tiktok.com/@vtl729x" target="_blank" rel="noopener" class="tiktok" aria-label="TikTok" title="TikTok"><i class="fa-brands fa-tiktok"></i></a>
+            <a href="https://www.facebook.com/groups/1715975012818926" target="_blank" rel="noopener" class="facebook" aria-label="Nhóm Facebook" title="Nhóm Facebook"><i class="fa-brands fa-facebook"></i></a>
+        </div>
+        <button class="hamburger-btn" id="hamburgerBtn" onclick="toggleMobileNav()" aria-label="Mở menu"><i class="fa-solid fa-bars"></i></button>
+        <nav class="nav-links" id="navLinks">
+            <a href="#" class="active" onclick="switchTab('home', event)">Trang chủ</a>
+            <a href="#" onclick="switchTab('mobile', event)">Mobile</a>
+            <a href="#" onclick="switchTab('emulator', event)">Emulator</a>
+            <a href="#" onclick="openDonate(event)">Donate</a>
+            <a href="#" onclick="switchTab('discuss', event)">Thảo luận</a>
+            <div id="authNavContainer" style="display: flex; gap: 10px; align-items: center; margin-left: 10px;"></div>
+        </nav>
+    </header>
+    <div class="nav-overlay" id="navOverlay" onclick="closeMobileNav()"></div>
+
+    <section class="hero" id="heroSection">
+        <div class="hero-content">
+            <h1>Kho Game Việt Hóa Đỉnh Cao</h1>
+            <p>Cộng đồng chia sẻ game Port Android & Emulator Việt hóa chất lượng cao hoàn toàn miễn phí.</p>
+            <div class="site-announcement" id="siteAnnouncement" style="display: none;" aria-live="polite">
+                <i class="fa-solid fa-bullhorn"></i>
+                <div class="announcement-viewport" id="announcementViewport">
+                    <span class="announcement-track" id="announcementText"></span>
+                </div>
+                <div class="announcement-dots" id="announcementDots" aria-hidden="true"></div>
+                <i class="fa-solid fa-pen announcement-edit-btn" id="announcementEditBtn" style="display: none;" onclick="openAnnouncementModal()" title="Sửa thông báo"></i>
+            </div>
+            <div class="search-box">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" id="searchInput" placeholder="Nhập tên game bạn muốn tìm..." onkeyup="searchGames()">
+            </div>
+            <div id="adminHeroActions" style="display: none; margin-top: 20px;">
+                <button onclick="openAddGameModal()" class="btn-admin-action"><i class="fa-solid fa-plus-circle"></i> + Đăng Tải Game Mới</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Danh sách Game -->
+    <main class="container" id="homeContent">
+        <h2 class="section-title"><i class="fa-solid fa-fire"></i> DANH SÁCH GAME MỚI CẬP NHẬT</h2>
+        <div class="toolbar-row">
+            <select class="sort-select" id="sortSelect" onchange="onSortChange(this.value)" aria-label="Sắp xếp game">
+                <option value="newest">Mới nhất</option>
+                <option value="downloads">Tải nhiều nhất</option>
+                <option value="rating">Đánh giá cao nhất</option>
+            </select>
+        </div>
+        <div class="game-grid" id="gameGrid"></div>
+        <div class="pagination-row" id="gamePagination"></div>
+    </main>
+
+    <!-- Trang Chi Tiết Game -->
+    <main class="container" id="gameDetailPageContainer" style="display: none; padding-top: 20px;">
+        <button onclick="backToHome()" style="background: #2f3542; color: #fff; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; margin-bottom: 20px; font-weight: bold;"><i class="fa-solid fa-arrow-left"></i> Quay lại trang chủ</button>
+        <div id="gameDetailMainWrapper"></div>
+    </main>
+
+    <main class="container" id="discussContent" style="display: none;">
+        <h2 class="section-title"><i class="fa-solid fa-comments"></i> KHU VỰC THẢO LUẬN & BÁO LỖI GAME</h2>
+
+        <div id="superAdminPanel" style="display: none; background: #161922; border: 1px solid #ff3838; padding: 20px; border-radius: 8px; margin-bottom: 20px; color: #fff;">
+            <h3 style="color: #ff3838; margin-bottom: 10px;"><i class="fa-solid fa-shield-halved"></i> Bảng Quản Lý Quyền Thành Viên</h3>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                <input type="email" id="targetUserEmail" placeholder="Nhập email thành viên..." style="flex: 1; min-width: 200px; padding: 10px; background: #0d0e12; border: 1px solid #2f3542; color: #fff; border-radius: 6px;">
+                <select id="targetUserRole" style="padding: 10px; background: #0d0e12; border: 1px solid #2f3542; color: #fff; border-radius: 6px;">
+                    <option value="member">Thành viên (Member)</option>
+                    <option value="vip">Thành viên VIP</option>
+                    <option value="admin">Quản trị viên (Mod)</option>
+                    <option value="superadmin">Super Admin</option>
+                </select>
+                <button onclick="applyUserRoleOnWeb()" style="background: #ff4757; color: #fff; border: none; padding: 10px 20px; border-radius: 6px; font-weight: bold; cursor: pointer;">Cập Nhật Quyền</button>
+            </div>
         </div>
 
-        <ul>
-            <li>Đối với những file Việt hóa đóng gói sẵn trước đây giờ sẽ được tách ra.</li>
-            <li>1 launcher mới sẽ được phát triển để cài đặt Việt hóa một cách dễ dàng với 1 nút bấm. <em>(Thời gian dự kiến cho launcher: 1 tuần)</em>.</li>
-            <li><strong>Cam kết 100% miễn phí</strong> cho tất cả các bản dịch.</li>
-            <li>Đối với những bản dịch bị leak của các nhóm Việt hóa, giờ đây sẽ được ghi nguồn đầy đủ nếu có, nhưng vẫn đảm bảo thông tin bảo mật của người leak.</li>
-            <li>Từ nay mình sẽ hạn chế đăng bài tại các nhóm, mọi thông tin cập nhật sẽ có trong mục <strong>"Thảo Luận Của Web"</strong>.</li>
-        </ul>
+        <div id="appearancePanel" class="appearance-panel" style="display: none;">
+            <h3><i class="fa-solid fa-wand-magic-sparkles"></i> Tùy Chỉnh Tên Hiển Thị</h3>
+            <p class="appearance-help">Chọn màu và hiệu ứng cho tên của bạn trong bài viết và bình luận.</p>
+            <div class="appearance-controls">
+                <label>Màu tên<select id="appearanceColor"></select></label>
+                <label>Hiệu ứng<select id="appearanceEffect"></select></label>
+                <button type="button" class="btn-post" onclick="saveAppearanceSettings()">Lưu hiển thị</button>
+            </div>
+            <div id="appearancePreview" class="appearance-preview">Xem trước tên hiển thị</div>
+        </div>
+
+        <div id="postsList" class="posts-container"></div>
+        <div id="postBoxContainer"></div>
+        <div id="discussionChatDock" class="discussion-chat-dock"></div>
+    </main>
+
+    <!-- Modal Thêm / Sửa Game -->
+    <div id="addGameModal" class="modal">
+        <div class="modal-content" style="max-width: 550px; max-height: 90vh; overflow-y: auto;">
+            <span class="close-btn" onclick="closeAddGameModal()">&times;</span>
+            <h2 id="gameModalTitle"><i class="fa-solid fa-gamepad"></i> Thêm Game Mới</h2>
+            <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 15px;">
+                <input type="hidden" id="editGameId">
+                <input type="text" id="newGameName" placeholder="Tên game (VD: GTA 5)..." style="padding: 10px; background: #0d0e12; border: 1px solid #2f3542; color: #fff; border-radius: 6px;">
+                <select id="newGameCategory" style="padding: 10px; background: #0d0e12; border: 1px solid #2f3542; color: #fff; border-radius: 6px;">
+                    <option value="mobile">Mobile</option>
+                    <option value="emulator">Emulator</option>
+                </select>
+                <input type="text" id="newGameVersion" placeholder="Phiên bản (Ví dụ: v1.61 - Full Việt Hóa)..." style="padding: 10px; background: #0d0e12; border: 1px solid #2f3542; color: #fff; border-radius: 6px;">
+
+                <div class="game-tech-form-grid">
+                    <input type="text" id="newGameFileSize" placeholder="Dung lượng (VD: 2.4 GB)">
+                    <input type="text" id="newGameMinAndroid" placeholder="Android tối thiểu (VD: Android 8.0)">
+                    <input type="text" id="newGameCpuSupport" placeholder="CPU hỗ trợ (VD: ARM64, ARMv7)">
+                    <input type="text" id="newGameLanguage" placeholder="Ngôn ngữ (VD: Tiếng Việt)">
+                    <input type="text" id="newGameLastUpdated" placeholder="Cập nhật gần nhất (VD: Sửa lỗi save game)" class="game-tech-form-wide">
+                </div>
+
+                <input type="text" id="newGameGuideTitle" placeholder="Tiêu đề hướng dẫn (VD: HƯỚNG DẪN CÀI ĐẶT VIỆT HÓA CHO GTA 5)..." style="padding: 10px; background: #0d0e12; border: 1px solid #ffa502; color: #fff; border-radius: 6px; font-weight: bold;">
+
+                <div class="game-links-admin-panel">
+                    <div class="game-links-admin-heading"><strong><i class="fa-solid fa-code-branch"></i> Mirror tải mới</strong><span>Link hoạt động sẽ hiển thị trên trang game</span></div>
+                    <div id="gameLinksManager" class="game-links-manager"></div>
+                    <div class="game-links-add-row">
+                        <input type="text" id="newMirrorLabel" placeholder="Nhãn mirror (Google Drive)">
+                        <input type="url" id="newMirrorUrl" placeholder="URL mirror">
+                        <button type="button" onclick="addGameMirror()"><i class="fa-solid fa-plus"></i> Thêm</button>
+                    </div>
+                </div>
+
+                <textarea id="newGameGuide" placeholder="Nội dung hướng dẫn cài đặt chi tiết (Dùng các thẻ <ol>, <li>, <p>)..." rows="6" style="padding: 10px; background: #0d0e12; border: 1px solid #2f3542; color: #fff; border-radius: 6px;"></textarea>
+
+                <div>
+                    <label style="font-size: 13px; color: #a4b0be;">Ảnh Thumbnail Game:</label>
+                    <input type="file" id="newGameThumb" accept="image/*" style="margin-top: 5px; color: #fff;" onchange="previewGameThumb(this)">
+                    <p style="font-size: 11px; color: #747d8c; margin-top: 4px;">Ảnh sẽ tự động được nén để tải trang nhanh hơn.</p>
+                </div>
+                <div id="thumbPreviewContainer" style="margin-top: 5px;"></div>
+
+                <button onclick="saveGameData()" class="btn-post" style="margin-top: 10px;">Lưu Lên Hệ Thống</button>
+            </div>
+        </div>
     </div>
 
-    <div class="footer">
-        Cảm ơn mọi người đã đồng hành và ủng hộ! Web sẽ sớm quay trở lại. 🚀
+    <!-- Modal Đăng Nhập / Đăng Ký -->
+    <div id="authModal" class="modal">
+        <div class="modal-content" style="max-width: 400px;">
+            <span class="close-btn" onclick="closeAuthModal()">&times;</span>
+            <h2 id="authModalTitle" style="color: #ff4757; margin-bottom: 15px;"><i class="fa-solid fa-right-to-bracket"></i> Đăng Nhập</h2>
+            <div style="display: flex; flex-direction: column; gap: 12px;">
+                <input type="text" id="authUsername" placeholder="Tên hiển thị (Nickname)..." style="padding: 10px; background: #0d0e12; border: 1px solid #2f3542; color: #fff; border-radius: 6px;">
+                <input type="email" id="authEmail" placeholder="Nhập địa chỉ Email..." style="padding: 10px; background: #0d0e12; border: 1px solid #2f3542; color: #fff; border-radius: 6px;">
+                <input type="password" id="authPassword" placeholder="Mật khẩu..." style="padding: 10px; background: #0d0e12; border: 1px solid #2f3542; color: #fff; border-radius: 6px;">
+                <button onclick="handleAuthSubmit()" id="authSubmitBtn" class="btn-post">Đăng Nhập</button>
+                <p id="authSwitchText" style="text-align: center; font-size: 13px; color: #a4b0be; cursor: pointer; margin-top: 5px;" onclick="toggleAuthMode()">Chưa có tài khoản? <b>Đăng ký ngay</b></p>
+            </div>
+        </div>
     </div>
 
+    <!-- Modal Thông Báo Admin -->
+    <div id="announcementModal" class="modal">
+        <div class="modal-content announcement-modal-content">
+            <span class="close-btn" onclick="closeAnnouncementModal()">&times;</span>
+            <h2 style="color: #ff4757; margin-bottom: 15px;"><i class="fa-solid fa-bullhorn"></i> Thông Báo Admin</h2>
+            <div class="announcement-admin-layout">
+                <section class="announcement-manager-panel">
+                    <div class="announcement-panel-heading"><h3>Đang quản lý</h3><button type="button" class="announcement-secondary-btn" onclick="resetAnnouncementForm()"><i class="fa-solid fa-plus"></i> Thêm mới</button></div>
+                    <div id="announcementList" class="announcement-list"></div>
+                    <h3 class="announcement-history-title">Lịch sử thông báo</h3>
+                    <div id="announcementHistory" class="announcement-history"></div>
+                </section>
+                <section class="announcement-form-panel">
+                    <h3 id="announcementFormTitle">Thêm thông báo</h3>
+                    <input type="hidden" id="announcementId">
+                    <textarea id="announcementInput" maxlength="500" rows="4" placeholder="Nhập nội dung thông báo (tối đa 500 ký tự)..." oninput="updateAnnouncementPreview()"></textarea>
+                    <p class="announcement-char-count"><span id="announcementCharCount">0</span>/500</p>
+                <div>
+                    <label class="announcement-field-label">Màu thông báo:</label>
+                    <div class="announcement-options">
+                        <label><input type="radio" name="announcementColor" value="blue" checked onchange="updateAnnouncementPreview()"> Xanh</label>
+                        <label><input type="radio" name="announcementColor" value="red" onchange="updateAnnouncementPreview()"> Đỏ</label>
+                        <label><input type="radio" name="announcementColor" value="yellow" onchange="updateAnnouncementPreview()"> Vàng</label>
+                    </div>
+                </div>
+                    <label class="announcement-field-label">Mức độ:</label>
+                    <select id="announcementPriority" onchange="updateAnnouncementPreview()"><option value="normal">Bình thường</option><option value="urgent">Khẩn cấp</option></select>
+                    <div class="announcement-date-grid">
+                        <label>Bắt đầu<input type="datetime-local" id="announcementStart" onchange="updateAnnouncementPreview()"></label>
+                        <label>Kết thúc<input type="datetime-local" id="announcementEnd" onchange="updateAnnouncementPreview()"></label>
+                    </div>
+                    <div class="announcement-preview-wrap"><span>Xem trước</span><div id="announcementPreview" class="site-announcement announcement-blue announcement-preview"><i class="fa-solid fa-bullhorn"></i><div class="announcement-viewport"><span class="announcement-track">Nội dung xem trước</span></div></div></div>
+                    <div class="announcement-form-actions"><button onclick="saveAnnouncement()" class="btn-post">Lưu thông báo</button><button onclick="deleteAnnouncement()" class="announcement-delete-btn">Xóa thông báo</button></div>
+                </section>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Donate -->
+    <div id="donateModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeDonate()">&times;</span>
+            <h2>☕ Thông Tin Donate</h2>
+            <div class="donate-body">
+                <div class="donate-qr">
+                    <img src="qr-momo.jpg" alt="Mã QR Momo nhận donate" onerror="this.src='https://via.placeholder.com/200?text=QR+Momo'">
+                    <p class="acc-name">Vũ Tiến Lộc</p>
+                    <p class="acc-num">STK / SĐT: <strong>0378487294</strong></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="social-links">
+            <a href="https://www.youtube.com/@liquidsgaming7294" target="_blank" rel="noopener" class="youtube"><i class="fa-brands fa-youtube"></i> YouTube</a>
+            <a href="https://www.tiktok.com/@vtl729x" target="_blank" rel="noopener" class="tiktok"><i class="fa-brands fa-tiktok"></i> TikTok</a>
+            <a href="https://www.facebook.com/groups/1715975012818926" target="_blank" rel="noopener" class="facebook"><i class="fa-brands fa-facebook"></i> Nhóm Facebook</a>
+        </div>
+        <p>&copy; 2026 Kho Game Việt Hóa. All rights reserved.</p>
+    </footer>
+
+    <script>
+        const SUPABASE_URL = 'https://oneucjsqsdiqwwefdrkc.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9uZXVjanNxc2RpcXd3ZWZkcmtjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk1NDU0MzEsImV4cCI6MjEwNTEyMTQzMX0.GeHXdooNsiVtlgkB_UH9LoPAEU_15ZKfV7SrrUoKhhU';
+        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        let tempGameThumbData = '';
+        let currentUser = null;
+        let isRegisterMode = false;
+
+        let currentCategory = 'all';
+        let currentSort = 'newest';
+        let currentSearchTerm = '';
+        let currentPage = 1;
+        const PAGE_SIZE = 8;
+        let searchDebounceTimer = null;
+        let activeAnnouncements = [];
+        let announcementIndex = 0;
+        let announcementCarouselTimer = null;
+        let announcementRefreshTimer = null;
+        let chatChannel = null;
+        let chatConversationUserId = null;
+        let chatMessagesCache = [];
+        let chatUnreadCount = 0;
+        let chatAudioContext = null;
+
+        function confirmSiteNotice() {
+            const notice = document.getElementById('siteNoticeModal');
+            if (!notice) return;
+            notice.classList.add('is-confirmed');
+            document.body.classList.remove('site-notice-locked');
+            setTimeout(() => notice.remove(), 220);
+        }
+
+        window.onload = async function() {
+            await initVisitorStats();
+            setupPresence();
+            await loadAnnouncement();
+            await checkSupabaseSession();
+            _supabase.auth.onAuthStateChange(async () => {
+                await checkSupabaseSession();
+            });
+        };
+
+        /* ================= TIỆN ÍCH CHUNG ================= */
+
+        function escapeHtml(text) {
+            if (text === null || text === undefined) return '';
+            return String(text)
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        function showToast(message, type = 'info') {
+            const stack = document.getElementById('toastStack');
+            if (!stack) { alert(message); return; }
+            const el = document.createElement('div');
+            el.className = `toast ${type}`;
+            el.textContent = message;
+            stack.appendChild(el);
+            setTimeout(() => { el.remove(); }, 3800);
+        }
+
+        function safeHttpUrl(value) {
+            try {
+                const url = new URL(String(value || '').trim());
+                return ['http:', 'https:'].includes(url.protocol) ? url.href : '#';
+            } catch (error) {
+                return '#';
+            }
+        }
+
+        function canViewLinkForRole(visibility, user) {
+            if (visibility === 'guest' || !visibility) return true;
+            if (!user) return false;
+            if (visibility === 'member') return true;
+            if (visibility === 'regular') return user.role === 'member';
+            if (visibility === 'vip') return ['vip', 'admin', 'superadmin'].includes(user.role);
+            if (visibility === 'admin') return ['admin', 'superadmin'].includes(user.role);
+            if (visibility === 'superadmin') return user.role === 'superadmin';
+            return false;
+        }
+
+        function sanitizePostHtml(value) {
+            const source = document.createElement('div');
+            source.innerHTML = String(value || '');
+            const allowedTags = new Set(['BR', 'STRONG', 'B', 'EM', 'I', 'U', 'SPAN', 'FONT']);
+            const allowedColors = new Set(['#ff4757', '#ffa502', '#2ed573', '#1e90ff', '#ffffff']);
+            source.querySelectorAll('*').forEach(node => {
+                if (!allowedTags.has(node.tagName)) {
+                    node.replaceWith(document.createTextNode(node.textContent || ''));
+                    return;
+                }
+                const color = node.style.color;
+                const fontFamily = node.style.fontFamily;
+                const fontColor = node.getAttribute('color');
+                const fontFace = node.getAttribute('face');
+                [...node.attributes].forEach(attribute => node.removeAttribute(attribute.name));
+                if (node.tagName === 'SPAN') {
+                    if (color && allowedColors.has(color.toLowerCase())) node.style.color = color;
+                    if (fontFamily && ['Segoe UI', 'Georgia', 'Verdana', 'monospace'].includes(fontFamily.replaceAll('"', ''))) node.style.fontFamily = fontFamily;
+                }
+                if (node.tagName === 'FONT') {
+                    if (fontColor && allowedColors.has(fontColor.toLowerCase())) node.setAttribute('color', fontColor);
+                    if (fontFace && ['Segoe UI', 'Georgia', 'Verdana', 'monospace'].includes(fontFace)) node.setAttribute('face', fontFace);
+                }
+            });
+            return source.innerHTML.trim();
+        }
+
+        function formatPost(command, value = null) {
+            document.getElementById('postContent')?.focus();
+            document.execCommand(command, false, value);
+        }
+
+        function resetPostEditor() {
+            const editor = document.getElementById('postContent');
+            if (editor) editor.innerHTML = '';
+            const title = document.getElementById('postTitle');
+            if (title) title.value = '';
+        }
+
+        function updateChatWidget() {
+            const widget = document.getElementById('chatWidget');
+            if (!widget) return;
+            if (!currentUser) {
+                widget.style.display = 'none';
+                if (chatChannel) { _supabase.removeChannel(chatChannel); chatChannel = null; }
+                return;
+            }
+            widget.style.display = 'block';
+            setupChatRealtime();
+        }
+
+        function moveChatWidgetForTab(tabName) {
+            const widget = document.getElementById('chatWidget');
+            const dock = document.getElementById('discussionChatDock');
+            if (!widget || !dock) return;
+            if (tabName === 'discuss') {
+                dock.appendChild(widget);
+                widget.classList.add('chat-widget-in-discussion');
+            } else {
+                document.body.appendChild(widget);
+                widget.classList.remove('chat-widget-in-discussion');
+            }
+        }
+
+        function toggleChatPanel() {
+            const panel = document.getElementById('chatPanel');
+            if (!panel) return;
+            chatAudioContext = chatAudioContext || new (window.AudioContext || window.webkitAudioContext)();
+            if (panel.hidden) {
+                panel.hidden = false;
+                chatUnreadCount = 0;
+                updateChatUnreadBadge();
+                loadChatMessages();
+                document.getElementById('chatInput')?.focus();
+            } else {
+                panel.hidden = true;
+            }
+        }
+
+        function updateChatUnreadBadge() {
+            const badge = document.getElementById('chatUnreadBadge');
+            if (!badge) return;
+            badge.hidden = chatUnreadCount < 1;
+            badge.textContent = chatUnreadCount > 99 ? '99+' : String(chatUnreadCount);
+        }
+
+        function playChatNotificationSound() {
+            try {
+                chatAudioContext = chatAudioContext || new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = chatAudioContext.createOscillator();
+                const gain = chatAudioContext.createGain();
+                oscillator.frequency.value = 880;
+                gain.gain.setValueAtTime(0.0001, chatAudioContext.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.12, chatAudioContext.currentTime + 0.02);
+                gain.gain.exponentialRampToValueAtTime(0.0001, chatAudioContext.currentTime + 0.25);
+                oscillator.connect(gain).connect(chatAudioContext.destination);
+                oscillator.start();
+                oscillator.stop(chatAudioContext.currentTime + 0.26);
+            } catch (error) { /* Trình duyệt có thể chặn âm thanh trước tương tác đầu tiên. */ }
+        }
+
+        function setupChatRealtime() {
+            if (!currentUser || chatChannel) return;
+            chatChannel = _supabase.channel(`chat-${currentUser.id}`)
+                .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'chat_messages' }, payload => {
+                    const message = payload.new;
+                    if (currentUser.role !== 'admin' && currentUser.role !== 'superadmin' && message.conversation_user_id !== currentUser.id) return;
+                    if (message.sender_id === currentUser.id) return;
+                    chatMessagesCache.push(message);
+                    renderChatMessages();
+                    chatUnreadCount += 1;
+                    updateChatUnreadBadge();
+                    if (document.getElementById('chatPanel')?.hidden) playChatNotificationSound();
+                })
+                .subscribe(status => {
+                    const statusText = document.getElementById('chatStatusText');
+                    if (statusText) statusText.textContent = status === 'SUBSCRIBED' ? 'Đang trực tuyến' : 'Đang kết nối...';
+                });
+            loadChatMessages();
+        }
+
+        async function loadChatMessages() {
+            if (!currentUser) return;
+            let query = _supabase.from('chat_messages').select('*').order('created_at', { ascending: true }).limit(100);
+            if (currentUser.role !== 'admin' && currentUser.role !== 'superadmin') query = query.eq('conversation_user_id', currentUser.id);
+            const { data, error } = await query;
+            if (error) { showToast('Không tải được tin nhắn: ' + error.message, 'error'); return; }
+            chatMessagesCache = data || [];
+            if (chatMessagesCache.length && (currentUser.role === 'admin' || currentUser.role === 'superadmin')) chatConversationUserId = chatMessagesCache[chatMessagesCache.length - 1].conversation_user_id;
+            renderChatMessages();
+        }
+
+        function renderChatMessages() {
+            const container = document.getElementById('chatMessages');
+            if (!container) return;
+            if (!chatMessagesCache.length) { container.innerHTML = '<p class="chat-empty">Hãy gửi tin nhắn cho Admin.</p>'; return; }
+            container.innerHTML = chatMessagesCache.map(message => `<div class="chat-message ${message.sender_id === currentUser?.id ? 'mine' : 'theirs'}"><strong>${escapeHtml(message.sender_name)}</strong><p>${escapeHtml(message.content)}</p><small>${new Date(message.created_at).toLocaleString('vi-VN')}</small></div>`).join('');
+            container.scrollTop = container.scrollHeight;
+        }
+
+        async function sendChatMessage(event) {
+            event.preventDefault();
+            if (!currentUser) return;
+            const input = document.getElementById('chatInput');
+            const content = input?.value.trim();
+            if (!content) return;
+            const conversationUserId = (currentUser.role === 'admin' || currentUser.role === 'superadmin') ? chatConversationUserId : currentUser.id;
+            if (!conversationUserId) { showToast('Admin chưa có cuộc trò chuyện để trả lời.', 'info'); return; }
+            const { error } = await _supabase.from('chat_messages').insert({ conversation_user_id: conversationUserId, sender_id: currentUser.id, sender_name: currentUser.username, sender_role: currentUser.role, content });
+            if (error) { showToast('Không gửi được tin nhắn: ' + error.message, 'error'); return; }
+            input.value = '';
+            await loadChatMessages();
+        }
+
+        function badgeClassForRole(role) {
+            if (role === 'superadmin') return 'superadmin-badge-name';
+            if (role === 'admin') return 'admin-badge-name';
+            if (role === 'vip') return 'vip-badge-name';
+            return 'member-badge-name';
+        }
+
+        function displayRoleLabel(role) {
+            if (role === 'superadmin') return 'SuperAdmin';
+            if (role === 'admin') return 'Admin/Mod';
+            if (role === 'vip') return 'VIP';
+            if (role === 'guest') return 'Guest';
+            return 'Thành Viên';
+        }
+
+        const APPEARANCE_OPTIONS = {
+            vip: {
+                colors: { red: '#ff4757', gold: '#ffa502', green: '#2ed573', blue: '#1e90ff', pink: '#ff6b81' },
+                effects: { none: 'Không hiệu ứng', glow: 'Phát sáng', pulse: 'Nhịp sáng', rainbow: 'RGB cầu vồng' }
+            },
+            admin: {
+                colors: { red: '#ff4757', gold: '#f1c40f', blue: '#1e90ff', cyan: '#00d2d3', green: '#2ed573', orange: '#ff7f00', white: '#ffffff' },
+                effects: { none: 'Không hiệu ứng', fire: 'Lửa cháy', led: 'LED RGB', glow: 'Phát sáng' }
+            },
+            superadmin: {
+                colors: { red: '#ff4757', gold: '#ffa502', green: '#2ed573', blue: '#1e90ff', pink: '#ff6b81', cyan: '#00d2d3', purple: '#a55eea', white: '#ffffff', orange: '#ff7f00', lime: '#c4e538' },
+                effects: { none: 'Không hiệu ứng', fire: 'Lửa cháy', led: 'LED RGB', glow: 'Phát sáng', pulse: 'Nhịp sáng', rainbow: 'RGB cầu vồng' }
+            }
+        };
+
+        function appearanceStyle(appearance = {}) {
+            const role = appearance.role || 'member';
+            const options = APPEARANCE_OPTIONS[role];
+            if (!options) return '';
+            const color = options.colors[appearance.color] || Object.values(options.colors)[0];
+            const effect = options.effects[appearance.effect] ? appearance.effect : 'none';
+            return `color:${color};--name-color:${color};--name-effect:${effect}`;
+        }
+
+        function setupAppearancePanel() {
+            const panel = document.getElementById('appearancePanel');
+            if (!panel || !currentUser || !APPEARANCE_OPTIONS[currentUser.role]) {
+                if (panel) panel.style.display = 'none';
+                return;
+            }
+            panel.style.display = 'block';
+            const options = APPEARANCE_OPTIONS[currentUser.role];
+            const appearance = currentUser.appearance || { role: currentUser.role, color: Object.keys(options.colors)[0], effect: 'none' };
+            document.getElementById('appearanceColor').innerHTML = Object.entries(options.colors).map(([key, color]) => `<option value="${key}" style="color:${color}">${key.toUpperCase()}</option>`).join('');
+            document.getElementById('appearanceEffect').innerHTML = Object.entries(options.effects).map(([key, label]) => `<option value="${key}">${label}</option>`).join('');
+            document.getElementById('appearanceColor').value = options.colors[appearance.color] ? appearance.color : Object.keys(options.colors)[0];
+            document.getElementById('appearanceEffect').value = options.effects[appearance.effect] ? appearance.effect : 'none';
+            document.getElementById('appearanceColor').onchange = updateAppearancePreview;
+            document.getElementById('appearanceEffect').onchange = updateAppearancePreview;
+            updateAppearancePreview();
+        }
+
+        function updateAppearancePreview() {
+            const preview = document.getElementById('appearancePreview');
+            if (!preview || !currentUser) return;
+            preview.style.cssText = appearanceStyle({ role: currentUser.role, color: document.getElementById('appearanceColor').value, effect: document.getElementById('appearanceEffect').value });
+            preview.textContent = `${currentUser.username} (${displayRoleLabel(currentUser.role)})`;
+        }
+
+        async function saveAppearanceSettings() {
+            if (!currentUser || !APPEARANCE_OPTIONS[currentUser.role]) return;
+            const color = document.getElementById('appearanceColor').value;
+            const effect = document.getElementById('appearanceEffect').value;
+            const { data, error } = await _supabase.from('role_appearances').upsert({ user_id: currentUser.id, role: currentUser.role, color, effect, updated_at: new Date().toISOString() }).select().single();
+            if (error) { showToast('Không lưu được hiển thị tên: ' + error.message, 'error'); return; }
+            currentUser.appearance = data;
+            updateAppearancePreview();
+            showToast('Đã lưu màu và hiệu ứng tên.', 'success');
+            loadPosts();
+        }
+
+        function getGuestName() {
+            const storageKey = 'kgvh_guest_name';
+            let guestName = localStorage.getItem(storageKey);
+            if (!guestName) {
+                guestName = `Guest#${Math.random().toString(36).slice(2, 8).toUpperCase()}`;
+                localStorage.setItem(storageKey, guestName);
+            }
+            return guestName;
+        }
+
+        const SOCIAL_LINKS_HTML = `
+            <a href="https://www.youtube.com/@liquidsgaming7294" target="_blank" rel="noopener" class="youtube"><i class="fa-brands fa-youtube"></i> YouTube</a>
+            <a href="https://www.tiktok.com/@vtl729x" target="_blank" rel="noopener" class="tiktok"><i class="fa-brands fa-tiktok"></i> TikTok</a>
+            <a href="https://www.facebook.com/groups/1715975012818926" target="_blank" rel="noopener" class="facebook"><i class="fa-brands fa-facebook"></i> Nhóm Facebook</a>`;
+
+        function compressImage(file, maxWidth = 700, quality = 0.75) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const img = new Image();
+                    img.onload = () => {
+                        const scale = Math.min(1, maxWidth / img.width);
+                        const canvas = document.createElement('canvas');
+                        canvas.width = Math.round(img.width * scale);
+                        canvas.height = Math.round(img.height * scale);
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                        resolve(canvas.toDataURL('image/jpeg', quality));
+                    };
+                    img.onerror = reject;
+                    img.src = e.target.result;
+                };
+                reader.onerror = reject;
+                reader.readAsDataURL(file);
+            });
+        }
+
+        /* ================= THỐNG KÊ TRUY CẬP ================= */
+
+        async function initVisitorStats() {
+            try {
+                const { data, error } = await _supabase.rpc('increment_site_visit');
+                if (error) throw error;
+                document.getElementById('totalVisits').innerText = Number(data).toLocaleString('vi-VN');
+            } catch (err) {
+                document.getElementById('totalVisits').innerText = '—';
+                console.error('Lỗi thống kê truy cập:', err);
+            }
+        }
+
+        function setupPresence() {
+            try {
+                const myKey = (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : String(Date.now() + Math.random());
+                const presenceChannel = _supabase.channel('online-users', {
+                    config: { presence: { key: myKey } }
+                });
+                presenceChannel
+                    .on('presence', { event: 'sync' }, () => {
+                        const state = presenceChannel.presenceState();
+                        document.getElementById('onlineCount').innerText = Object.keys(state).length || 1;
+                    })
+                    .subscribe(async (status) => {
+                        if (status === 'SUBSCRIBED') {
+                            await presenceChannel.track({ online_at: new Date().toISOString() });
+                        }
+                    });
+            } catch (err) {
+                console.error('Lỗi presence:', err);
+            }
+        }
+
+        /* ================= ĐĂNG NHẬP / PHÂN QUYỀN ================= */
+
+        async function checkSupabaseSession() {
+            const { data: { session } } = await _supabase.auth.getSession();
+            if (session && session.user) {
+                const meta = session.user.user_metadata || {};
+                currentUser = {
+                    id: session.user.id,
+                    email: session.user.email,
+                    username: meta.display_name || session.user.email.split('@')[0],
+                    role: meta.role || 'member'
+                };
+                const { data: appearance } = await _supabase.from('role_appearances').select('*').eq('user_id', currentUser.id).maybeSingle();
+                currentUser.appearance = appearance || null;
+            } else {
+                currentUser = null;
+            }
+            updateAuthUI();
+        }
+
+        function updateAuthUI() {
+            const authContainer = document.getElementById('authNavContainer');
+            const adminHero = document.getElementById('adminHeroActions');
+            const adminPanel = document.getElementById('superAdminPanel');
+            if (!authContainer) return;
+
+            const isAnyAdmin = currentUser && (currentUser.role === 'superadmin' || currentUser.role === 'admin');
+            const isSuperAdmin = currentUser && currentUser.role === 'superadmin';
+
+            if (adminPanel) adminPanel.style.display = isSuperAdmin ? 'block' : 'none';
+            setupAppearancePanel();
+            const announcementEditBtn = document.getElementById('announcementEditBtn');
+            if (announcementEditBtn) announcementEditBtn.style.display = isAnyAdmin ? 'inline-block' : 'none';
+
+            if (isAnyAdmin) {
+                adminHero.style.display = "block";
+                authContainer.innerHTML = `<span style="font-size: 13px; color: #fff;">Quản trị: <b class="superadmin-badge-name">${escapeHtml(currentUser.username)}</b></span><button onclick="logoutAccount()" style="background: #ff4757; color: #fff; border: none; padding: 6px 12px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 13px;">Đăng Xuất</button>`;
+            } else if (currentUser) {
+                adminHero.style.display = "none";
+                const badgeClass = badgeClassForRole(currentUser.role);
+                const roleLabel = currentUser.role === 'vip' ? ' ⭐ VIP' : ' (Thành viên)';
+                authContainer.innerHTML = `<span style="font-size: 13px; color: #fff;">Chào, <b class="${badgeClass}">${escapeHtml(currentUser.username)}${roleLabel}</b></span><button onclick="logoutAccount()" style="background: #ff4757; color: #fff; border: none; padding: 6px 12px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 13px;">Đăng Xuất</button>`;
+            } else {
+                adminHero.style.display = "none";
+                authContainer.innerHTML = `<button onclick="openAuthModal('login')" style="background: #2f3542; color: #fff; border: none; padding: 6px 14px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 13px;">Đăng Nhập</button><button onclick="openAuthModal('register')" style="background: #ff4757; color: #fff; border: none; padding: 6px 14px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 13px;">Đăng Ký</button>`;
+            }
+            updateChatWidget();
+            renderPostBox();
+            loadPosts();
+            loadAnnouncement();
+            currentPage = 1;
+            loadCustomGames();
+        }
+
+        async function applyUserRoleOnWeb() {
+            const email = document.getElementById('targetUserEmail').value.trim();
+            const role = document.getElementById('targetUserRole').value;
+            if (!email) { showToast('Vui lòng nhập email!', 'error'); return; }
+            const { error } = await _supabase.rpc('update_user_role', { target_email: email, new_role: role });
+            if (error) { showToast('Lỗi: ' + error.message, 'error'); return; }
+            showToast('Đã cập nhật quyền thành công!', 'success');
+            document.getElementById('targetUserEmail').value = '';
+        }
+
+        function openAuthModal(mode) {
+            isRegisterMode = (mode === 'register');
+            document.getElementById('authModalTitle').innerHTML = isRegisterMode ? `Đăng Ký Tài Khoản` : `Đăng Nhập`;
+            document.getElementById('authSubmitBtn').innerText = isRegisterMode ? "Đăng Ký Ngay" : "Đăng Nhập";
+            document.getElementById('authUsername').style.display = isRegisterMode ? "block" : "none";
+            document.getElementById('authModal').style.display = "flex";
+            closeMobileNav();
+        }
+        function closeAuthModal() { document.getElementById('authModal').style.display = "none"; }
+        function toggleAuthMode() { isRegisterMode = !isRegisterMode; openAuthModal(isRegisterMode ? 'register' : 'login'); }
+
+        async function handleAuthSubmit() {
+            const email = document.getElementById('authEmail').value.trim();
+            const password = document.getElementById('authPassword').value.trim();
+            const username = document.getElementById('authUsername').value.trim() || email.split('@')[0];
+            if (!email || !password) { showToast('Vui lòng nhập đủ thông tin!', 'error'); return; }
+
+            if (isRegisterMode) {
+                const { error } = await _supabase.auth.signUp({ email, password, options: { data: { display_name: username, role: 'member' } } });
+                if (error) { showToast('Lỗi: ' + error.message, 'error'); return; }
+                showToast('Đăng ký thành công! Hãy đăng nhập.', 'success');
+                toggleAuthMode();
+            } else {
+                const { error } = await _supabase.auth.signInWithPassword({ email, password });
+                if (error) { showToast('Sai tài khoản hoặc mật khẩu!', 'error'); return; }
+                showToast('Đăng nhập thành công!', 'success');
+                closeAuthModal();
+                await checkSupabaseSession();
+            }
+        }
+
+        async function logoutAccount() {
+            await _supabase.auth.signOut();
+            currentUser = null;
+            updateAuthUI();
+            showToast('Đã đăng xuất.', 'info');
+        }
+
+        /* ================= MENU DI ĐỘNG ================= */
+
+        function toggleMobileNav() {
+            document.getElementById('navLinks').classList.toggle('open');
+            document.getElementById('navOverlay').classList.toggle('open');
+        }
+        function closeMobileNav() {
+            document.getElementById('navLinks').classList.remove('open');
+            document.getElementById('navOverlay').classList.remove('open');
+        }
+
+        /* ================= ĐIỀU HƯỚNG TAB ================= */
+
+        function switchTab(tabName, event) {
+            event.preventDefault();
+            document.querySelectorAll('.nav-links a').forEach(l => l.classList.remove('active'));
+            event.target.classList.add('active');
+            closeMobileNav();
+
+            document.getElementById('gameDetailPageContainer').style.display = 'none';
+            const homeContent = document.getElementById('homeContent');
+            const discussContent = document.getElementById('discussContent');
+            const heroSection = document.getElementById('heroSection');
+
+            if (tabName === 'discuss') {
+                moveChatWidgetForTab('discuss');
+                homeContent.style.display = 'none';
+                heroSection.style.display = 'none';
+                discussContent.style.display = 'block';
+                loadPosts();
+            } else {
+                moveChatWidgetForTab(tabName);
+                discussContent.style.display = 'none';
+                heroSection.style.display = 'block';
+                homeContent.style.display = 'block';
+                if (tabName === 'mobile') filterCategory('mobile');
+                else if (tabName === 'emulator') filterCategory('emulator');
+                else filterCategory('all');
+            }
+        }
+
+        function filterCategory(category) {
+            currentCategory = category;
+            currentPage = 1;
+            loadCustomGames();
+        }
+
+        function onSortChange(value) {
+            currentSort = value;
+            currentPage = 1;
+            loadCustomGames();
+        }
+
+        function searchGames() {
+            clearTimeout(searchDebounceTimer);
+            searchDebounceTimer = setTimeout(() => {
+                currentSearchTerm = document.getElementById('searchInput').value.trim();
+                currentPage = 1;
+                loadCustomGames();
+            }, 350);
+        }
+
+        function changeGamePage(page) {
+            if (page < 1) return;
+            currentPage = page;
+            loadCustomGames();
+            document.getElementById('homeContent').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        /* ================= DANH SÁCH GAME ================= */
+
+        function renderGameCard(g, isAnyAdmin) {
+            const badgeColor = g.category === 'mobile' ? '#ff4757' : '#ffa502';
+            const avgRating = (g.rating_sum / (g.rating_count || 1)).toFixed(1);
+            const thumbImg = g.thumbnail ? g.thumbnail : ('https://via.placeholder.com/300x200?text=' + encodeURIComponent(g.name));
+            const hasActiveMirrors = g.hasActiveMirrors !== false;
+
+            return `
+                <div class="game-card" data-category="${escapeHtml(g.category)}" data-name="${escapeHtml((g.name || '').toLowerCase())}" onclick="openGameDetailPage(${g.id})" style="cursor: pointer;">
+                    <div class="game-img" style="position: relative;">
+                        <img src="${escapeHtml(thumbImg)}" class="game-thumb-preview" alt="Ảnh bìa game ${escapeHtml(g.name)}" loading="lazy">
+                        <span class="badge" style="background: ${badgeColor}; position: absolute; top: 8px; right: 8px; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: bold; color: #fff;">${escapeHtml((g.category || '').toUpperCase())}</span>
+                    </div>
+                    <div class="game-info">
+                        <h3>${escapeHtml(g.name)}</h3>
+                        <p class="version">${escapeHtml(g.version)}</p>
+                        <div class="game-stats">
+                            <span><i class="fa-solid fa-download"></i> ${g.downloads || 0}</span>
+                            <span><i class="fa-solid fa-heart" style="color: #ff4757;"></i> ${g.likes || 0}</span>
+                            <span><i class="fa-solid fa-star" style="color: #ffa502;"></i> ${avgRating}</span>
+                        </div>
+                        <button onclick="event.stopPropagation(); openGameDetailPage(${g.id})" class="${hasActiveMirrors ? 'btn-download' : 'btn-download coming-soon-btn'}" ${hasActiveMirrors ? '' : 'disabled'}><i class="fa-solid fa-${hasActiveMirrors ? 'download' : 'clock'}"></i> ${hasActiveMirrors ? 'Tải Về' : 'Sắp Có Link Tải'}</button>
+                        ${isAnyAdmin ? `
+                            <div style="margin-top: 8px; border-top: 1px solid #2f3542; padding-top: 5px;">
+                                <button onclick="editCustomGame(${g.id}, event)" class="btn-edit-game"><i class="fa-solid fa-pen"></i> Sửa</button>
+                                <button onclick="deleteCustomGame(${g.id}, event)" class="btn-delete-game"><i class="fa-solid fa-trash"></i> Xóa</button>
+                            </div>
+                        ` : ''}
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderPagination(totalCount) {
+            const container = document.getElementById('gamePagination');
+            if (!container) return;
+            const totalPages = Math.max(1, Math.ceil(totalCount / PAGE_SIZE));
+            if (totalPages <= 1) { container.innerHTML = ''; return; }
+            container.innerHTML = `
+                <button onclick="changeGamePage(${currentPage - 1})" ${currentPage <= 1 ? 'disabled' : ''}><i class="fa-solid fa-chevron-left"></i> Trước</button>
+                <span class="page-indicator">Trang ${currentPage} / ${totalPages}</span>
+                <button onclick="changeGamePage(${currentPage + 1})" ${currentPage >= totalPages ? 'disabled' : ''}>Sau <i class="fa-solid fa-chevron-right"></i></button>
+            `;
+        }
+
+        async function loadCustomGames() {
+            const grid = document.getElementById('gameGrid');
+            if (!grid) return;
+            grid.innerHTML = '<p style="color:#747d8c; grid-column: 1/-1;">Đang tải danh sách game...</p>';
+
+            let query = _supabase.from('games').select('*', { count: 'exact' });
+
+            if (currentCategory !== 'all') query = query.eq('category', currentCategory);
+            if (currentSearchTerm) query = query.ilike('name', `%${currentSearchTerm}%`);
+
+            if (currentSort === 'downloads') query = query.order('downloads', { ascending: false });
+            else if (currentSort === 'rating') query = query.order('rating_sum', { ascending: false });
+            else query = query.order('created_at', { ascending: false });
+
+            const from = (currentPage - 1) * PAGE_SIZE;
+            const to = from + PAGE_SIZE - 1;
+            query = query.range(from, to);
+
+            const { data, error, count } = await query;
+
+            if (error) {
+                grid.innerHTML = '<p style="color:#ff4757; grid-column: 1/-1;">Không tải được danh sách game.</p>';
+                console.error(error);
+                return;
+            }
+
+            let games = data || [];
+            if (games.length) {
+                const { data: mirrors, error: mirrorError } = await _supabase.from('game_links').select('game_id').in('game_id', games.map(game => game.id)).eq('is_active', true);
+                if (mirrorError) {
+                    games.forEach(game => { game.hasActiveMirrors = true; });
+                } else {
+                    const mirrorIds = new Set((mirrors || []).map(mirror => String(mirror.game_id)));
+                    games.forEach(game => { game.hasActiveMirrors = mirrorIds.has(String(game.id)); });
+                }
+            }
+            if (currentSort === 'rating') {
+                games = [...games].sort((a, b) => (b.rating_sum / (b.rating_count || 1)) - (a.rating_sum / (a.rating_count || 1)));
+            }
+
+            if (games.length === 0) {
+                grid.innerHTML = '<p style="color:#747d8c; grid-column: 1/-1; text-align:center;">Chưa có game nào phù hợp.</p>';
+            } else {
+                const isAnyAdmin = currentUser && (currentUser.role === 'superadmin' || currentUser.role === 'admin');
+                grid.innerHTML = games.map(g => renderGameCard(g, isAnyAdmin)).join('');
+            }
+
+            renderPagination(count || 0);
+        }
+
+        async function openGameDetailPage(id) {
+            const { data: g, error } = await _supabase.from('games').select('*').eq('id', id).single();
+            if (error || !g) { showToast('Không tìm thấy game này.', 'error'); return; }
+
+            const { data: normalizedLinks, error: linksError } = await _supabase
+                .from('game_links')
+                .select('*')
+                .eq('game_id', id)
+                .order('order_index', { ascending: true });
+            const gameLinks = linksError ? [] : (normalizedLinks || []);
+
+            _supabase.rpc('increment_game_downloads', { game_id: id }).then(({ error: incErr }) => {
+                if (incErr) console.error(incErr);
+            });
+
+            document.getElementById('homeContent').style.display = 'none';
+            document.getElementById('heroSection').style.display = 'none';
+            document.getElementById('discussContent').style.display = 'none';
+
+            const detailContainer = document.getElementById('gameDetailPageContainer');
+            detailContainer.style.display = 'block';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            const thumbImg = g.thumbnail ? g.thumbnail : 'https://via.placeholder.com/300x400';
+
+            const activeLinks = gameLinks.filter(link => link.is_active);
+            const linksHtml = activeLinks.length ? activeLinks.map(link => `
+                <div class="mirror-link-row" id="mirror-row-${escapeHtml(link.id)}">
+                    <a href="${escapeHtml(link.url)}" target="_blank" rel="noopener" class="custom-link-btn"><i class="fa-solid fa-download"></i> Tải qua ${escapeHtml(link.label)}</a>
+                    <button type="button" class="report-link-btn" data-link-id="${escapeHtml(link.id)}" onclick="reportDeadLink('${escapeHtml(link.id)}', this)"><i class="fa-solid fa-flag"></i> Báo lỗi link</button>
+                </div>`).join('') : '<span class="coming-soon-badge"><i class="fa-solid fa-clock"></i> Sắp Có Link Tải</span>';
+
+            const techFields = [
+                ['Dung Lượng', g.file_size], ['Phiên Bản Android Tối Thiểu', g.min_android_version],
+                ['CPU Hỗ Trợ', g.cpu_support], ['Ngôn Ngữ', g.language], ['Cập Nhật Gần Nhất', g.last_updated_note]
+            ].filter(([, value]) => value);
+            const techHtml = techFields.length ? `<div class="tech-spec-grid">${techFields.map(([label, value]) => `<div class="tech-spec-item"><span>${label}</span><strong>${escapeHtml(value)}</strong></div>`).join('')}</div>` : '';
+
+            const displayGuideTitle = g.guide_title || (`HƯỚNG DẪN CÀI ĐẶT VIỆT HÓA CHO ` + g.name.toUpperCase());
+
+            const wrapper = document.getElementById('gameDetailMainWrapper');
+            wrapper.innerHTML = `
+                <div class="game-detail-page">
+                    <div class="game-detail-header-bg">
+                        <div class="game-detail-img-box">
+                            <img src="${escapeHtml(thumbImg)}" alt="Ảnh bìa game ${escapeHtml(g.name)}">
+                        </div>
+                        <div style="flex: 1; min-width: 280px;">
+                            <h1 style="color: #fff; font-size: 32px; margin-bottom: 10px;">${escapeHtml(g.name)} VIỆT HÓA</h1>
+                            <p style="color: #f1f2f6; font-size: 16px; margin-bottom: 20px;">Phiên bản: <strong>${escapeHtml(g.version)}</strong></p>
+                            <div class="mirror-links-list">
+                                ${linksHtml}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="game-detail-tabs" role="tablist">
+                        <button class="game-detail-tab active" role="tab" aria-selected="true" onclick="switchGameDetailTab('overview', this)">Tổng Quan</button>
+                        <button class="game-detail-tab" role="tab" aria-selected="false" onclick="switchGameDetailTab('guide', this)">Hướng Dẫn Cài Đặt</button>
+                        <button class="game-detail-tab" role="tab" aria-selected="false" onclick="switchGameDetailTab('reviews', this)">Bình Luận & Đánh Giá</button>
+                    </div>
+                    <div class="game-detail-tab-panels">
+                        <section id="game-tab-overview" class="game-detail-tab-panel active" role="tabpanel">
+                            ${techHtml}
+                            <h2 class="detail-section-heading"><i class="fa-solid fa-circle-info"></i> Thông Tin Game</h2>
+                            <div class="detail-summary">${g.description ? escapeHtml(g.description) : '<p>Game Việt hóa chất lượng cao, sẵn sàng để bạn khám phá.</p>'}</div>
+                        </section>
+                        <section id="game-tab-guide" class="game-detail-tab-panel" role="tabpanel" hidden>
+                            <h2 class="detail-section-heading"><i class="fa-solid fa-book"></i> ${escapeHtml(displayGuideTitle)}</h2>
+                            <div class="guide-content-box">${g.guide ? g.guide : '<p>Chưa có hướng dẫn cài đặt chi tiết cho game này.</p>'}</div>
+                        </section>
+                        <section id="game-tab-reviews" class="game-detail-tab-panel" role="tabpanel" hidden>
+                            <div class="detail-rating-summary"><i class="fa-solid fa-star"></i> ${((g.rating_sum || 0) / (g.rating_count || 1)).toFixed(1)} / 5 (${g.rating_count || 0} đánh giá)</div>
+                            <p class="detail-review-note">Bình luận và báo lỗi được quản lý tại khu vực thảo luận của cộng đồng.</p>
+                            <button type="button" class="btn-post" onclick="switchTab('discuss', event)"><i class="fa-solid fa-comments"></i> Mở khu vực thảo luận</button>
+                        </section>
+                    </div>
+                </div>
+            `;
+        }
+
+        function switchGameDetailTab(tabName, button) {
+            document.querySelectorAll('.game-detail-tab').forEach(tab => {
+                const active = tab === button;
+                tab.classList.toggle('active', active);
+                tab.setAttribute('aria-selected', active ? 'true' : 'false');
+            });
+            document.querySelectorAll('.game-detail-tab-panel').forEach(panel => {
+                const active = panel.id === `game-tab-${tabName}`;
+                panel.classList.toggle('active', active);
+                panel.hidden = !active;
+            });
+        }
+
+        async function reportDeadLink(linkId, button) {
+            if (!currentUser) { showToast('Vui lòng đăng nhập để báo lỗi link.', 'info'); openAuthModal('login'); return; }
+            if (button.disabled) return;
+            button.disabled = true;
+            const { data, error } = await _supabase.rpc('report_dead_link', { link_id: linkId });
+            if (error) { button.disabled = false; showToast('Không thể gửi báo lỗi: ' + error.message, 'error'); return; }
+            const count = Number(data || 0);
+            button.innerHTML = `<i class="fa-solid fa-flag"></i> Đã báo lỗi (${count} lần)`;
+            button.classList.add('reported');
+            showToast('Cảm ơn bạn đã báo lỗi link.', 'success');
+        }
+
+        function backToHome() {
+            document.getElementById('gameDetailPageContainer').style.display = 'none';
+            document.getElementById('homeContent').style.display = 'block';
+            document.getElementById('heroSection').style.display = 'block';
+            loadCustomGames();
+        }
+
+        /* ================= QUẢN LÝ GAME (Admin) ================= */
+
+        async function openAddGameModal(editId = null) {
+            document.getElementById('addGameModal').style.display = "flex";
+
+            if (editId) {
+                document.getElementById('gameModalTitle').innerHTML = `<i class="fa-solid fa-pen-to-square"></i> Chỉnh Sửa Game`;
+                const { data: g, error } = await _supabase.from('games').select('*').eq('id', editId).single();
+                if (error || !g) { showToast('Không tải được thông tin game.', 'error'); return; }
+
+                document.getElementById('editGameId').value = g.id;
+                document.getElementById('newGameName').value = g.name;
+                document.getElementById('newGameCategory').value = g.category;
+                document.getElementById('newGameVersion').value = g.version;
+                document.getElementById('newGameFileSize').value = g.file_size || '';
+                document.getElementById('newGameMinAndroid').value = g.min_android_version || '';
+                document.getElementById('newGameCpuSupport').value = g.cpu_support || '';
+                document.getElementById('newGameLanguage').value = g.language || '';
+                document.getElementById('newGameLastUpdated').value = g.last_updated_note || '';
+                document.getElementById('newGameGuideTitle').value = g.guide_title || (`HƯỚNG DẪN CÀI ĐẶT VIỆT HÓA CHO ` + g.name.toUpperCase());
+                document.getElementById('newGameGuide').value = g.guide || '';
+                tempGameThumbData = g.thumbnail || '';
+                document.getElementById('thumbPreviewContainer').innerHTML = tempGameThumbData
+                    ? `<img src="${tempGameThumbData}" alt="Xem trước ảnh" style="width: 80px; height: 60px; object-fit: contain; background:#000; border-radius: 4px;">`
+                    : '';
+                await loadGameLinksManager(g.id);
+            } else {
+                document.getElementById('gameModalTitle').innerHTML = `<i class="fa-solid fa-gamepad"></i> Thêm Game Mới`;
+                document.getElementById('editGameId').value = '';
+                document.getElementById('newGameName').value = '';
+                document.getElementById('newGameVersion').value = '';
+                document.getElementById('newGameFileSize').value = '';
+                document.getElementById('newGameMinAndroid').value = '';
+                document.getElementById('newGameCpuSupport').value = '';
+                document.getElementById('newGameLanguage').value = '';
+                document.getElementById('newGameLastUpdated').value = '';
+                document.getElementById('newGameGuideTitle').value = 'HƯỚNG DẪN CÀI ĐẶT VIỆT HÓA CHO GAME';
+                document.getElementById('newGameGuide').value = `<ol><li>Cài đặt file <b>APK</b>.</li><li>Sao chép thư mục dữ liệu.</li></ol>`;
+                document.getElementById('newGameThumb').value = '';
+                tempGameThumbData = '';
+                document.getElementById('thumbPreviewContainer').innerHTML = '';
+                document.getElementById('gameLinksManager').innerHTML = '<p class="game-links-empty">Lưu game trước để thêm mirror mới.</p>';
+            }
+        }
+
+        function closeAddGameModal() { document.getElementById('addGameModal').style.display = "none"; }
+
+        async function previewGameThumb(input) {
+            if (input.files && input.files[0]) {
+                try {
+                    tempGameThumbData = await compressImage(input.files[0]);
+                    document.getElementById('thumbPreviewContainer').innerHTML = `<img src="${tempGameThumbData}" alt="Xem trước ảnh" style="width: 80px; height: 60px; object-fit: contain; background:#000; border-radius: 4px;">`;
+                } catch (err) {
+                    showToast('Không đọc được ảnh.', 'error');
+                }
+            }
+        }
+
+        async function saveGameData() {
+            const editId = document.getElementById('editGameId').value;
+            const name = document.getElementById('newGameName').value.trim();
+            const category = document.getElementById('newGameCategory').value;
+            const version = document.getElementById('newGameVersion').value.trim();
+            const fileSize = document.getElementById('newGameFileSize').value.trim();
+            const minAndroid = document.getElementById('newGameMinAndroid').value.trim();
+            const cpuSupport = document.getElementById('newGameCpuSupport').value.trim();
+            const language = document.getElementById('newGameLanguage').value.trim();
+            const lastUpdated = document.getElementById('newGameLastUpdated').value.trim();
+            const guideTitle = document.getElementById('newGameGuideTitle').value.trim() || ('HƯỚNG DẪN CÀI ĐẶT VIỆT HÓA CHO ' + name.toUpperCase());
+            const guide = document.getElementById('newGameGuide').value.trim();
+
+            if (!name || !version) { showToast('Vui lòng điền tên và phiên bản game!', 'error'); return; }
+
+            const payload = { name, category, version, guide_title: guideTitle, guide, file_size: fileSize || null, min_android_version: minAndroid || null, cpu_support: cpuSupport || null, language: language || null, last_updated_note: lastUpdated || null };
+            if (tempGameThumbData) payload.thumbnail = tempGameThumbData;
+
+            let error;
+            let savedGameId = editId;
+            if (editId) {
+                ({ error } = await _supabase.from('games').update(payload).eq('id', editId));
+            } else {
+                payload.thumbnail = tempGameThumbData || 'https://via.placeholder.com/300x200?text=No+Image';
+                payload.created_by = currentUser ? currentUser.id : null;
+                const result = await _supabase.from('games').insert(payload).select('id').single();
+                error = result.error;
+                savedGameId = result.data?.id;
+            }
+
+            if (error) { showToast('Lỗi khi lưu game: ' + error.message, 'error'); return; }
+
+            if (savedGameId) {
+                const { data: existingMirrors } = await _supabase.from('game_links').select('id').eq('game_id', savedGameId);
+                const existingIds = new Set((existingMirrors || []).map(mirror => String(mirror.id)));
+                const formMirrors = getMirrorManagerRows();
+                for (const mirror of formMirrors) {
+                    if (mirror.id && existingIds.has(String(mirror.id))) {
+                        await _supabase.from('game_links').update(mirror).eq('id', mirror.id);
+                    } else if (mirror.label && mirror.url) {
+                        await _supabase.from('game_links').insert({ ...mirror, game_id: savedGameId });
+                    }
+                }
+            }
+
+            showToast(editId ? 'Cập nhật game thành công!' : 'Đăng game thành công!', 'success');
+            closeAddGameModal();
+            currentPage = 1;
+            loadCustomGames();
+        }
+
+        async function deleteCustomGame(id, event) {
+            event.stopPropagation();
+            if (!confirm("Xóa tựa game này?")) return;
+            const { error } = await _supabase.from('games').delete().eq('id', id);
+            if (error) { showToast('Không xóa được: ' + error.message, 'error'); return; }
+            showToast('Đã xóa game.', 'success');
+            loadCustomGames();
+        }
+
+        function editCustomGame(id, event) { event.stopPropagation(); openAddGameModal(id); }
+
+        function getMirrorManagerRows() {
+            return [...document.querySelectorAll('#gameLinksManager .game-link-admin-item')].map((row, index) => ({
+                id: row.dataset.id || '', label: row.querySelector('.mirror-label-input').value.trim(), url: row.querySelector('.mirror-url-input').value.trim(),
+                is_active: row.querySelector('.mirror-active-toggle').checked, order_index: index
+            })).filter(mirror => mirror.label && mirror.url);
+        }
+
+        async function loadGameLinksManager(gameId) {
+            const container = document.getElementById('gameLinksManager');
+            const { data, error } = await _supabase.from('game_links').select('*').eq('game_id', gameId).order('order_index', { ascending: true });
+            if (error) { container.innerHTML = '<p class="game-links-empty">Chưa có mirror chuẩn hoặc cần chạy migration.</p>'; return; }
+            container.innerHTML = (data || []).map((link, index) => `<div class="game-link-admin-item ${link.report_count >= 3 ? 'reported-link' : ''}" data-id="${escapeHtml(link.id)}">
+                <input class="mirror-label-input" value="${escapeHtml(link.label)}" placeholder="Nhãn">
+                <input class="mirror-url-input" value="${escapeHtml(link.url)}" placeholder="URL">
+                <label class="mirror-active-label"><input class="mirror-active-toggle" type="checkbox" ${link.is_active ? 'checked' : ''}> Hoạt động</label>
+                <span class="mirror-report-count">Báo lỗi: ${link.report_count || 0}</span>
+                <button type="button" onclick="moveGameMirror(this, -1)" ${index === 0 ? 'disabled' : ''}>↑</button><button type="button" onclick="moveGameMirror(this, 1)" ${index === (data || []).length - 1 ? 'disabled' : ''}>↓</button>
+                <button type="button" class="mirror-delete-btn" onclick="deleteGameMirror('${escapeHtml(link.id)}', this)"><i class="fa-solid fa-trash"></i></button>
+            </div>`).join('') || '<p class="game-links-empty">Chưa có mirror nào.</p>';
+        }
+
+        function addGameMirror() {
+            const label = document.getElementById('newMirrorLabel').value.trim();
+            const url = document.getElementById('newMirrorUrl').value.trim();
+            if (!label || !url) { showToast('Vui lòng nhập nhãn và URL mirror.', 'error'); return; }
+            const container = document.getElementById('gameLinksManager');
+            if (container.querySelector('.game-links-empty')) container.innerHTML = '';
+            container.insertAdjacentHTML('beforeend', `<div class="game-link-admin-item" data-id=""><input class="mirror-label-input" value="${escapeHtml(label)}"><input class="mirror-url-input" value="${escapeHtml(url)}"><label class="mirror-active-label"><input class="mirror-active-toggle" type="checkbox" checked> Hoạt động</label><span class="mirror-report-count">Báo lỗi: 0</span><button type="button" onclick="moveGameMirror(this, -1)">↑</button><button type="button" onclick="moveGameMirror(this, 1)">↓</button><button type="button" class="mirror-delete-btn" onclick="this.closest('.game-link-admin-item').remove()"><i class="fa-solid fa-trash"></i></button></div>`);
+            document.getElementById('newMirrorLabel').value = '';
+            document.getElementById('newMirrorUrl').value = '';
+        }
+
+        function moveGameMirror(button, direction) {
+            const row = button.closest('.game-link-admin-item');
+            const sibling = direction < 0 ? row.previousElementSibling : row.nextElementSibling;
+            if (!sibling) return;
+            if (direction < 0) sibling.before(row); else sibling.after(row);
+            document.querySelectorAll('#gameLinksManager .game-link-admin-item').forEach((item, index) => item.querySelectorAll('button')[0].disabled = index === 0);
+        }
+
+        async function deleteGameMirror(id, button) {
+            if (!confirm('Xóa mirror này?')) return;
+            const { error } = await _supabase.from('game_links').delete().eq('id', id);
+            if (error) { showToast('Không xóa được mirror: ' + error.message, 'error'); return; }
+            button.closest('.game-link-admin-item').remove();
+            showToast('Đã xóa mirror.', 'success');
+        }
+
+        /* ================= THẢO LUẬN: BÀI VIẾT, LIKE, GHIM & BÌNH LUẬN ================= */
+
+        function renderPostBox() {
+            const container = document.getElementById('postBoxContainer');
+            if (!container) return;
+            if (currentUser) {
+                const canSetLinkVisibility = currentUser.role === 'admin' || currentUser.role === 'superadmin';
+                const canUseColors = ['vip', 'admin', 'superadmin'].includes(currentUser.role);
+                const colorTools = canUseColors ? `<span class="editor-color-tools" aria-label="Màu chữ"><button type="button" style="--editor-color:#ff4757" onclick="formatPost('foreColor', '#ff4757')" title="Đỏ"></button><button type="button" style="--editor-color:#ffa502" onclick="formatPost('foreColor', '#ffa502')" title="Cam"></button><button type="button" style="--editor-color:#2ed573" onclick="formatPost('foreColor', '#2ed573')" title="Xanh lá"></button><button type="button" style="--editor-color:#1e90ff" onclick="formatPost('foreColor', '#1e90ff')" title="Xanh dương"></button><button type="button" style="--editor-color:#ffffff" onclick="formatPost('foreColor', '#ffffff')" title="Trắng"></button></span>` : '';
+                container.innerHTML = `<div class="post-box"><h3>Đăng bài viết hoặc báo lỗi:</h3><input id="postTitle" class="post-title-input" type="text" maxlength="160" placeholder="Tiêu đề bài viết (không bắt buộc)"><div class="post-editor-toolbar"><button type="button" onclick="formatPost('bold')" title="In đậm"><i class="fa-solid fa-bold"></i></button><button type="button" onclick="formatPost('italic')" title="In nghiêng"><i class="fa-solid fa-italic"></i></button><select onchange="formatPost('fontName', this.value); this.value = ''" aria-label="Kiểu chữ"><option value="">Kiểu chữ</option><option value="Segoe UI">Segoe UI</option><option value="Georgia">Georgia</option><option value="Verdana">Verdana</option><option value="monospace">Monospace</option></select>${colorTools}</div><div id="postContent" class="post-editor" contenteditable="true" role="textbox" aria-multiline="true" data-placeholder="Nhập nội dung..."></div><div class="post-link-fields"><input id="postLinkLabel" type="text" maxlength="80" placeholder="Tên đường liên kết (không bắt buộc)"><input id="postLinkUrl" type="url" placeholder="Dán đường liên kết (không bắt buộc)"><select id="postLinkVisibility" ${canSetLinkVisibility ? '' : 'disabled'} title="Ai được xem link"><option value="guest">Khách truy cập</option><option value="member" selected>Thành viên đã đăng nhập</option><option value="vip">Thành viên VIP</option><option value="regular">Thành viên thường</option><option value="admin">Admin / Mod</option><option value="superadmin">SuperAdmin</option></select></div><button onclick="addNewPost()" class="btn-post">Đăng Bài</button></div>`;
+            } else {
+                container.innerHTML = `<div class="post-box" style="text-align:center;"><p>Bạn cần đăng nhập để thảo luận.</p><button onclick="openAuthModal('login')" class="btn-post" style="max-width:150px;">Đăng Nhập</button></div>`;
+            }
+        }
+
+        async function addNewPost() {
+            if (!currentUser) { showToast('Bạn cần đăng nhập để đăng bài.', 'error'); return; }
+            const contentEl = document.getElementById('postContent');
+            const content = sanitizePostHtml(contentEl.innerHTML);
+            if (!content) return;
+
+            const title = document.getElementById('postTitle')?.value.trim() || null;
+            const linkLabel = document.getElementById('postLinkLabel')?.value.trim() || '';
+            const linkUrl = document.getElementById('postLinkUrl')?.value.trim() || '';
+            const linkVisibility = document.getElementById('postLinkVisibility')?.value || 'member';
+            if (linkUrl && !/^https?:\/\//i.test(linkUrl)) { showToast('Đường liên kết phải bắt đầu bằng http:// hoặc https://.', 'error'); return; }
+
+            const { error } = await _supabase.from('posts').insert({
+                author_id: currentUser.id,
+                author_name: currentUser.username,
+                author_role: currentUser.role,
+                title,
+                content,
+                link_label: linkUrl ? linkLabel || 'Mở liên kết' : null,
+                link_url: linkUrl || null,
+                link_visibility: ['admin', 'superadmin'].includes(currentUser.role) ? linkVisibility : 'member'
+            });
+
+            if (error) { showToast('Không đăng được bài: ' + error.message, 'error'); return; }
+            resetPostEditor();
+            showToast('Đăng bài thành công!', 'success');
+            loadPosts();
+        }
+
+        async function deletePost(id) {
+            if (!confirm('Xóa bài viết này?')) return;
+            const { error } = await _supabase.from('posts').delete().eq('id', id);
+            if (error) { showToast('Không xóa được bài viết: ' + error.message, 'error'); return; }
+            showToast('Đã xóa bài viết.', 'success');
+            loadPosts();
+        }
+
+        /* HÀM THÍCH BÀI VIẾT */
+        async function likePost(postId) {
+            const { data: currentPost, error: fetchErr } = await _supabase
+                .from('posts')
+                .select('likes_count')
+                .eq('id', postId)
+                .single();
+            if (fetchErr) return;
+
+            const newCount = (currentPost?.likes_count || 0) + 1;
+            const { error } = await _supabase
+                .from('posts')
+                .update({ likes_count: newCount })
+                .eq('id', postId);
+
+            if (!error) {
+                const countSpan = document.getElementById(`likes-${postId}`);
+                if (countSpan) countSpan.innerText = newCount;
+            } else {
+                showToast('Lỗi thả tim: ' + error.message, 'error');
+            }
+        }
+
+        /* HÀM GHIM / BỎ GHIM BÀI VIẾT (Dành cho Admin) */
+        async function togglePin(postId, targetState) {
+            if (!currentUser || (currentUser.role !== 'superadmin' && currentUser.role !== 'admin')) {
+                showToast('Bạn không có quyền thực hiện thao tác này!', 'error');
+                return;
+            }
+            const { error } = await _supabase
+                .from('posts')
+                .update({ is_pinned: targetState })
+                .eq('id', postId);
+
+            if (error) {
+                showToast('Lỗi ghim bài: ' + error.message, 'error');
+                return;
+            }
+            showToast(targetState ? 'Đã ghim bài viết lên đầu!' : 'Đã bỏ ghim bài viết.', 'success');
+            loadPosts();
+        }
+
+        async function addComment(postId) {
+            const input = document.getElementById(`commentInput-${postId}`);
+            const content = input.value.trim();
+            if (!content) return;
+            const { error } = await _supabase.from('comments').insert({
+                post_id: postId,
+                author_id: currentUser?.id || null,
+                author_name: currentUser?.username || getGuestName(),
+                content
+            });
+            if (error) { showToast('Không gửi được bình luận: ' + error.message, 'error'); return; }
+            loadPosts();
+        }
+
+        async function deleteComment(commentId) {
+            if (!confirm('Xóa bình luận này?')) return;
+            const { error } = await _supabase.from('comments').delete().eq('id', commentId);
+            if (error) { showToast('Không xóa được bình luận: ' + error.message, 'error'); return; }
+            loadPosts();
+        }
+
+        async function loadPosts() {
+            const container = document.getElementById('postsList');
+            if (!container) return;
+            container.innerHTML = '<p style="text-align:center; color:#747d8c;">Đang tải bài viết...</p>';
+
+            // Lấy danh sách bài viết ưu tiên bài ghim (is_pinned = true) lên trên cùng
+            const { data: posts, error } = await _supabase
+                .from('posts_visible')
+                .select('*')
+                .order('is_pinned', { ascending: false })
+                .order('created_at', { ascending: false });
+
+            if (error) {
+                container.innerHTML = '<p style="text-align:center; color:#ff4757;">Không tải được bài viết.</p>';
+                console.error(error);
+                return;
+            }
+
+            if (!posts || posts.length === 0) {
+                container.innerHTML = `<p style="text-align:center; color:#747d8c;">Chưa có bài viết.</p>`;
+                return;
+            }
+
+            const postIds = posts.map(p => p.id);
+            const { data: comments, error: cErr } = await _supabase
+                .from('comments')
+                .select('*')
+                .in('post_id', postIds)
+                .order('created_at', { ascending: true });
+            if (cErr) console.error(cErr);
+
+            const commentsByPost = {};
+            (comments || []).forEach(c => {
+                if (!commentsByPost[c.post_id]) commentsByPost[c.post_id] = [];
+                commentsByPost[c.post_id].push(c);
+            });
+
+            const isAnyAdmin = currentUser && (currentUser.role === 'superadmin' || currentUser.role === 'admin');
+
+            container.innerHTML = posts.map(p => {
+                const canDeletePost = currentUser && (currentUser.id === p.author_id || isAnyAdmin);
+                const badgeClass = badgeClassForRole(p.author_role);
+                const roleLabel = displayRoleLabel(p.author_role);
+                const authorStyle = p.appearance_color ? appearanceStyle({ role: p.author_role, color: p.appearance_color, effect: p.appearance_effect }) : '';
+                const postComments = commentsByPost[p.id] || [];
+
+                const pinBadge = p.is_pinned ? `<span style="background: #f39c12; color: #fff; padding: 2px 6px; font-size: 11px; border-radius: 4px; font-weight: bold; margin-right: 6px;"><i class="fa-solid fa-thumbtack"></i> Đã ghim</span>` : '';
+                const pinButton = isAnyAdmin ? `<button onclick="togglePin('${p.id}', ${!p.is_pinned})" style="background: #f39c12; color: #fff; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: bold; display: inline-flex; align-items: center; gap: 4px;"><i class="fa-solid fa-thumbtack"></i> ${p.is_pinned ? 'Bỏ ghim' : 'Ghim bài'}</button>` : '';
+
+                const commentsHtml = postComments.map(c => {
+                    const canDeleteComment = currentUser && (currentUser.id === c.author_id || isAnyAdmin);
+                    return `<div class="comment-item"><span><strong>${escapeHtml(c.author_name)}:</strong> ${escapeHtml(c.content)}</span>${canDeleteComment ? `<span class="comment-delete-x" onclick="deleteComment('${c.id}')" title="Xóa bình luận"><i class="fa-solid fa-xmark"></i></span>` : ''}</div>`;
+                }).join('');
+
+                const commentInputHtml = `<div class="comment-input-box"><input type="text" id="commentInput-${p.id}" placeholder="${currentUser ? 'Viết bình luận...' : `Bình luận với ${getGuestName()}...`}" onkeydown="if(event.key==='Enter') addComment('${p.id}')"><button onclick="addComment('${p.id}')" aria-label="Gửi bình luận"><i class="fa-solid fa-paper-plane"></i></button></div>`;
+
+                const postStyle = p.is_pinned ? 'border: 2px solid #f39c12; background: #1a1c26;' : '';
+                const canViewPostLink = canViewLinkForRole(p.link_visibility, currentUser);
+                const postLinkHtml = p.link_url && canViewPostLink
+                    ? `<a class="post-attached-link" href="${escapeHtml(safeHttpUrl(p.link_url))}" target="_blank" rel="noopener"><i class="fa-solid fa-link"></i> ${escapeHtml(p.link_label || 'Mở liên kết')}</a>`
+                    : p.link_is_hidden ? '<span class="post-link-hidden"><i class="fa-solid fa-lock"></i> Liên kết giới hạn quyền xem</span>' : '';
+
+                return `
+                    <div class="post-item" style="${postStyle}">
+                        <div class="post-header">
+                            <span>${pinBadge}<strong class="post-author ${badgeClass}" style="${authorStyle}">${escapeHtml(p.author_name)}</strong> <span class="post-role-label">(${roleLabel})</span></span>
+                            <span class="post-time">${new Date(p.created_at).toLocaleString('vi-VN')}</span>
+                        </div>
+                        ${p.title ? `<h3 class="post-title">${escapeHtml(p.title)}</h3>` : ''}
+                        <div class="post-body">${sanitizePostHtml(p.content)}</div>
+                        ${postLinkHtml}
+                        
+                        <div style="display: flex; gap: 8px; align-items: center; margin-bottom: 12px; flex-wrap: wrap;">
+                            <button onclick="likePost('${p.id}')" style="background: #ff4757; color: #fff; border: none; padding: 6px 14px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: bold; display: inline-flex; align-items: center; gap: 6px; transition: background 0.2s;">
+                                <i class="fa-solid fa-heart"></i> Thích (<span id="likes-${p.id}">${p.likes_count || 0}</span>)
+                            </button>
+                            ${pinButton}
+                            ${canDeletePost ? `<button class="btn-delete-post" onclick="deletePost('${p.id}')"><i class="fa-solid fa-trash"></i> Xóa bài</button>` : ''}
+                        </div>
+
+                        <div class="comments-section">
+                            <div class="comments-list">${commentsHtml || '<p style="font-size:12px;color:#747d8c;">Chưa có bình luận nào.</p>'}</div>
+                            ${commentInputHtml}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        /* ================= THÔNG BÁO ADMIN ================= */
+
+        function isAnnouncementActive(announcement, now = new Date()) {
+            const starts = !announcement.start_time || new Date(announcement.start_time) <= now;
+            const ends = !announcement.end_time || new Date(announcement.end_time) >= now;
+            return starts && ends && Boolean(announcement.message);
+        }
+
+        function announcementSort(a, b) {
+            if ((a.priority === 'urgent') !== (b.priority === 'urgent')) return a.priority === 'urgent' ? -1 : 1;
+            return new Date(b.created_at || 0) - new Date(a.created_at || 0);
+        }
+
+        function renderAnnouncementItem(announcement, index, history = false) {
+            const active = isAnnouncementActive(announcement);
+            const dateRange = [announcement.start_time ? new Date(announcement.start_time).toLocaleString('vi-VN') : 'Ngay', announcement.end_time ? new Date(announcement.end_time).toLocaleString('vi-VN') : 'không giới hạn'].join(' - ');
+            const editor = announcement.updated_by === currentUser?.id ? currentUser.username : (announcement.updated_by || announcement.created_by || 'Không rõ');
+            return `<div class="announcement-admin-item ${active ? 'is-active' : 'is-expired'}">
+                <div><strong>${escapeHtml(announcement.message.slice(0, 90))}${announcement.message.length > 90 ? '...' : ''}</strong><small><span class="announcement-chip ${escapeHtml(announcement.color || 'blue')}">${escapeHtml(announcement.color || 'blue')}</span><span class="announcement-chip">${announcement.priority === 'urgent' ? 'Khẩn cấp' : 'Bình thường'}</span> ${active ? 'Đang hiển thị' : 'Đã hết hạn / ẩn'}</small><small>${escapeHtml(dateRange)}</small><small>Cập nhật: ${escapeHtml(String(editor))} - ${new Date(announcement.updated_at || announcement.created_at).toLocaleString('vi-VN')}</small></div>
+                <div class="announcement-item-actions"><button onclick="editAnnouncement(${index}, ${history})">Sửa</button><button class="danger" onclick="deleteAnnouncement('${announcement.id}')">Xóa</button></div>
+            </div>`;
+        }
+
+        function applyAnnouncementMarquee(root) {
+            const viewport = root?.querySelector('.announcement-viewport');
+            const track = root?.querySelector('.announcement-track');
+            if (!viewport || !track) return;
+            track.classList.toggle('is-marquee', track.scrollWidth > viewport.clientWidth + 8);
+        }
+
+        function renderAnnouncementBar() {
+            const bar = document.getElementById('siteAnnouncement');
+            const textEl = document.getElementById('announcementText');
+            const dots = document.getElementById('announcementDots');
+            if (!bar || !textEl) return;
+            if (!activeAnnouncements.length) {
+                bar.style.display = 'none';
+                if (announcementCarouselTimer) clearInterval(announcementCarouselTimer);
+                return;
+            }
+            const announcement = activeAnnouncements[announcementIndex % activeAnnouncements.length];
+            bar.className = `site-announcement announcement-${announcement.color || 'blue'}${announcement.priority === 'urgent' ? ' urgent-announcement' : ''}`;
+            textEl.textContent = announcement.message;
+            bar.style.display = 'flex';
+            dots.innerHTML = activeAnnouncements.length > 1 ? activeAnnouncements.map((_, index) => `<span class="announcement-dot ${index === announcementIndex ? 'active' : ''}"></span>`).join('') : '';
+            requestAnimationFrame(() => applyAnnouncementMarquee(bar));
+            if (activeAnnouncements.length > 1 && !announcementCarouselTimer) {
+                announcementCarouselTimer = setInterval(() => {
+                    announcementIndex = (announcementIndex + 1) % activeAnnouncements.length;
+                    bar.classList.add('announcement-changing');
+                    setTimeout(() => { renderAnnouncementBar(); bar.classList.remove('announcement-changing'); }, 220);
+                }, 5000);
+            }
+        }
+
+        async function loadAnnouncement() {
+            const now = new Date().toISOString();
+            try {
+                const { data, error } = await _supabase.from('announcements').select('*').or(`start_time.is.null,start_time.lte.${now}`).or(`end_time.is.null,end_time.gte.${now}`).order('created_at', { ascending: false });
+                if (error) throw error;
+                activeAnnouncements = (data || []).filter(item => isAnnouncementActive(item)).sort(announcementSort);
+                announcementIndex = activeAnnouncements.length ? announcementIndex % activeAnnouncements.length : 0;
+                renderAnnouncementBar();
+            } catch (err) {
+                console.error('Lỗi tải thông báo:', err);
+                activeAnnouncements = [];
+                renderAnnouncementBar();
+            }
+            if (!announcementRefreshTimer) announcementRefreshTimer = setInterval(loadAnnouncement, 45000);
+        }
+
+        function resetAnnouncementForm() {
+            document.getElementById('announcementId').value = '';
+            document.getElementById('announcementFormTitle').textContent = 'Thêm thông báo';
+            document.getElementById('announcementInput').value = '';
+            document.getElementById('announcementPriority').value = 'normal';
+            document.getElementById('announcementStart').value = '';
+            document.getElementById('announcementEnd').value = '';
+            document.querySelector('input[name="announcementColor"][value="blue"]').checked = true;
+            updateAnnouncementPreview();
+        }
+
+        function localDateTimeValue(value) { return value ? new Date(value).toISOString().slice(0, 16) : ''; }
+
+        function editAnnouncement(index, history = false) {
+            const source = history ? window.announcementHistoryData[index] : window.announcementAdminData[index];
+            if (!source) return;
+            document.getElementById('announcementId').value = source.id;
+            document.getElementById('announcementFormTitle').textContent = 'Sửa thông báo';
+            document.getElementById('announcementInput').value = source.message || '';
+            document.getElementById('announcementPriority').value = source.priority || 'normal';
+            document.getElementById('announcementStart').value = localDateTimeValue(source.start_time);
+            document.getElementById('announcementEnd').value = localDateTimeValue(source.end_time);
+            document.querySelectorAll('input[name="announcementColor"]').forEach(r => r.checked = r.value === (source.color || 'blue'));
+            updateAnnouncementPreview();
+        }
+
+        function updateAnnouncementPreview() {
+            const input = document.getElementById('announcementInput');
+            const preview = document.getElementById('announcementPreview');
+            if (!input || !preview) return;
+            const color = document.querySelector('input[name="announcementColor"]:checked')?.value || 'blue';
+            const priority = document.getElementById('announcementPriority').value;
+            const track = preview.querySelector('.announcement-track');
+            document.getElementById('announcementCharCount').textContent = input.value.length;
+            preview.className = `site-announcement announcement-preview announcement-${color}${priority === 'urgent' ? ' urgent-announcement' : ''}`;
+            track.textContent = input.value || 'Nội dung xem trước';
+            requestAnimationFrame(() => applyAnnouncementMarquee(preview));
+        }
+
+        async function loadAnnouncementAdminData() {
+            const { data, error } = await _supabase.from('announcements').select('*').order('created_at', { ascending: false });
+            if (error) { showToast('Không thể tải danh sách thông báo: ' + error.message, 'error'); return; }
+            const all = data || [];
+            window.announcementAdminData = all.filter(isAnnouncementActive);
+            window.announcementHistoryData = all;
+            document.getElementById('announcementList').innerHTML = window.announcementAdminData.length ? window.announcementAdminData.map((item, index) => renderAnnouncementItem(item, index)).join('') : '<p class="announcement-empty">Chưa có thông báo đang hoạt động.</p>';
+            document.getElementById('announcementHistory').innerHTML = all.length ? all.map((item, index) => renderAnnouncementItem(item, index, true)).join('') : '<p class="announcement-empty">Chưa có lịch sử.</p>';
+        }
+
+        async function openAnnouncementModal() {
+            if (!currentUser || !['admin', 'superadmin'].includes(currentUser.role)) return;
+            document.getElementById('announcementModal').style.display = 'flex';
+            resetAnnouncementForm();
+            await loadAnnouncementAdminData();
+        }
+        function closeAnnouncementModal() { document.getElementById('announcementModal').style.display = 'none'; }
+
+        async function saveAnnouncement() {
+            const message = document.getElementById('announcementInput').value.trim().slice(0, 500);
+            if (!message) { showToast('Vui lòng nhập nội dung thông báo!', 'error'); return; }
+            const id = document.getElementById('announcementId').value;
+            const values = { message, color: document.querySelector('input[name="announcementColor"]:checked')?.value || 'blue', priority: document.getElementById('announcementPriority').value, start_time: document.getElementById('announcementStart').value ? new Date(document.getElementById('announcementStart').value).toISOString() : null, end_time: document.getElementById('announcementEnd').value ? new Date(document.getElementById('announcementEnd').value).toISOString() : null, updated_by: currentUser.id, updated_at: new Date().toISOString() };
+            if (!id) values.created_by = currentUser.id;
+            const query = id ? _supabase.from('announcements').update(values).eq('id', id) : _supabase.from('announcements').insert(values);
+            const { error } = await query;
+            if (error) { showToast('Lỗi lưu thông báo: ' + error.message, 'error'); return; }
+            showToast('Đã lưu thông báo!', 'success');
+            closeAnnouncementModal();
+            await loadAnnouncement();
+        }
+
+        async function deleteAnnouncement(id = document.getElementById('announcementId').value) {
+            if (!id) { resetAnnouncementForm(); return; }
+            const { error } = await _supabase.from('announcements').delete().eq('id', id);
+            if (error) { showToast('Lỗi xóa thông báo: ' + error.message, 'error'); return; }
+            showToast('Đã xóa thông báo.', 'info');
+            await loadAnnouncementAdminData();
+            resetAnnouncementForm();
+            await loadAnnouncement();
+        }
+
+        /* ================= DONATE ================= */
+
+        function openDonate(event) {
+            event.preventDefault();
+            closeMobileNav();
+            document.getElementById('donateModal').style.display = "flex";
+        }
+        function closeDonate() { document.getElementById('donateModal').style.display = "none"; }
+    </script>
 </body>
 </html>
