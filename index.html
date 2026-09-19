@@ -7,6 +7,14 @@
     <meta property="og:title" content="Kho Game Việt Hóa - Tải Game Mobile & Port Miễn Phí">
     <meta property="og:description" content="Cộng đồng chia sẻ game Port Android & Emulator Việt hóa chất lượng cao hoàn toàn miễn phí.">
     <meta property="og:type" content="website">
+    <meta property="og:url" content="https://vst1249x.github.io/MyGameWeb/">
+    <meta property="og:image" content="https://vst1249x.github.io/MyGameWeb/KGVH.jpg">
+    <meta property="og:image:alt" content="Kho Game Việt Hóa">
+    <meta property="og:image:type" content="image/jpeg">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Kho Game Việt Hóa - Tải Game Mobile & Port Miễn Phí">
+    <meta name="twitter:description" content="Cộng đồng chia sẻ game Port Android & Emulator Việt hóa chất lượng cao hoàn toàn miễn phí.">
+    <meta name="twitter:image" content="https://vst1249x.github.io/MyGameWeb/KGVH.jpg">
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8E%AE%3C/text%3E%3C/svg%3E">
     <title>Kho Game Việt Hóa - Tải Game Mobile & Port Miễn Phí</title>
     <link rel="stylesheet" href="style.css">
@@ -36,6 +44,7 @@
     <div class="toast-stack" id="toastStack"></div>
 
     <div id="chatWidget" class="chat-widget" style="display: none;">
+        <button type="button" class="project-request-fab" onclick="openProjectRequestModal()" aria-label="Gửi yêu cầu dự án"><i class="fa-solid fa-lightbulb"></i><span>Yêu cầu dự án</span></button>
         <button type="button" id="chatToggleButton" class="chat-toggle-button" onclick="toggleChatPanel()" aria-label="Mở chat với Admin" title="Chat với Admin">
             <i class="fa-solid fa-comments"></i><span class="chat-unread-badge" id="chatUnreadBadge" hidden>0</span>
         </button>
@@ -49,6 +58,7 @@
                 <input id="chatInput" type="text" maxlength="1000" placeholder="Nhập tin nhắn..." autocomplete="off">
                 <button type="submit" aria-label="Gửi tin nhắn"><i class="fa-solid fa-paper-plane"></i></button>
             </form>
+            <button type="button" class="project-request-launcher" onclick="openProjectRequestModal()"><i class="fa-solid fa-lightbulb"></i> Gửi yêu cầu dự án</button>
         </section>
     </div>
 
@@ -71,6 +81,7 @@
             <a href="#" onclick="switchTab('emulator', event)">Emulator</a>
             <a href="#" onclick="openDonate(event)">Donate</a>
             <a href="#" onclick="switchTab('discuss', event)">Thảo luận</a>
+            <a href="#" onclick="switchTab('projects', event)"><i class="fa-solid fa-ranking-star"></i> Dự án mới</a>
             <div id="authNavContainer" style="display: flex; gap: 10px; align-items: center; margin-left: 10px;"></div>
         </nav>
     </header>
@@ -149,6 +160,18 @@
         <div id="postsList" class="posts-container"></div>
         <div id="postBoxContainer"></div>
         <div id="discussionChatDock" class="discussion-chat-dock"></div>
+    </main>
+
+    <main class="container" id="projectsContent" style="display: none;">
+        <div class="projects-heading-row">
+            <div>
+                <h2 class="section-title"><i class="fa-solid fa-ranking-star"></i> DỰ ÁN MỚI</h2>
+                <p class="projects-intro">Bình chọn cho dự án bạn muốn được ưu tiên Việt hóa. Dự án có nhiều lượt bình chọn sẽ được xem xét trước.</p>
+            </div>
+            <button type="button" class="btn-post project-request-button" onclick="openProjectRequestModal()"><i class="fa-solid fa-plus"></i> Yêu cầu dự án</button>
+        </div>
+        <div id="adminProjectBox"></div>
+        <div id="projectList" class="project-list"><p class="project-empty">Đang tải danh sách dự án...</p></div>
     </main>
 
     <!-- Modal Thêm / Sửa Game -->
@@ -265,6 +288,19 @@
                     <p class="acc-num">STK / SĐT: <strong>0378487294</strong></p>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <div id="projectRequestModal" class="modal">
+        <div class="modal-content project-request-modal-content">
+            <span class="close-btn" onclick="closeProjectRequestModal()">&times;</span>
+            <h2><i class="fa-solid fa-lightbulb"></i> Yêu cầu dự án Việt hóa</h2>
+            <p class="project-form-note">Thành viên đã đăng nhập có thể gửi một yêu cầu. Link game có thể bỏ trống.</p>
+            <label>Tên game<input id="projectTitleInput" type="text" maxlength="160" placeholder="Ví dụ: Persona 5 Royal"></label>
+            <label>Link game <span>(nếu có)</span><input id="projectUrlInput" type="url" placeholder="https://..."></label>
+            <label>Nền tảng<select id="projectPlatformInput"><option value="pc">PC</option><option value="android">Android</option></select></label>
+            <label>Thông tin thêm <span>(không bắt buộc)</span><textarea id="projectDescriptionInput" maxlength="500" rows="4" placeholder="Phiên bản, mong muốn cụ thể..."></textarea></label>
+            <button type="button" class="btn-post" onclick="submitProjectRequest()"><i class="fa-solid fa-paper-plane"></i> Gửi lên</button>
         </div>
     </div>
 
@@ -715,6 +751,7 @@
             loadAnnouncement();
             currentPage = 1;
             loadCustomGames();
+            if (document.getElementById('projectsContent')?.style.display === 'block') loadProjects();
         }
 
         async function applyUserRoleOnWeb() {
@@ -787,6 +824,7 @@
             document.getElementById('gameDetailPageContainer').style.display = 'none';
             const homeContent = document.getElementById('homeContent');
             const discussContent = document.getElementById('discussContent');
+            const projectsContent = document.getElementById('projectsContent');
             const heroSection = document.getElementById('heroSection');
 
             if (tabName === 'discuss') {
@@ -794,10 +832,19 @@
                 homeContent.style.display = 'none';
                 heroSection.style.display = 'none';
                 discussContent.style.display = 'block';
+                projectsContent.style.display = 'none';
                 loadPosts();
+            } else if (tabName === 'projects') {
+                moveChatWidgetForTab('projects');
+                homeContent.style.display = 'none';
+                heroSection.style.display = 'none';
+                discussContent.style.display = 'none';
+                projectsContent.style.display = 'block';
+                loadProjects();
             } else {
                 moveChatWidgetForTab(tabName);
                 discussContent.style.display = 'none';
+                projectsContent.style.display = 'none';
                 heroSection.style.display = 'block';
                 homeContent.style.display = 'block';
                 if (tabName === 'mobile') filterCategory('mobile');
@@ -834,6 +881,106 @@
             document.getElementById('homeContent').scrollIntoView({ behavior: 'smooth' });
         }
 
+        /* ================= DỰ ÁN VIỆT HÓA ================= */
+
+        function openProjectRequestModal() {
+            if (!currentUser) { showToast('Vui lòng đăng nhập để gửi yêu cầu hoặc bình chọn.', 'info'); openAuthModal('login'); return; }
+            document.getElementById('projectRequestModal').style.display = 'flex';
+        }
+
+        function closeProjectRequestModal() { document.getElementById('projectRequestModal').style.display = 'none'; }
+
+        async function submitProjectRequest() {
+            if (!currentUser) { openProjectRequestModal(); return; }
+            const title = document.getElementById('projectTitleInput').value.trim();
+            const gameUrl = document.getElementById('projectUrlInput').value.trim() || null;
+            const platform = document.getElementById('projectPlatformInput').value;
+            const description = document.getElementById('projectDescriptionInput').value.trim() || null;
+            if (!title) { showToast('Vui lòng nhập tên game.', 'error'); return; }
+            if (gameUrl && !/^https?:\/\//i.test(gameUrl)) { showToast('Link game phải bắt đầu bằng http:// hoặc https://.', 'error'); return; }
+            const { error } = await _supabase.from('project_requests').insert({ title, game_url: gameUrl, platform, description, status: 'requested', created_by: currentUser.id });
+            if (error) { showToast('Không gửi được yêu cầu: ' + error.message, 'error'); return; }
+            document.getElementById('projectTitleInput').value = '';
+            document.getElementById('projectUrlInput').value = '';
+            document.getElementById('projectDescriptionInput').value = '';
+            closeProjectRequestModal();
+            showToast('Đã gửi yêu cầu dự án.', 'success');
+            loadProjects();
+        }
+
+        function renderProjectCard(project, votedIds, isAdmin) {
+            const statusLabels = { requested: 'Đề xuất', in_progress: 'Đang Việt hóa', completed: 'Đã hoàn thành' };
+            const voted = votedIds.has(String(project.id));
+            const creator = project.created_by ? 'Thành viên cộng đồng' : 'Admin';
+            return `<article class="project-card ${project.status === 'in_progress' ? 'is-progress' : ''}">
+                <div class="project-card-main">
+                    <div class="project-card-top"><span class="project-status status-${project.status}">${statusLabels[project.status] || statusLabels.requested}</span><span class="project-platform"><i class="fa-solid fa-${project.platform === 'pc' ? 'desktop' : 'mobile-screen-button'}"></i> ${project.platform === 'pc' ? 'PC' : 'Android'}</span></div>
+                    <h3>${escapeHtml(project.title)}</h3>
+                    <p class="project-meta">Đề xuất bởi ${escapeHtml(creator)} · ${new Date(project.created_at).toLocaleDateString('vi-VN')}</p>
+                    ${project.description ? `<p class="project-description">${escapeHtml(project.description)}</p>` : ''}
+                    ${project.game_url ? `<a class="project-link" href="${escapeHtml(safeHttpUrl(project.game_url))}" target="_blank" rel="noopener"><i class="fa-solid fa-link"></i> Xem link game</a>` : '<span class="project-no-link">Chưa có link game</span>'}
+                </div>
+                <div class="project-card-actions">
+                    <button type="button" class="project-vote-button ${voted ? 'is-voted' : ''}" onclick="toggleProjectVote(${project.id})"><i class="fa-solid fa-heart"></i><strong>${project.votes_count || 0}</strong><span>${voted ? 'Đã bình chọn' : 'Bình chọn'}</span></button>
+                    ${isAdmin ? `<label class="project-admin-status">Trạng thái<select onchange="updateProjectStatus(${project.id}, this.value)"><option value="requested" ${project.status === 'requested' ? 'selected' : ''}>Đề xuất</option><option value="in_progress" ${project.status === 'in_progress' ? 'selected' : ''}>Đang làm</option><option value="completed" ${project.status === 'completed' ? 'selected' : ''}>Hoàn thành</option></select></label><button type="button" class="project-delete-button" onclick="deleteProject(${project.id})" title="Xóa dự án"><i class="fa-solid fa-trash"></i></button>` : ''}
+                </div>
+            </article>`;
+        }
+
+        function renderAdminProjectBox() {
+            const container = document.getElementById('adminProjectBox');
+            if (!container) return;
+            if (!currentUser || !['admin', 'superadmin'].includes(currentUser.role)) { container.innerHTML = ''; return; }
+            container.innerHTML = `<section class="admin-project-box"><h3><i class="fa-solid fa-pen-to-square"></i> Đăng dự án đang thực hiện</h3><div class="admin-project-form"><input id="adminProjectTitle" maxlength="160" placeholder="Tên game đang làm..."><input id="adminProjectUrl" type="url" placeholder="Link game (không bắt buộc)"><select id="adminProjectPlatform"><option value="pc">PC</option><option value="android">Android</option></select><input id="adminProjectDescription" maxlength="500" placeholder="Tiến độ hoặc thông tin muốn chia sẻ..."><button type="button" class="btn-post" onclick="submitAdminProject()"><i class="fa-solid fa-plus"></i> Đăng dự án</button></div></section>`;
+        }
+
+        async function submitAdminProject() {
+            const title = document.getElementById('adminProjectTitle').value.trim();
+            const gameUrl = document.getElementById('adminProjectUrl').value.trim() || null;
+            if (!title) { showToast('Vui lòng nhập tên game.', 'error'); return; }
+            if (gameUrl && !/^https?:\/\//i.test(gameUrl)) { showToast('Link game không hợp lệ.', 'error'); return; }
+            const { error } = await _supabase.from('project_requests').insert({ title, game_url: gameUrl, platform: document.getElementById('adminProjectPlatform').value, description: document.getElementById('adminProjectDescription').value.trim() || null, status: 'in_progress', created_by: currentUser.id });
+            if (error) { showToast('Không đăng được dự án: ' + error.message, 'error'); return; }
+            showToast('Đã đăng dự án đang thực hiện.', 'success');
+            loadProjects();
+        }
+
+        async function loadProjects() {
+            const container = document.getElementById('projectList');
+            if (!container) return;
+            renderAdminProjectBox();
+            const { data, error } = await _supabase.from('project_requests').select('*').order('votes_count', { ascending: false }).order('created_at', { ascending: false });
+            if (error) { container.innerHTML = '<p class="project-empty">Chưa có dữ liệu dự án. Hãy chạy SUPABASE_LATEST.sql.</p>'; return; }
+            let votedIds = new Set();
+            if (currentUser) {
+                const { data: votes } = await _supabase.from('project_request_votes').select('project_id').eq('user_id', currentUser.id);
+                votedIds = new Set((votes || []).map(vote => String(vote.project_id)));
+            }
+            const projects = data || [];
+            container.innerHTML = projects.length ? projects.map(project => renderProjectCard(project, votedIds, currentUser && ['admin', 'superadmin'].includes(currentUser.role))).join('') : '<p class="project-empty">Chưa có dự án nào. Hãy là người đầu tiên gửi đề xuất.</p>';
+        }
+
+        async function toggleProjectVote(projectId) {
+            if (!currentUser) { showToast('Vui lòng đăng nhập để bình chọn.', 'info'); openAuthModal('login'); return; }
+            const { error } = await _supabase.rpc('toggle_project_vote', { target_project_id: projectId });
+            if (error) { showToast('Không thể bình chọn: ' + error.message, 'error'); return; }
+            loadProjects();
+        }
+
+        async function updateProjectStatus(projectId, status) {
+            const { error } = await _supabase.from('project_requests').update({ status, updated_at: new Date().toISOString() }).eq('id', projectId);
+            if (error) { showToast('Không cập nhật được trạng thái: ' + error.message, 'error'); return; }
+            showToast('Đã cập nhật trạng thái dự án.', 'success');
+            loadProjects();
+        }
+
+        async function deleteProject(projectId) {
+            if (!confirm('Xóa dự án này?')) return;
+            const { error } = await _supabase.from('project_requests').delete().eq('id', projectId);
+            if (error) { showToast('Không xóa được dự án: ' + error.message, 'error'); return; }
+            loadProjects();
+        }
+
         /* ================= DANH SÁCH GAME ================= */
 
         function renderGameCard(g, isAnyAdmin) {
@@ -854,9 +1001,9 @@
                         <p class="version">${escapeHtml(g.version)}</p>
                         <div class="game-stats">
                             <span><i class="fa-solid fa-download"></i> ${g.downloads || 0}</span>
-                            <span><i class="fa-solid fa-heart" style="color: #ff4757;"></i> ${g.likes || 0}</span>
                             <span><i class="fa-solid fa-star" style="color: #ffa502;"></i> ${avgRating}</span>
                         </div>
+                        <button type="button" class="game-like-button" onclick="event.stopPropagation(); toggleGameLike(${g.id}, this)"><i class="fa-solid fa-heart"></i> <span>${g.likes || 0}</span> Thích game</button>
                         <button onclick="event.stopPropagation(); openGameDetailPage(${g.id})" class="${hasActiveMirrors ? 'btn-download' : 'btn-download coming-soon-btn'}" ${hasActiveMirrors ? '' : 'disabled'}><i class="fa-solid fa-${hasActiveMirrors ? 'download' : 'clock'}"></i> ${hasActiveMirrors ? 'Tải Về' : escapeHtml(noLinkLabel)}</button>
                         ${isAnyAdmin ? `
                             <div style="margin-top: 8px; border-top: 1px solid #2f3542; padding-top: 5px;">
@@ -867,6 +1014,18 @@
                     </div>
                 </div>
             `;
+        }
+
+        async function toggleGameLike(gameId, button) {
+            if (!currentUser) { showToast('Vui lòng đăng nhập để thích game.', 'info'); openAuthModal('login'); return; }
+            if (button.disabled) return;
+            button.disabled = true;
+            const { data, error } = await _supabase.rpc('toggle_game_like', { target_game_id: gameId });
+            button.disabled = false;
+            if (error) { showToast('Không thể cập nhật lượt thích: ' + error.message, 'error'); return; }
+            const count = Number(data?.likes || 0);
+            button.querySelector('span').textContent = count;
+            button.classList.toggle('is-liked', Boolean(data?.liked));
         }
 
         function renderPagination(totalCount) {
@@ -963,6 +1122,7 @@
                         <div style="flex: 1; min-width: 280px;">
                             <h1 style="color: #fff; font-size: 32px; margin-bottom: 10px;">${escapeHtml(g.name)} VIỆT HÓA</h1>
                             <p style="color: #f1f2f6; font-size: 16px; margin-bottom: 20px;">Phiên bản: <strong>${escapeHtml(g.version)}</strong></p>
+                            <button type="button" class="game-like-button" onclick="toggleGameLike(${g.id}, this)"><i class="fa-solid fa-heart"></i> <span>${g.likes || 0}</span> Thích game</button>
                             <div class="mirror-links-list">
                                 ${linksHtml}
                             </div>
