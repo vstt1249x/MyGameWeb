@@ -76,12 +76,12 @@
         </div>
         <button class="hamburger-btn" id="hamburgerBtn" onclick="toggleMobileNav()" aria-label="Mở menu"><i class="fa-solid fa-bars"></i></button>
         <nav class="nav-links" id="navLinks">
-            <a href="#" class="active" onclick="switchTab('home', event)">Trang chủ</a>
-            <a href="#" onclick="switchTab('mobile', event)">Mobile</a>
-            <a href="#" onclick="switchTab('emulator', event)">Emulator</a>
-            <a href="#" onclick="openDonate(event)">Donate</a>
-            <a href="#" onclick="switchTab('discuss', event)">Thảo luận</a>
-            <a href="#" onclick="switchTab('projects', event)"><i class="fa-solid fa-ranking-star"></i> Dự án mới</a>
+            <a href="#trangchu-id" data-tab="home" class="active" onclick="switchTab('home', event)">Trang chủ</a>
+            <a href="#mobile-id" data-tab="mobile" onclick="switchTab('mobile', event)">Mobile</a>
+            <a href="#emulator-id" data-tab="emulator" onclick="switchTab('emulator', event)">Emulator</a>
+            <a href="#donate-id" data-tab="donate" onclick="openDonate(event)">Donate</a>
+            <a href="#thaoluan-id" data-tab="discuss" onclick="switchTab('discuss', event)">Thảo luận</a>
+            <a href="#duan-id" data-tab="projects" onclick="switchTab('projects', event)"><i class="fa-solid fa-ranking-star"></i> Dự án mới</a>
             <div id="authNavContainer" style="display: flex; gap: 10px; align-items: center; margin-left: 10px;"></div>
         </nav>
     </header>
@@ -322,6 +322,7 @@
 
         let tempGameThumbData = '';
         let tempProjectImageData = '';
+        let tempPostImageData = '';
         let currentUser = null;
         let isRegisterMode = false;
 
@@ -356,6 +357,7 @@
             await checkSupabaseSession();
             const gameIdFromPath = getGameIdFromPath();
             if (gameIdFromPath) await openGameDetailPage(gameIdFromPath, false);
+            else renderRouteFromHash();
             _supabase.auth.onAuthStateChange(async () => {
                 await checkSupabaseSession();
             });
@@ -366,6 +368,27 @@
             if (gameIdFromPath) openGameDetailPage(gameIdFromPath, false);
             else backToHome(false);
         });
+        window.addEventListener('hashchange', renderRouteFromHash);
+
+        function getTabFromHash() {
+            const hash = window.location.hash.replace(/^#/, '').toLowerCase();
+            return ({ 'trangchu-id': 'home', 'home-id': 'home', mobile: 'mobile', 'mobile-id': 'mobile', emulator: 'emulator', 'emulator-id': 'emulator', donate: 'donate', 'donate-id': 'donate', thaoluan: 'discuss', 'thaoluan-id': 'discuss', discuss: 'discuss', 'duan-id': 'projects', projects: 'projects' })[hash] || 'home';
+        }
+
+        function renderRouteFromHash() {
+            if (getGameIdFromPath()) return;
+            const tab = getTabFromHash();
+            if (tab === 'donate') {
+                document.getElementById('donateModal').style.display = 'flex';
+                updateActiveNav(tab);
+                return;
+            }
+            switchTab(tab, null, false);
+        }
+
+        function updateActiveNav(tabName) {
+            document.querySelectorAll('.nav-links a[data-tab]').forEach(link => link.classList.toggle('active', link.dataset.tab === tabName));
+        }
 
         function getGameIdFromPath() {
             const queryGameId = new URLSearchParams(window.location.search).get('game');
@@ -458,6 +481,17 @@
             if (editor) editor.innerHTML = '';
             const title = document.getElementById('postTitle');
             if (title) title.value = '';
+            const editId = document.getElementById('editPostId');
+            if (editId) editId.value = '';
+            const imageInput = document.getElementById('postImage');
+            if (imageInput) imageInput.value = '';
+            const imagePreview = document.getElementById('postImagePreview');
+            if (imagePreview) imagePreview.innerHTML = '';
+            const formTitle = document.getElementById('postFormTitle');
+            if (formTitle) formTitle.textContent = 'Đăng bài viết hoặc báo lỗi:';
+            const submitButton = document.getElementById('postSubmitButton');
+            if (submitButton) submitButton.textContent = 'Đăng Bài';
+            tempPostImageData = '';
         }
 
         function updateChatWidget() {
@@ -838,10 +872,10 @@
 
         /* ================= ĐIỀU HƯỚNG TAB ================= */
 
-        function switchTab(tabName, event) {
-            event.preventDefault();
-            document.querySelectorAll('.nav-links a').forEach(l => l.classList.remove('active'));
-            event.target.classList.add('active');
+        function switchTab(tabName, event, updateUrl = true) {
+            if (event) event.preventDefault();
+            if (updateUrl) window.history.pushState({}, '', `#${tabName === 'home' ? 'trangchu' : tabName === 'discuss' ? 'thaoluan' : tabName === 'projects' ? 'duan' : tabName}-id`);
+            updateActiveNav(tabName);
             closeMobileNav();
 
             document.getElementById('gameDetailPageContainer').style.display = 'none';
@@ -1445,7 +1479,7 @@
                 const canSetLinkVisibility = currentUser.role === 'admin' || currentUser.role === 'superadmin';
                 const canUseColors = ['vip', 'admin', 'superadmin'].includes(currentUser.role);
                 const colorTools = canUseColors ? `<span class="editor-color-tools" aria-label="Màu chữ"><button type="button" style="--editor-color:#ff4757" onclick="formatPost('foreColor', '#ff4757')" title="Đỏ"></button><button type="button" style="--editor-color:#ffa502" onclick="formatPost('foreColor', '#ffa502')" title="Cam"></button><button type="button" style="--editor-color:#2ed573" onclick="formatPost('foreColor', '#2ed573')" title="Xanh lá"></button><button type="button" style="--editor-color:#1e90ff" onclick="formatPost('foreColor', '#1e90ff')" title="Xanh dương"></button><button type="button" style="--editor-color:#ffffff" onclick="formatPost('foreColor', '#ffffff')" title="Trắng"></button></span>` : '';
-                container.innerHTML = `<div class="post-box"><h3>Đăng bài viết hoặc báo lỗi:</h3><input id="postTitle" class="post-title-input" type="text" maxlength="160" placeholder="Tiêu đề bài viết (không bắt buộc)"><div class="post-editor-toolbar"><button type="button" onclick="formatPost('bold')" title="In đậm"><i class="fa-solid fa-bold"></i></button><button type="button" onclick="formatPost('italic')" title="In nghiêng"><i class="fa-solid fa-italic"></i></button><select onchange="formatPost('fontName', this.value); this.value = ''" aria-label="Kiểu chữ"><option value="">Kiểu chữ</option><option value="Segoe UI">Segoe UI</option><option value="Georgia">Georgia</option><option value="Verdana">Verdana</option><option value="monospace">Monospace</option></select>${colorTools}</div><div id="postContent" class="post-editor" contenteditable="true" role="textbox" aria-multiline="true" data-placeholder="Nhập nội dung..."></div><div class="post-link-fields"><input id="postLinkLabel" type="text" maxlength="80" placeholder="Tên đường liên kết (không bắt buộc)"><input id="postLinkUrl" type="url" placeholder="Dán đường liên kết (không bắt buộc)"><select id="postLinkVisibility" ${canSetLinkVisibility ? '' : 'disabled'} title="Ai được xem link"><option value="guest">Khách truy cập</option><option value="member" selected>Thành viên đã đăng nhập</option><option value="vip">Thành viên VIP</option><option value="regular">Thành viên thường</option><option value="admin">Admin / Mod</option><option value="superadmin">SuperAdmin</option></select></div><button onclick="addNewPost()" class="btn-post">Đăng Bài</button></div>`;
+                container.innerHTML = `<div class="post-box"><h3 id="postFormTitle">Đăng bài viết hoặc báo lỗi:</h3><input type="hidden" id="editPostId"><input id="postTitle" class="post-title-input" type="text" maxlength="160" placeholder="Tiêu đề bài viết (không bắt buộc)"><div class="post-editor-toolbar"><button type="button" onclick="formatPost('bold')" title="In đậm"><i class="fa-solid fa-bold"></i></button><button type="button" onclick="formatPost('italic')" title="In nghiêng"><i class="fa-solid fa-italic"></i></button><select onchange="formatPost('fontName', this.value); this.value = ''" aria-label="Kiểu chữ"><option value="">Kiểu chữ</option><option value="Segoe UI">Segoe UI</option><option value="Georgia">Georgia</option><option value="Verdana">Verdana</option><option value="monospace">Monospace</option></select>${colorTools}</div><div id="postContent" class="post-editor" contenteditable="true" role="textbox" aria-multiline="true" data-placeholder="Nhập nội dung..."></div><div class="post-link-fields"><input id="postLinkLabel" type="text" maxlength="80" placeholder="Tên đường liên kết (không bắt buộc)"><input id="postLinkUrl" type="url" placeholder="Dán đường liên kết (không bắt buộc)"><select id="postLinkVisibility" ${canSetLinkVisibility ? '' : 'disabled'} title="Ai được xem link"><option value="guest">Khách truy cập</option><option value="member" selected>Thành viên đã đăng nhập</option><option value="vip">Thành viên VIP</option><option value="regular">Thành viên thường</option><option value="admin">Admin / Mod</option><option value="superadmin">SuperAdmin</option></select></div><label class="post-image-picker">Ảnh kèm theo<input id="postImage" type="file" accept="image/*" onchange="previewPostImage(this)"></label><div id="postImagePreview" class="post-image-preview"></div><button id="postSubmitButton" onclick="addNewPost()" class="btn-post">Đăng Bài</button></div>`;
             } else {
                 container.innerHTML = `<div class="post-box" style="text-align:center;"><p>Bạn cần đăng nhập để thảo luận.</p><button onclick="openAuthModal('login')" class="btn-post" style="max-width:150px;">Đăng Nhập</button></div>`;
             }
@@ -1463,7 +1497,8 @@
             const linkVisibility = document.getElementById('postLinkVisibility')?.value || 'member';
             if (linkUrl && !/^https?:\/\//i.test(linkUrl)) { showToast('Đường liên kết phải bắt đầu bằng http:// hoặc https://.', 'error'); return; }
 
-            const { error } = await _supabase.from('posts').insert({
+            const editId = document.getElementById('editPostId')?.value;
+            const payload = {
                 author_id: currentUser.id,
                 author_name: currentUser.username,
                 author_role: currentUser.role,
@@ -1471,13 +1506,40 @@
                 content,
                 link_label: linkUrl ? linkLabel || 'Mở liên kết' : null,
                 link_url: linkUrl || null,
-                link_visibility: ['admin', 'superadmin'].includes(currentUser.role) ? linkVisibility : 'member'
-            });
+                link_visibility: ['admin', 'superadmin'].includes(currentUser.role) ? linkVisibility : 'member',
+                image_url: tempPostImageData || null
+            };
+            const result = editId
+                ? await _supabase.from('posts').update({ title, content, link_label: payload.link_label, link_url: payload.link_url, link_visibility: payload.link_visibility, image_url: payload.image_url }).eq('id', editId)
+                : await _supabase.from('posts').insert(payload);
+            const { error } = result;
 
             if (error) { showToast('Không đăng được bài: ' + error.message, 'error'); return; }
             resetPostEditor();
-            showToast('Đăng bài thành công!', 'success');
+            showToast(editId ? 'Đã cập nhật bài viết!' : 'Đăng bài thành công!', 'success');
             loadPosts();
+        }
+
+        async function previewPostImage(input) {
+            if (!input.files?.[0]) return;
+            try { tempPostImageData = await compressImage(input.files[0], 1000, 0.72); document.getElementById('postImagePreview').innerHTML = `<img src="${tempPostImageData}" alt="Ảnh đính kèm">`; }
+            catch (err) { showToast('Không đọc được ảnh.', 'error'); }
+        }
+
+        async function editPost(postId) {
+            const { data: post, error } = await _supabase.from('posts').select('*').eq('id', postId).single();
+            if (error || !post || (currentUser?.id !== post.author_id && !['admin', 'superadmin'].includes(currentUser?.role))) { showToast('Bạn không có quyền sửa bài này.', 'error'); return; }
+            document.getElementById('editPostId').value = post.id;
+            document.getElementById('postFormTitle').textContent = 'Chỉnh sửa bài viết';
+            document.getElementById('postTitle').value = post.title || '';
+            document.getElementById('postContent').innerHTML = post.content || '';
+            document.getElementById('postLinkLabel').value = post.link_label || '';
+            document.getElementById('postLinkUrl').value = post.link_url || '';
+            document.getElementById('postLinkVisibility').value = post.link_visibility || 'member';
+            tempPostImageData = post.image_url || '';
+            document.getElementById('postImagePreview').innerHTML = tempPostImageData ? `<img src="${escapeHtml(tempPostImageData)}" alt="Ảnh đính kèm">` : '';
+            document.getElementById('postSubmitButton').textContent = 'Lưu thay đổi';
+            document.getElementById('postBoxContainer').scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
 
         async function deletePost(id) {
@@ -1592,6 +1654,7 @@
 
             container.innerHTML = posts.map(p => {
                 const canDeletePost = currentUser && (currentUser.id === p.author_id || isAnyAdmin);
+                const canEditPost = canDeletePost;
                 const badgeClass = badgeClassForRole(p.author_role);
                 const roleLabel = displayRoleLabel(p.author_role);
                 const authorStyle = p.appearance_color ? appearanceStyle({ role: p.author_role, color: p.appearance_color, effect: p.appearance_effect }) : '';
@@ -1621,6 +1684,7 @@
                         </div>
                         ${p.title ? `<h3 class="post-title">${escapeHtml(p.title)}</h3>` : ''}
                         <div class="post-body">${sanitizePostHtml(p.content)}</div>
+                        ${p.image_url ? `<img class="post-attached-image" src="${escapeHtml(p.image_url)}" alt="Ảnh đính kèm bài viết">` : ''}
                         ${postLinkHtml}
                         
                         <div style="display: flex; gap: 8px; align-items: center; margin-bottom: 12px; flex-wrap: wrap;">
@@ -1628,6 +1692,7 @@
                                 <i class="fa-solid fa-heart"></i> Thích (<span id="likes-${p.id}">${p.likes_count || 0}</span>)
                             </button>
                             ${pinButton}
+                            ${canEditPost ? `<button class="btn-edit-post" onclick="editPost('${p.id}')"><i class="fa-solid fa-pen"></i> Sửa bài</button>` : ''}
                             ${canDeletePost ? `<button class="btn-delete-post" onclick="deletePost('${p.id}')"><i class="fa-solid fa-trash"></i> Xóa bài</button>` : ''}
                         </div>
 
@@ -1795,11 +1860,13 @@
         /* ================= DONATE ================= */
 
         function openDonate(event) {
-            event.preventDefault();
+            if (event) event.preventDefault();
             closeMobileNav();
+            window.history.pushState({}, '', '#donate-id');
+            updateActiveNav('donate');
             document.getElementById('donateModal').style.display = "flex";
         }
-        function closeDonate() { document.getElementById('donateModal').style.display = "none"; }
+        function closeDonate() { document.getElementById('donateModal').style.display = "none"; window.history.pushState({}, '', '#trangchu-id'); updateActiveNav('home'); }
     </script>
 </body>
 </html>
