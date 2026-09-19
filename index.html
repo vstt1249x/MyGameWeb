@@ -101,14 +101,14 @@
     <!-- Danh sách Game -->
     <main class="container" id="homeContent">
         <h2 class="section-title"><i class="fa-solid fa-fire"></i> DANH SÁCH GAME MỚI CẬP NHẬT</h2>
-        <div class="toolbar-row">
-            <select class="sort-select" id="sortSelect" onchange="onSortChange(this.value)" aria-label="Sắp xếp game">
-                <option value="newest">Mới nhất</option>
-                <option value="downloads">Tải nhiều nhất</option>
-                <option value="rating">Đánh giá cao nhất</option>
-            </select>
-        </div>
-        <div class="game-grid" id="gameGrid"></div>
+        <section class="game-list-section">
+            <h3 class="section-title"><i class="fa-solid fa-fire"></i> TẢI NHIỀU NHẤT</h3>
+            <div class="game-grid" id="mostDownloadedGrid"></div>
+        </section>
+        <section class="game-list-section">
+            <h3 class="section-title"><i class="fa-solid fa-clock"></i> MỚI NHẤT</h3>
+            <div class="game-grid" id="newestGrid"></div>
+        </section>
         <div class="pagination-row" id="gamePagination"></div>
     </main>
 
@@ -174,6 +174,7 @@
                 </div>
 
                 <input type="text" id="newGameGuideTitle" placeholder="Tiêu đề hướng dẫn (VD: HƯỚNG DẪN CÀI ĐẶT VIỆT HÓA CHO GTA 5)..." style="padding: 10px; background: #0d0e12; border: 1px solid #ffa502; color: #fff; border-radius: 6px; font-weight: bold;">
+                <input type="text" id="newGameNoLinkLabel" placeholder="Nhãn khi chưa có link (VD: Sắp Có Link Tải)" style="padding: 10px; background: #0d0e12; border: 1px solid #2f3542; color: #fff; border-radius: 6px;">
 
                 <div class="game-links-admin-panel">
                     <div class="game-links-admin-heading"><strong><i class="fa-solid fa-code-branch"></i> Mirror tải mới</strong><span>Link hoạt động sẽ hiển thị trên trang game</span></div>
@@ -840,6 +841,7 @@
             const avgRating = (g.rating_sum / (g.rating_count || 1)).toFixed(1);
             const thumbImg = g.thumbnail ? g.thumbnail : ('https://via.placeholder.com/300x200?text=' + encodeURIComponent(g.name));
             const hasActiveMirrors = g.hasActiveMirrors !== false;
+            const noLinkLabel = g.no_link_label || 'Sắp Có Link Tải';
 
             return `
                 <div class="game-card" data-category="${escapeHtml(g.category)}" data-name="${escapeHtml((g.name || '').toLowerCase())}" onclick="openGameDetailPage(${g.id})" style="cursor: pointer;">
@@ -855,7 +857,7 @@
                             <span><i class="fa-solid fa-heart" style="color: #ff4757;"></i> ${g.likes || 0}</span>
                             <span><i class="fa-solid fa-star" style="color: #ffa502;"></i> ${avgRating}</span>
                         </div>
-                        <button onclick="event.stopPropagation(); openGameDetailPage(${g.id})" class="${hasActiveMirrors ? 'btn-download' : 'btn-download coming-soon-btn'}" ${hasActiveMirrors ? '' : 'disabled'}><i class="fa-solid fa-${hasActiveMirrors ? 'download' : 'clock'}"></i> ${hasActiveMirrors ? 'Tải Về' : 'Sắp Có Link Tải'}</button>
+                        <button onclick="event.stopPropagation(); openGameDetailPage(${g.id})" class="${hasActiveMirrors ? 'btn-download' : 'btn-download coming-soon-btn'}" ${hasActiveMirrors ? '' : 'disabled'}><i class="fa-solid fa-${hasActiveMirrors ? 'download' : 'clock'}"></i> ${hasActiveMirrors ? 'Tải Về' : escapeHtml(noLinkLabel)}</button>
                         ${isAnyAdmin ? `
                             <div style="margin-top: 8px; border-top: 1px solid #2f3542; padding-top: 5px;">
                                 <button onclick="editCustomGame(${g.id}, event)" class="btn-edit-game"><i class="fa-solid fa-pen"></i> Sửa</button>
@@ -880,53 +882,35 @@
         }
 
         async function loadCustomGames() {
-            const grid = document.getElementById('gameGrid');
-            if (!grid) return;
-            grid.innerHTML = '<p style="color:#747d8c; grid-column: 1/-1;">Đang tải danh sách game...</p>';
+            const grids = [document.getElementById('mostDownloadedGrid'), document.getElementById('newestGrid')];
+            if (!grids[0] || !grids[1]) return;
+            grids.forEach(grid => { grid.innerHTML = '<p style="color:#747d8c; grid-column: 1/-1;">Đang tải danh sách game...</p>'; });
 
-            let query = _supabase.from('games').select('*', { count: 'exact' });
-
+            let query = _supabase.from('games').select('*');
             if (currentCategory !== 'all') query = query.eq('category', currentCategory);
             if (currentSearchTerm) query = query.ilike('name', `%${currentSearchTerm}%`);
-
-            if (currentSort === 'downloads') query = query.order('downloads', { ascending: false });
-            else if (currentSort === 'rating') query = query.order('rating_sum', { ascending: false });
-            else query = query.order('created_at', { ascending: false });
-
-            const from = (currentPage - 1) * PAGE_SIZE;
-            const to = from + PAGE_SIZE - 1;
-            query = query.range(from, to);
-
-            const { data, error, count } = await query;
-
+            const { data, error } = await query;
             if (error) {
-                grid.innerHTML = '<p style="color:#ff4757; grid-column: 1/-1;">Không tải được danh sách game.</p>';
+                grids.forEach(grid => { grid.innerHTML = '<p style="color:#ff4757; grid-column: 1/-1;">Không tải được danh sách game.</p>'; });
                 console.error(error);
                 return;
             }
 
-            let games = data || [];
-            if (games.length) {
-                const { data: mirrors, error: mirrorError } = await _supabase.from('game_links').select('game_id').in('game_id', games.map(game => game.id)).eq('is_active', true);
-                if (mirrorError) {
-                    games.forEach(game => { game.hasActiveMirrors = true; });
-                } else {
-                    const mirrorIds = new Set((mirrors || []).map(mirror => String(mirror.game_id)));
-                    games.forEach(game => { game.hasActiveMirrors = mirrorIds.has(String(game.id)); });
-                }
+            const allGames = data || [];
+            const mostDownloaded = [...allGames].sort((a, b) => (b.downloads || 0) - (a.downloads || 0)).slice(0, 4);
+            const newestIds = new Set(mostDownloaded.map(game => String(game.id)));
+            const newest = [...allGames].sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+                .filter(game => !newestIds.has(String(game.id))).slice(0, 4);
+            const visibleGames = [...mostDownloaded, ...newest];
+            if (visibleGames.length) {
+                const { data: mirrors, error: mirrorError } = await _supabase.from('game_links').select('game_id').in('game_id', visibleGames.map(game => game.id)).eq('is_active', true);
+                const mirrorIds = new Set((mirrors || []).map(mirror => String(mirror.game_id)));
+                visibleGames.forEach(game => { game.hasActiveMirrors = mirrorError ? true : mirrorIds.has(String(game.id)); });
             }
-            if (currentSort === 'rating') {
-                games = [...games].sort((a, b) => (b.rating_sum / (b.rating_count || 1)) - (a.rating_sum / (a.rating_count || 1)));
-            }
-
-            if (games.length === 0) {
-                grid.innerHTML = '<p style="color:#747d8c; grid-column: 1/-1; text-align:center;">Chưa có game nào phù hợp.</p>';
-            } else {
-                const isAnyAdmin = currentUser && (currentUser.role === 'superadmin' || currentUser.role === 'admin');
-                grid.innerHTML = games.map(g => renderGameCard(g, isAnyAdmin)).join('');
-            }
-
-            renderPagination(count || 0);
+            const isAnyAdmin = currentUser && (currentUser.role === 'superadmin' || currentUser.role === 'admin');
+            grids[0].innerHTML = mostDownloaded.length ? mostDownloaded.map(game => renderGameCard(game, isAnyAdmin)).join('') : '<p style="color:#747d8c; grid-column:1/-1;">Chưa có game nào.</p>';
+            grids[1].innerHTML = newest.length ? newest.map(game => renderGameCard(game, isAnyAdmin)).join('') : '<p style="color:#747d8c; grid-column:1/-1;">Chưa có game mới.</p>';
+            document.getElementById('gamePagination').innerHTML = '';
         }
 
         async function openGameDetailPage(id) {
@@ -959,7 +943,7 @@
                 <div class="mirror-link-row" id="mirror-row-${escapeHtml(link.id)}">
                     <a href="${escapeHtml(link.url)}" target="_blank" rel="noopener" class="custom-link-btn"><i class="fa-solid fa-download"></i> Tải qua ${escapeHtml(link.label)}</a>
                     <button type="button" class="report-link-btn" data-link-id="${escapeHtml(link.id)}" onclick="reportDeadLink('${escapeHtml(link.id)}', this)"><i class="fa-solid fa-flag"></i> Báo lỗi link</button>
-                </div>`).join('') : '<span class="coming-soon-badge"><i class="fa-solid fa-clock"></i> Sắp Có Link Tải</span>';
+                </div>`).join('') : `<span class="coming-soon-badge"><i class="fa-solid fa-clock"></i> ${escapeHtml(g.no_link_label || 'Sắp Có Link Tải')}</span>`;
 
             const techFields = [
                 ['Dung Lượng', g.file_size], ['Phiên Bản Android Tối Thiểu', g.min_android_version],
@@ -1061,6 +1045,7 @@
                 document.getElementById('newGameLanguage').value = g.language || '';
                 document.getElementById('newGameLastUpdated').value = g.last_updated_note || '';
                 document.getElementById('newGameGuideTitle').value = g.guide_title || (`HƯỚNG DẪN CÀI ĐẶT VIỆT HÓA CHO ` + g.name.toUpperCase());
+                document.getElementById('newGameNoLinkLabel').value = g.no_link_label || 'Sắp Có Link Tải';
                 document.getElementById('newGameGuide').value = g.guide || '';
                 tempGameThumbData = g.thumbnail || '';
                 document.getElementById('thumbPreviewContainer').innerHTML = tempGameThumbData
@@ -1078,6 +1063,7 @@
                 document.getElementById('newGameLanguage').value = '';
                 document.getElementById('newGameLastUpdated').value = '';
                 document.getElementById('newGameGuideTitle').value = 'HƯỚNG DẪN CÀI ĐẶT VIỆT HÓA CHO GAME';
+                document.getElementById('newGameNoLinkLabel').value = 'Sắp Có Link Tải';
                 document.getElementById('newGameGuide').value = `<ol><li>Cài đặt file <b>APK</b>.</li><li>Sao chép thư mục dữ liệu.</li></ol>`;
                 document.getElementById('newGameThumb').value = '';
                 tempGameThumbData = '';
@@ -1110,11 +1096,12 @@
             const language = document.getElementById('newGameLanguage').value.trim();
             const lastUpdated = document.getElementById('newGameLastUpdated').value.trim();
             const guideTitle = document.getElementById('newGameGuideTitle').value.trim() || ('HƯỚNG DẪN CÀI ĐẶT VIỆT HÓA CHO ' + name.toUpperCase());
+            const noLinkLabel = document.getElementById('newGameNoLinkLabel').value.trim() || 'Sắp Có Link Tải';
             const guide = document.getElementById('newGameGuide').value.trim();
 
             if (!name || !version) { showToast('Vui lòng điền tên và phiên bản game!', 'error'); return; }
 
-            const payload = { name, category, version, guide_title: guideTitle, guide, file_size: fileSize || null, min_android_version: minAndroid || null, cpu_support: cpuSupport || null, language: language || null, last_updated_note: lastUpdated || null };
+            const payload = { name, category, version, guide_title: guideTitle, no_link_label: noLinkLabel, guide, file_size: fileSize || null, min_android_version: minAndroid || null, cpu_support: cpuSupport || null, language: language || null, last_updated_note: lastUpdated || null };
             if (tempGameThumbData) payload.thumbnail = tempGameThumbData;
 
             let error;
@@ -1132,14 +1119,25 @@
             if (error) { showToast('Lỗi khi lưu game: ' + error.message, 'error'); return; }
 
             if (savedGameId) {
-                const { data: existingMirrors } = await _supabase.from('game_links').select('id').eq('game_id', savedGameId);
+                const { data: existingMirrors, error: mirrorsLoadError } = await _supabase.from('game_links').select('id').eq('game_id', savedGameId);
+                if (mirrorsLoadError) {
+                    showToast('Không tải được danh sách mirror: ' + mirrorsLoadError.message, 'error');
+                    return;
+                }
                 const existingIds = new Set((existingMirrors || []).map(mirror => String(mirror.id)));
                 const formMirrors = getMirrorManagerRows();
                 for (const mirror of formMirrors) {
+                    let mirrorResult;
                     if (mirror.id && existingIds.has(String(mirror.id))) {
-                        await _supabase.from('game_links').update(mirror).eq('id', mirror.id);
+                        const { id, ...mirrorPayload } = mirror;
+                        mirrorResult = await _supabase.from('game_links').update(mirrorPayload).eq('id', id);
                     } else if (mirror.label && mirror.url) {
-                        await _supabase.from('game_links').insert({ ...mirror, game_id: savedGameId });
+                        const { id, ...mirrorPayload } = mirror;
+                        mirrorResult = await _supabase.from('game_links').insert({ ...mirrorPayload, game_id: savedGameId });
+                    }
+                    if (mirrorResult?.error) {
+                        showToast('Không lưu được mirror: ' + mirrorResult.error.message, 'error');
+                        return;
                     }
                 }
             }
