@@ -7,14 +7,14 @@
     <meta property="og:title" content="Kho Game Việt Hóa - Tải Game Mobile & Port Miễn Phí">
     <meta property="og:description" content="Cộng đồng chia sẻ game Port Android & Emulator Việt hóa chất lượng cao hoàn toàn miễn phí.">
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://vst1249x.github.io/MyGameWeb/">
-    <meta property="og:image" content="https://vst1249x.github.io/MyGameWeb/KGVH.jpg">
+    <meta property="og:url" content="https://vstt1249x.github.io/MyGameWeb/">
+    <meta property="og:image" content="https://vstt1249x.github.io/MyGameWeb/KGVH.jpg">
     <meta property="og:image:alt" content="Kho Game Việt Hóa">
     <meta property="og:image:type" content="image/jpeg">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Kho Game Việt Hóa - Tải Game Mobile & Port Miễn Phí">
     <meta name="twitter:description" content="Cộng đồng chia sẻ game Port Android & Emulator Việt hóa chất lượng cao hoàn toàn miễn phí.">
-    <meta name="twitter:image" content="https://vst1249x.github.io/MyGameWeb/KGVH.jpg">
+    <meta name="twitter:image" content="https://vstt1249x.github.io/MyGameWeb/KGVH.jpg">
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8E%AE%3C/text%3E%3C/svg%3E">
     <title>Kho Game Việt Hóa - Tải Game Mobile & Port Miễn Phí</title>
     <link rel="stylesheet" href="style.css">
@@ -368,6 +368,8 @@
         });
 
         function getGameIdFromPath() {
+            const queryGameId = new URLSearchParams(window.location.search).get('game');
+            if (/^\d+$/.test(queryGameId || '')) return queryGameId;
             return window.location.pathname.match(/\/(\d+)\/?$/)?.[1] || null;
         }
 
@@ -1140,7 +1142,7 @@
         async function openGameDetailPage(id, updateUrl = true) {
             const { data: g, error } = await _supabase.from('games').select('*').eq('id', id).single();
             if (error || !g) { showToast('Không tìm thấy game này.', 'error'); return; }
-            if (updateUrl) window.history.pushState({ gameId: g.id }, '', `${getSiteBasePath()}/${g.id}`);
+            if (updateUrl) window.history.pushState({ gameId: g.id }, '', `${getSiteBasePath()}/?game=${g.id}`);
 
             const { data: normalizedLinks, error: linksError } = await _supabase
                 .from('game_links')

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="robots" content="noindex">
+    <title>Đang mở game...</title>
+</head>
+<body>
+    <p>Đang mở trang game...</p>
+    <script>
+        const pathParts = window.location.pathname.split('/').filter(Boolean);
+        const gameId = pathParts.at(-1);
+        const projectIndex = pathParts.indexOf('MyGameWeb');
+        const projectPath = projectIndex >= 0
+            ? '/' + pathParts.slice(0, projectIndex + 1).join('/')
+            : '';
+
+        if (/^\d+$/.test(gameId)) {
+            window.location.replace(`${projectPath}/?game=${gameId}`);
+        } else {
+            window.location.replace(`${projectPath}/`);
+        }
+    </script>
+</body>
+</html>
