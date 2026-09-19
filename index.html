@@ -27,7 +27,7 @@
     <div id="siteNoticeModal" class="site-notice-modal" role="dialog" aria-modal="true" aria-labelledby="siteNoticeTitle">
         <div class="site-notice-content">
             <div class="site-notice-icon"><i class="fa-solid fa-circle-info"></i></div>
-            <h2 id="siteNoticeTitle">📌 Thông báo chính thức &amp; Định hướng mới</h2>
+            <h2 id="siteNoticeTitle">📌 Thống Báo Về Vấn Đề Game Bản Quyền</h2>
             <div class="site-notice-body">
                 <p class="site-notice-alert"><strong><i class="fa-solid fa-triangle-exclamation"></i> Từ thời điểm này, website của tôi CHỈ CUNG CẤP CÁC TỆP BẢN DỊCH VIỆT HÓA</strong>, tuyệt đối không lưu trữ, cung cấp hay phân phối bất kỳ tệp dữ liệu game gốc nào có bản quyền!</p>
                 <ul>
@@ -37,6 +37,7 @@
                     <li>Từ nay mình sẽ hạn chế đăng bài tại các nhóm, mọi thông tin cập nhật sẽ có trong mục <strong>"Thảo Luận Của Web"</strong>.</li>
                 </ul>
             </div>
+            <label class="site-notice-hide-option"><input type="checkbox" id="hideSiteNoticeForThreeHours"> Ẩn thông báo trong 3 giờ</label>
             <button type="button" class="site-notice-confirm" onclick="confirmSiteNotice()"><i class="fa-solid fa-check"></i> Xác Nhận &amp; Đồng Ý</button>
         </div>
     </div>
@@ -99,6 +100,12 @@
                 <div class="announcement-dots" id="announcementDots" aria-hidden="true"></div>
                 <i class="fa-solid fa-pen announcement-edit-btn" id="announcementEditBtn" style="display: none;" onclick="openAnnouncementModal()" title="Sửa thông báo"></i>
             </div>
+            <div class="support-ranking" aria-label="Xếp hạng người đóng góp và ủng hộ">
+                <i class="fa-solid fa-trophy"></i>
+                <div class="support-ranking-viewport">
+                    <span class="support-ranking-track">BẢNG XẾP HẠNG ĐÓNG GÓP &amp; ỦNG HỘ: Danh sách người đóng góp sẽ được công khai và cập nhật tại đây.</span>
+                </div>
+            </div>
             <div class="search-box">
                 <i class="fa-solid fa-magnifying-glass"></i>
                 <input type="text" id="searchInput" placeholder="Nhập tên game bạn muốn tìm..." onkeyup="searchGames()">
@@ -117,7 +124,7 @@
             <div class="game-grid" id="mostDownloadedGrid"></div>
         </section>
         <section class="game-list-section">
-            <h3 class="section-title"><i class="fa-solid fa-clock"></i> MỚI NHẤT</h3>
+            <h3 class="section-title"><i class="fa-solid fa-forward"></i> CÁC GAME TIẾP THEO</h3>
             <div class="game-grid" id="newestGrid"></div>
         </section>
         <div class="pagination-row" id="gamePagination"></div>
@@ -172,6 +179,27 @@
         </div>
         <div id="adminProjectBox"></div>
         <div id="projectList" class="project-list"><p class="project-empty">Đang tải danh sách dự án...</p></div>
+    </main>
+
+    <main class="container donate-page" id="donateContent" style="display: none;">
+        <h2 class="section-title"><i class="fa-solid fa-mug-hot"></i> THÔNG TIN ỦNG HỘ</h2>
+        <div class="donate-page-layout">
+            <div class="donate-body">
+                <div class="donate-qr">
+                    <img src="qr-momo.jpg" alt="Mã QR Momo nhận ủng hộ" onerror="this.src='https://via.placeholder.com/200?text=QR+Momo'">
+                    <p class="acc-name">Chủ tài khoản: Vũ Tiến Lộc</p>
+                    <p class="acc-num">STK / SĐT: <strong>0378487294</strong></p>
+                </div>
+            </div>
+            <article class="donate-text">
+                <p><strong>Admin:</strong> Vũ Thanh Lịch</p>
+                <p><strong>Chủ tài khoản:</strong> Vũ Tiến Lộc</p>
+                <p>Tất cả các file Việt hóa do tôi thực hiện đều được công bố miễn phí và được dịch bằng AI. Vì hiện tại chỉ có một mình tôi thực hiện nên đôi khi sản phẩm có thể còn sai sót. Mong mọi người thông cảm và bỏ qua.</p>
+                <p>Tôi làm vì đam mê, không nhằm mục đích thu lợi nhuận. Tuy nhiên, nếu nhận được sự ủng hộ từ mọi người thì cho phép tôi được “đớp” một chút nhé 😊. Mọi sự ủng hộ của các bạn đều sẽ được công khai trên website. Người ủng hộ cũng sẽ được nhận role <strong>Thành viên VIP</strong>, đi kèm nhiều đặc quyền riêng trong cộng đồng.</p>
+                <p>Đối với những file Việt hóa không phải do tôi thực hiện, website vẫn công bố miễn phí và ghi rõ nguồn của nhóm dịch. Nếu bạn là chủ của một file Việt hóa nhưng chưa thấy website ghi nguồn, vui lòng liên hệ với tôi qua Facebook cá nhân để được bổ sung thông tin.</p>
+                <p>Xin chân thành cảm ơn sự quan tâm, ủng hộ và đồng hành của mọi người!</p>
+            </article>
+        </div>
     </main>
 
     <!-- Modal Thêm / Sửa Game -->
@@ -276,21 +304,6 @@
         </div>
     </div>
 
-    <!-- Modal Donate -->
-    <div id="donateModal" class="modal">
-        <div class="modal-content">
-            <span class="close-btn" onclick="closeDonate()">&times;</span>
-            <h2>☕ Thông Tin Donate</h2>
-            <div class="donate-body">
-                <div class="donate-qr">
-                    <img src="qr-momo.jpg" alt="Mã QR Momo nhận donate" onerror="this.src='https://via.placeholder.com/200?text=QR+Momo'">
-                    <p class="acc-name">Vũ Tiến Lộc</p>
-                    <p class="acc-num">STK / SĐT: <strong>0378487294</strong></p>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <div id="projectRequestModal" class="modal">
         <div class="modal-content project-request-modal-content">
             <span class="close-btn" onclick="closeProjectRequestModal()">&times;</span>
@@ -327,7 +340,7 @@
         let isRegisterMode = false;
 
         let currentCategory = 'all';
-        let currentSort = 'newest';
+        let currentSort = 'downloads';
         let currentSearchTerm = '';
         let currentPage = 1;
         const PAGE_SIZE = 8;
@@ -341,16 +354,32 @@
         let chatMessagesCache = [];
         let chatUnreadCount = 0;
         let chatAudioContext = null;
+        const SITE_NOTICE_HIDE_KEY = 'kgvh_site_notice_hidden_until';
+
+        function initSiteNotice() {
+            const hiddenUntil = Number(localStorage.getItem(SITE_NOTICE_HIDE_KEY) || 0);
+            if (hiddenUntil > Date.now()) {
+                const notice = document.getElementById('siteNoticeModal');
+                if (notice) notice.remove();
+                document.body.classList.remove('site-notice-locked');
+            } else {
+                localStorage.removeItem(SITE_NOTICE_HIDE_KEY);
+            }
+        }
 
         function confirmSiteNotice() {
             const notice = document.getElementById('siteNoticeModal');
             if (!notice) return;
+            if (document.getElementById('hideSiteNoticeForThreeHours')?.checked) {
+                localStorage.setItem(SITE_NOTICE_HIDE_KEY, String(Date.now() + 3 * 60 * 60 * 1000));
+            }
             notice.classList.add('is-confirmed');
             document.body.classList.remove('site-notice-locked');
             setTimeout(() => notice.remove(), 220);
         }
 
         window.onload = async function() {
+            initSiteNotice();
             await initVisitorStats();
             setupPresence();
             await loadAnnouncement();
@@ -388,8 +417,7 @@
             if (getGameIdFromPath()) return;
             const tab = getTabFromHash();
             if (tab === 'donate') {
-                document.getElementById('donateModal').style.display = 'flex';
-                updateActiveNav(tab);
+                switchTab('donate', null, false);
                 return;
             }
             switchTab(tab, null, false);
@@ -896,6 +924,7 @@
             const homeContent = document.getElementById('homeContent');
             const discussContent = document.getElementById('discussContent');
             const projectsContent = document.getElementById('projectsContent');
+            const donateContent = document.getElementById('donateContent');
             const heroSection = document.getElementById('heroSection');
 
             if (tabName === 'discuss') {
@@ -904,6 +933,7 @@
                 heroSection.style.display = 'none';
                 discussContent.style.display = 'block';
                 projectsContent.style.display = 'none';
+                donateContent.style.display = 'none';
                 loadPosts();
             } else if (tabName === 'projects') {
                 moveChatWidgetForTab('projects');
@@ -911,11 +941,20 @@
                 heroSection.style.display = 'none';
                 discussContent.style.display = 'none';
                 projectsContent.style.display = 'block';
+                donateContent.style.display = 'none';
                 loadProjects();
+            } else if (tabName === 'donate') {
+                moveChatWidgetForTab('donate');
+                homeContent.style.display = 'none';
+                heroSection.style.display = 'none';
+                discussContent.style.display = 'none';
+                projectsContent.style.display = 'none';
+                donateContent.style.display = 'block';
             } else {
                 moveChatWidgetForTab(tabName);
                 discussContent.style.display = 'none';
                 projectsContent.style.display = 'none';
+                donateContent.style.display = 'none';
                 heroSection.style.display = 'block';
                 homeContent.style.display = 'block';
                 if (tabName === 'mobile') filterCategory('mobile');
@@ -1176,8 +1215,8 @@
 
             const allGames = data || [];
             const sortedGames = [...allGames].sort((a, b) => {
-                if (currentSort === 'downloads') return (b.downloads || 0) - (a.downloads || 0);
-                return new Date(b.created_at) - new Date(a.created_at);
+                if (currentSort === 'newest') return new Date(b.created_at) - new Date(a.created_at);
+                return (b.downloads || 0) - (a.downloads || 0) || new Date(b.created_at) - new Date(a.created_at);
             });
             const totalPages = Math.max(1, Math.ceil(sortedGames.length / PAGE_SIZE));
             if (currentPage > totalPages) currentPage = totalPages;
@@ -1216,6 +1255,7 @@
             document.getElementById('homeContent').style.display = 'none';
             document.getElementById('heroSection').style.display = 'none';
             document.getElementById('discussContent').style.display = 'none';
+            document.getElementById('donateContent').style.display = 'none';
 
             const detailContainer = document.getElementById('gameDetailPageContainer');
             detailContainer.style.display = 'block';
@@ -1309,6 +1349,7 @@
             document.getElementById('gameDetailPageContainer').style.display = 'none';
             document.getElementById('homeContent').style.display = 'block';
             document.getElementById('heroSection').style.display = 'block';
+            document.getElementById('donateContent').style.display = 'none';
             loadCustomGames();
         }
 
@@ -1791,7 +1832,7 @@
             const viewport = root?.querySelector('.announcement-viewport');
             const track = root?.querySelector('.announcement-track');
             if (!viewport || !track) return;
-            track.classList.toggle('is-marquee', track.scrollWidth > viewport.clientWidth + 8);
+            track.classList.add('is-marquee');
         }
 
         function renderAnnouncementBar() {
@@ -1923,9 +1964,8 @@
             closeMobileNav();
             window.history.pushState({}, '', '#donate-id');
             updateActiveNav('donate');
-            document.getElementById('donateModal').style.display = "flex";
+            switchTab('donate', null, false);
         }
-        function closeDonate() { document.getElementById('donateModal').style.display = "none"; window.history.pushState({}, '', '#trangchu-id'); updateActiveNav('home'); }
     </script>
 </body>
 </html>
