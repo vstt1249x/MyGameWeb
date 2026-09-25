@@ -338,7 +338,10 @@
             </div>
             <div class="download-support-countdown" id="downloadCountdownText">Vui lòng đợi <b>15</b> giây...</div>
             <div class="download-support-progress"><span id="downloadCountdownBar"></span></div>
-            <button type="button" id="downloadConfirmBtn" class="btn-post" onclick="confirmDownloadSupport()" disabled><i class="fa-solid fa-hourglass-half"></i> Vui lòng đợi 15s</button>
+            <div class="download-support-actions">
+                <button type="button" id="downloadConfirmBtn" class="btn-post" onclick="confirmDownloadSupport()" disabled><i class="fa-solid fa-hourglass-half"></i> Vui lòng đợi 15s</button>
+                <button type="button" id="downloadSkipBtn" class="download-skip-btn" onclick="confirmDownloadSupport()" style="display: none;" title="Bỏ qua chờ 15s — chỉ dành cho SuperAdmin"><i class="fa-solid fa-forward"></i> Bỏ qua</button>
+            </div>
         </div>
     </div>
 
@@ -588,10 +591,10 @@
             const isOpen = isLinkOpenWindowNow();
             if (isOpen) {
                 banner.className = 'link-window-banner is-open';
-                banner.innerHTML = `<i class="fa-solid fa-unlock"></i><span><b>Khung giờ mở link đang hoạt động</b> — mọi link trong thảo luận đang mở cho thành viên đăng nhập. Đóng sau: <b>${formatCountdown(getLinkWindowRemainingMs())}</b>.</span>`;
+                banner.innerHTML = `<i class="fa-solid fa-unlock"></i><span><b>Khung giờ mở link đang hoạt động</b> — link trong thảo luận mở cho thành viên <b>đã thích bài viết</b> và đủ quyền. Đóng sau: <b>${formatCountdown(getLinkWindowRemainingMs())}</b>.</span>`;
             } else {
                 banner.className = 'link-window-banner is-closed';
-                banner.innerHTML = `<i class="fa-solid fa-clock"></i><span>Khung giờ mở link: <b>Thứ 3 &amp; Thứ 7 hàng tuần (5:00 – 23:59)</b> — link ẩn tự động mở cho thành viên đăng nhập. Mở sau: <b>${formatCountdown(getNextLinkOpenWindowDelayMs())}</b>.</span>`;
+                banner.innerHTML = `<i class="fa-solid fa-clock"></i><span>Khung giờ mở link: <b>Thứ 3 &amp; Thứ 7 hàng tuần (5:00 – 23:59)</b> — link chỉ mở với thành viên <b>đã thích bài viết</b> và đủ quyền. Mở sau: <b>${formatCountdown(getNextLinkOpenWindowDelayMs())}</b>.</span>`;
             }
             if (linkWindowWasOpen !== null && linkWindowWasOpen !== isOpen) loadPosts();
             linkWindowWasOpen = isOpen;
@@ -1712,7 +1715,7 @@
                 const canSetLinkVisibility = currentUser.role === 'admin' || currentUser.role === 'superadmin';
                 const canUseColors = ['vip', 'admin', 'superadmin'].includes(currentUser.role);
                 const colorTools = canUseColors ? `<span class="editor-color-tools" aria-label="Màu chữ"><button type="button" style="--editor-color:#ff4757" onclick="formatPost('foreColor', '#ff4757')" title="Đỏ"></button><button type="button" style="--editor-color:#ffa502" onclick="formatPost('foreColor', '#ffa502')" title="Cam"></button><button type="button" style="--editor-color:#2ed573" onclick="formatPost('foreColor', '#2ed573')" title="Xanh lá"></button><button type="button" style="--editor-color:#1e90ff" onclick="formatPost('foreColor', '#1e90ff')" title="Xanh dương"></button><button type="button" style="--editor-color:#ffffff" onclick="formatPost('foreColor', '#ffffff')" title="Trắng"></button></span>` : '';
-                container.innerHTML = `<div class="post-box"><h3 id="postFormTitle">Đăng bài viết hoặc báo lỗi:</h3><input type="hidden" id="editPostId"><input id="postTitle" class="post-title-input" type="text" maxlength="160" placeholder="Tiêu đề bài viết (không bắt buộc)"><div class="post-editor-toolbar"><button type="button" onclick="formatPost('bold')" title="In đậm"><i class="fa-solid fa-bold"></i></button><button type="button" onclick="formatPost('italic')" title="In nghiêng"><i class="fa-solid fa-italic"></i></button><select onchange="formatPost('fontName', this.value); this.value = ''" aria-label="Kiểu chữ"><option value="">Kiểu chữ</option><option value="Segoe UI">Segoe UI</option><option value="Georgia">Georgia</option><option value="Verdana">Verdana</option><option value="monospace">Monospace</option></select>${colorTools}</div><div id="postContent" class="post-editor" contenteditable="true" role="textbox" aria-multiline="true" data-placeholder="Nhập nội dung..."></div><div class="post-link-fields"><input id="postLinkLabel" type="text" maxlength="80" placeholder="Tên đường liên kết (không bắt buộc)"><input id="postLinkUrl" type="url" placeholder="Dán đường liên kết (không bắt buộc)"><select id="postLinkVisibility" ${canSetLinkVisibility ? '' : 'disabled'} title="Ai được xem link"><option value="guest">Khách truy cập</option><option value="member" selected>Thành viên đã đăng nhập (kể cả VIP/Admin)</option><option value="vip">Thành viên VIP</option><option value="regular">Thành viên thường (không VIP)</option><option value="admin">Admin / Mod</option><option value="superadmin">SuperAdmin</option></select></div><p class="post-link-note"><i class="fa-solid fa-circle-info"></i> Người đã đăng nhập cần nhấn <b>Thích</b> bài viết để mở link theo quyền ở trên. Ngoài ra, mọi link ẩn tự động mở cho thành viên đăng nhập vào <b>Thứ 3 &amp; Thứ 7 hàng tuần (5:00–23:59)</b>.</p><label class="post-image-picker">Ảnh kèm theo<input id="postImage" type="file" accept="image/*" onchange="previewPostImage(this)"></label><div id="postImagePreview" class="post-image-preview"></div><button id="postSubmitButton" onclick="addNewPost()" class="btn-post">Đăng Bài</button></div>`;
+                container.innerHTML = `<div class="post-box"><h3 id="postFormTitle">Đăng bài viết hoặc báo lỗi:</h3><input type="hidden" id="editPostId"><input id="postTitle" class="post-title-input" type="text" maxlength="160" placeholder="Tiêu đề bài viết (không bắt buộc)"><div class="post-editor-toolbar"><button type="button" onclick="formatPost('bold')" title="In đậm"><i class="fa-solid fa-bold"></i></button><button type="button" onclick="formatPost('italic')" title="In nghiêng"><i class="fa-solid fa-italic"></i></button><select onchange="formatPost('fontName', this.value); this.value = ''" aria-label="Kiểu chữ"><option value="">Kiểu chữ</option><option value="Segoe UI">Segoe UI</option><option value="Georgia">Georgia</option><option value="Verdana">Verdana</option><option value="monospace">Monospace</option></select>${colorTools}</div><div id="postContent" class="post-editor" contenteditable="true" role="textbox" aria-multiline="true" data-placeholder="Nhập nội dung..."></div><div class="post-link-fields"><input id="postLinkLabel" type="text" maxlength="80" placeholder="Tên đường liên kết (không bắt buộc)"><input id="postLinkUrl" type="url" placeholder="Dán đường liên kết (không bắt buộc)"><select id="postLinkVisibility" ${canSetLinkVisibility ? '' : 'disabled'} title="Ai được xem link"><option value="guest">Khách truy cập</option><option value="member" selected>Thành viên đã đăng nhập (kể cả VIP/Admin)</option><option value="vip">Thành viên VIP</option><option value="regular">Thành viên thường (không VIP)</option><option value="admin">Admin / Mod</option><option value="superadmin">SuperAdmin</option></select></div><p class="post-link-note"><i class="fa-solid fa-circle-info"></i> Người đã đăng nhập cần nhấn <b>Thích</b> bài viết thì link mới hiện theo quyền ở trên, và link chỉ mở trong <b>khung giờ Thứ 3 &amp; Thứ 7 hàng tuần (5:00–23:59)</b> — ngoài khung giờ, kể cả đã thích, link vẫn đóng.</p><label class="post-image-picker">Ảnh kèm theo<input id="postImage" type="file" accept="image/*" onchange="previewPostImage(this)"></label><div id="postImagePreview" class="post-image-preview"></div><button id="postSubmitButton" onclick="addNewPost()" class="btn-post">Đăng Bài</button></div>`;
             } else {
                 container.innerHTML = `<div class="post-box" style="text-align:center;"><p>Bạn cần đăng nhập để thảo luận.</p><button onclick="openAuthModal('login')" class="btn-post" style="max-width:150px;">Đăng Nhập</button></div>`;
             }
@@ -1953,16 +1956,7 @@
                 if (p.link_url) {
                     postLinkHtml = `<a class="post-attached-link" href="${escapeHtml(safeHttpUrl(p.link_url))}" target="_blank" rel="noopener"><i class="fa-solid fa-link"></i> ${escapeHtml(p.link_label || 'Mở liên kết')}</a>`;
                 } else if (p.link_is_hidden) {
-                    const visibilityHint = linkVisibilityLabel(p.link_visibility);
-                    if (!currentUser) {
-                        postLinkHtml = `<div class="post-link-lock"><i class="fa-solid fa-lock"></i><span>Link đang ẩn — <b>đăng nhập</b> và thích bài viết để mở link (yêu cầu quyền: ${visibilityHint}).</span></div>`;
-                    } else if (!p.link_has_liked) {
-                        postLinkHtml = `<div class="post-link-lock"><i class="fa-solid fa-lock"></i><span>Link đang ẩn — nhấn <b>Thích</b> bài viết để mở link.</span><button type="button" class="post-link-unlock-btn" onclick="likePost('${p.id}', this)"><i class="fa-solid fa-heart"></i> Thích &amp; mở link</button></div>`;
-                    } else if (isLinkOpenWindowNow()) {
-                        postLinkHtml = `<div class="post-link-lock"><i class="fa-solid fa-rotate"></i><span>Đang trong khung giờ mở link nhưng link chưa hiện — hãy <b>tải lại trang</b> nhé.</span></div>`;
-                    } else {
-                        postLinkHtml = `<div class="post-link-lock"><i class="fa-solid fa-user-lock"></i><span>Link dành cho quyền: <b>${visibilityHint}</b>. Link sẽ tự mở cho mọi thành viên vào Thứ 3 &amp; Thứ 7 (5:00–23:59).</span></div>`;
-                    }
+                    postLinkHtml = `<div class="post-link-lock"><i class="fa-solid fa-lock"></i><span><b>Đăng nhập</b> để hiển thị chi tiết</span></div>`;
                 }
 
                 return `
@@ -2171,6 +2165,9 @@
                 return;
             }
             modal.style.display = 'flex';
+            // Nút Bỏ qua chỉ dành cho SuperAdmin — không cần chờ 15s
+            const skipBtn = document.getElementById('downloadSkipBtn');
+            if (skipBtn) skipBtn.style.display = (currentUser && currentUser.role === 'superadmin') ? 'inline-flex' : 'none';
             startDownloadCountdown(15);
         }
 
