@@ -138,6 +138,7 @@
 
     <main class="container" id="discussContent" style="display: none;">
         <h2 class="section-title"><i class="fa-solid fa-comments"></i> KHU VỰC THẢO LUẬN & BÁO LỖI GAME</h2>
+        <div id="linkWindowBanner" class="link-window-banner is-closed" aria-live="polite"></div>
 
         <div id="superAdminPanel" style="display: none; background: #161922; border: 1px solid #ff3838; padding: 20px; border-radius: 8px; margin-bottom: 20px; color: #fff;">
             <h3 style="color: #ff3838; margin-bottom: 10px;"><i class="fa-solid fa-shield-halved"></i> Bảng Quản Lý Quyền Thành Viên</h3>
@@ -319,6 +320,28 @@
         </div>
     </div>
 
+    <!-- Popup QR ủng hộ khi bấm Tải Về -->
+    <div id="downloadSupportModal" class="modal" style="z-index: 300;">
+        <div class="modal-content download-support-content">
+            <h2 class="download-support-title"><i class="fa-solid fa-mug-hot"></i> Ủng Hộ Admin Nhé!</h2>
+            <p class="download-support-sub">Trước khi tải, bạn có thể ủng hộ Admin một ly cà phê qua mã QR bên dưới 💛</p>
+            <div class="download-support-layout">
+                <div class="donate-qr">
+                    <img src="qr-momo.jpg" alt="Mã QR Momo nhận ủng hộ" onerror="this.src='https://via.placeholder.com/200?text=QR+Momo'">
+                    <p class="acc-name">Chủ tài khoản: Vũ Tiến Lộc</p>
+                    <p class="acc-num">STK / SĐT: <strong>0378487294</strong></p>
+                </div>
+                <div class="download-support-text">
+                    <p>Mọi sự ủng hộ giúp mình duy trì website và làm thêm nhiều bản Việt hóa miễn phí. Người ủng hộ sẽ được nhận role <strong>Thành viên VIP</strong> cùng nhiều đặc quyền riêng trong cộng đồng.</p>
+                    <p class="download-support-thanks">Cảm ơn bạn rất nhiều! 🎮</p>
+                </div>
+            </div>
+            <div class="download-support-countdown" id="downloadCountdownText">Vui lòng đợi <b>15</b> giây...</div>
+            <div class="download-support-progress"><span id="downloadCountdownBar"></span></div>
+            <button type="button" id="downloadConfirmBtn" class="btn-post" onclick="confirmDownloadSupport()" disabled><i class="fa-solid fa-hourglass-half"></i> Vui lòng đợi 15s</button>
+        </div>
+    </div>
+
     <footer>
         <div class="social-links">
             <a href="https://www.youtube.com/@liquidsgaming7294" target="_blank" rel="noopener" class="youtube"><i class="fa-brands fa-youtube"></i> YouTube</a>
@@ -329,8 +352,27 @@
     </footer>
 
     <script>
-        const SUPABASE_URL = 'https://fmjhjvxkkquagqkltjbo.supabase.co';
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZtamhqdnhra3F1YWdxa2x0amJvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAyOTYwOTIsImV4cCI6MjEwNTg3MjA5Mn0.oFd8uwrw_4_Td5ZGwMJX8xQ8PSM7wYHV2W5fLX8nVbA';
+        /* Cấu hình Supabase được mã hóa (XOR + Base64) để không nhìn thấy trực tiếp
+           khi bấm F12 xem nguồn. Giá trị giải ra vẫn là URL/anon key như cũ.
+           Lưu ý: anon key về bản chất là key công khai, an toàn thật sự nhờ RLS
+           phía Supabase — tuyệt đối không thay bằng service_role key. */
+        const _kgvhCfg = (function () {
+            const _xk = 'KGVH-2026-Loc';
+            function _kd(b64) {
+                try {
+                    const raw = atob(b64);
+                    let out = '';
+                    for (let i = 0; i < raw.length; i++) out += String.fromCharCode(raw.charCodeAt(i) ^ _xk.charCodeAt(i % _xk.length));
+                    return out;
+                } catch (err) { return ''; }
+            }
+            return {
+                url: _kd('IzMiOF4IHx1QQCYHCT0/PSNcR1FVR0YgGwkpKHg7WEJRUFdeKUEAJA=='),
+                key: _kd('Lj4cIE91U1t5RAYmNjEOZwZEe0N7WH95DCACcR8jXWpmcXwUYgoaATc1e2Bbf1t8Vyg3ISMeOw5XaGN7RWQiJQ8RLh9+ZF9qRldAJB4HJS8kKR50AWthSTQOUTN3NyVnRHlbQUQvAlo4HQUBG3tddENPflsKBwQcOHRqYVt5RwlcLB8GLwd5a0d9YmQ/Jg4dczULZAR9WHNaAjsEeAo8CRh/XgIYQgoLWz4wJD9yBm9mUhgWKBQGDQ5wVWMIYmVgexg6AxFkHxhUfGoOQxoNIg==')
+            };
+        })();
+        const SUPABASE_URL = _kgvhCfg.url;
+        const SUPABASE_ANON_KEY = _kgvhCfg.key;
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         let tempGameThumbData = '';
@@ -354,6 +396,8 @@
         let chatMessagesCache = [];
         let chatUnreadCount = 0;
         let chatAudioContext = null;
+        let linkWindowBannerTimer = null;
+        let linkWindowWasOpen = null;
         const SITE_NOTICE_HIDE_KEY = 'kgvh_site_notice_hidden_until';
 
         function initSiteNotice() {
@@ -382,6 +426,8 @@
             initSiteNotice();
             await initVisitorStats();
             setupPresence();
+            renderLinkWindowBanner();
+            if (!linkWindowBannerTimer) linkWindowBannerTimer = setInterval(renderLinkWindowBanner, 30000);
             await loadAnnouncement();
             await checkSupabaseSession();
             const gameIdFromPath = getGameIdFromPath();
@@ -479,11 +525,76 @@
             if (visibility === 'guest' || !visibility) return true;
             if (!user) return false;
             if (visibility === 'member') return true;
-            if (visibility === 'regular') return user.role === 'member';
+            if (visibility === 'regular') return ['member', 'admin', 'superadmin'].includes(user.role);
             if (visibility === 'vip') return ['vip', 'admin', 'superadmin'].includes(user.role);
             if (visibility === 'admin') return ['admin', 'superadmin'].includes(user.role);
             if (visibility === 'superadmin') return user.role === 'superadmin';
             return false;
+        }
+
+        function linkVisibilityLabel(visibility) {
+            return ({ guest: 'Khách truy cập', member: 'Thành viên đăng nhập', regular: 'Thành viên thường', vip: 'VIP', admin: 'Admin/Mod', superadmin: 'SuperAdmin' })[visibility] || 'Thành viên đăng nhập';
+        }
+
+        /* ================= KHUNG GIỜ MỞ LINK (Thứ 3 & Thứ 7, 5:00–23:59 giờ Việt Nam) ================= */
+
+        function getVietnamNowParts(now = new Date()) {
+            const vn = new Date(now.getTime() + 7 * 60 * 60 * 1000);
+            return {
+                dow: vn.getUTCDay(),
+                hour: vn.getUTCHours(),
+                minute: vn.getUTCMinutes(),
+                ms: vn.getTime(),
+                vnDate: vn
+            };
+        }
+
+        function isLinkOpenWindowNow() {
+            const parts = getVietnamNowParts();
+            return (parts.dow === 2 || parts.dow === 6) && (parts.hour * 60 + parts.minute) >= 300;
+        }
+
+        function getLinkWindowRemainingMs() {
+            const parts = getVietnamNowParts();
+            const vnMidnight = Date.UTC(parts.vnDate.getUTCFullYear(), parts.vnDate.getUTCMonth(), parts.vnDate.getUTCDate()) + 86400000 - 60000;
+            return Math.max(0, vnMidnight - parts.ms);
+        }
+
+        function getNextLinkOpenWindowDelayMs() {
+            const parts = getVietnamNowParts();
+            const vnMidnight = Date.UTC(parts.vnDate.getUTCFullYear(), parts.vnDate.getUTCMonth(), parts.vnDate.getUTCDate());
+            for (let dayOffset = 0; dayOffset <= 7; dayOffset++) {
+                const candidateDow = (parts.dow + dayOffset) % 7;
+                if (candidateDow !== 2 && candidateDow !== 6) continue;
+                const candidate = vnMidnight + dayOffset * 86400000 + 5 * 3600000;
+                if (candidate > parts.ms) return candidate - parts.ms;
+            }
+            return 0;
+        }
+
+        function formatCountdown(ms) {
+            const totalMinutes = Math.max(0, Math.floor(ms / 60000));
+            const days = Math.floor(totalMinutes / 1440);
+            const hours = Math.floor((totalMinutes % 1440) / 60);
+            const minutes = totalMinutes % 60;
+            if (days > 0) return `${days} ngày ${hours} giờ`;
+            if (hours > 0) return `${hours} giờ ${minutes} phút`;
+            return `${minutes} phút`;
+        }
+
+        function renderLinkWindowBanner() {
+            const banner = document.getElementById('linkWindowBanner');
+            if (!banner) return;
+            const isOpen = isLinkOpenWindowNow();
+            if (isOpen) {
+                banner.className = 'link-window-banner is-open';
+                banner.innerHTML = `<i class="fa-solid fa-unlock"></i><span><b>Khung giờ mở link đang hoạt động</b> — mọi link trong thảo luận đang mở cho thành viên đăng nhập. Đóng sau: <b>${formatCountdown(getLinkWindowRemainingMs())}</b>.</span>`;
+            } else {
+                banner.className = 'link-window-banner is-closed';
+                banner.innerHTML = `<i class="fa-solid fa-clock"></i><span>Khung giờ mở link: <b>Thứ 3 &amp; Thứ 7 hàng tuần (5:00 – 23:59)</b> — link ẩn tự động mở cho thành viên đăng nhập. Mở sau: <b>${formatCountdown(getNextLinkOpenWindowDelayMs())}</b>.</span>`;
+            }
+            if (linkWindowWasOpen !== null && linkWindowWasOpen !== isOpen) loadPosts();
+            linkWindowWasOpen = isOpen;
         }
 
         function sanitizePostHtml(value) {
@@ -1158,7 +1269,7 @@
                             <span><i class="fa-solid fa-star" style="color: #ffa502;"></i> ${avgRating}</span>
                         </div>
                         <button type="button" class="game-like-button" onclick="event.stopPropagation(); toggleGameLike(${g.id}, this)"><i class="fa-solid fa-heart"></i> <span>${g.likes || 0}</span> Thích game</button>
-                        <button onclick="event.stopPropagation(); openGameDetailPage(${g.id})" class="${hasActiveMirrors ? 'btn-download' : 'btn-download coming-soon-btn'}" ${hasActiveMirrors ? '' : 'disabled'}><i class="fa-solid fa-${hasActiveMirrors ? 'download' : 'clock'}"></i> ${hasActiveMirrors ? 'Tải Về' : escapeHtml(noLinkLabel)}</button>
+                        <button onclick="event.stopPropagation(); requestDownloadFromCard(${g.id})" class="${hasActiveMirrors ? 'btn-download' : 'btn-download coming-soon-btn'}" ${hasActiveMirrors ? '' : 'disabled'}><i class="fa-solid fa-${hasActiveMirrors ? 'download' : 'clock'}"></i> ${hasActiveMirrors ? 'Tải Về' : escapeHtml(noLinkLabel)}</button>
                         ${isAnyAdmin ? `
                             <div style="margin-top: 8px; border-top: 1px solid #2f3542; padding-top: 5px;">
                                 <button onclick="editCustomGame(${g.id}, event)" class="btn-edit-game"><i class="fa-solid fa-pen"></i> Sửa</button>
@@ -1226,7 +1337,11 @@
             const newest = pageGames.slice(Math.ceil(PAGE_SIZE / 2));
             const visibleGames = [...mostDownloaded, ...newest];
             if (visibleGames.length) {
-                const { data: mirrors, error: mirrorError } = await _supabase.from('game_links').select('game_id').in('game_id', visibleGames.map(game => game.id)).eq('is_active', true);
+                let { data: mirrors, error: mirrorError } = await _supabase.from('game_links').select('game_id').in('game_id', visibleGames.map(game => game.id)).eq('is_active', true).eq('is_locked', false);
+                if (mirrorError) {
+                    // DB chưa có cột is_locked (chưa chạy ADD_LINK_LOCK.sql) — dùng truy vấn cũ
+                    ({ data: mirrors, error: mirrorError } = await _supabase.from('game_links').select('game_id').in('game_id', visibleGames.map(game => game.id)).eq('is_active', true));
+                }
                 const mirrorIds = new Set((mirrors || []).map(mirror => String(mirror.game_id)));
                 visibleGames.forEach(game => { game.hasActiveMirrors = mirrorError ? true : mirrorIds.has(String(game.id)); });
             }
@@ -1239,7 +1354,11 @@
         async function openGameDetailPage(id, updateUrl = true) {
             const { data: g, error } = await _supabase.from('games').select('*').eq('id', id).single();
             if (error || !g) { showToast('Không tìm thấy game này.', 'error'); return; }
-            if (updateUrl) window.history.pushState({ gameId: g.id }, '', `${getSiteBasePath()}/?game=${g.id}`);
+            if (updateUrl) {
+                // pushState đổi đường dẫn bị chặn khi mở file trực tiếp (file://) — vẫn chuyển trang kể cả khi lỗi
+                try { window.history.pushState({ gameId: g.id }, '', `${getSiteBasePath()}/?game=${g.id}`); }
+                catch (e) { console.warn('Không cập nhật được URL trang game:', e); }
+            }
 
             const { data: normalizedLinks, error: linksError } = await _supabase
                 .from('game_links')
@@ -1263,12 +1382,18 @@
 
             const thumbImg = g.thumbnail ? g.thumbnail : 'https://via.placeholder.com/300x400';
 
-            const activeLinks = gameLinks.filter(link => link.is_active);
-            const linksHtml = activeLinks.length ? activeLinks.map(link => `
-                <div class="mirror-link-row" id="mirror-row-${escapeHtml(link.id)}">
-                    <a href="${escapeHtml(link.url)}" target="_blank" rel="noopener" class="custom-link-btn">${escapeHtml(link.label)}</a>
+            const isMirrorAdmin = !!(currentUser && (currentUser.role === 'superadmin' || currentUser.role === 'admin'));
+            const activeLinks = gameLinks.filter(link => link.is_active && (isMirrorAdmin || !link.is_locked));
+            const linksHtml = activeLinks.length ? activeLinks.map(link => {
+                const locked = !!link.is_locked;
+                const lockBtn = isMirrorAdmin ? `<button type="button" class="mirror-lock-btn${locked ? ' is-locked' : ''}" onclick="toggleGameMirrorLock('${escapeHtml(link.id)}', ${locked ? 'false' : 'true'}, this)" title="${locked ? 'Mở khoá — hiện link cho người dùng' : 'Khoá — ẩn link với người dùng'}"><i class="fa-solid fa-lock${locked ? '' : '-open'}"></i></button>` : '';
+                return `
+                <div class="mirror-link-row${locked ? ' locked-row' : ''}" id="mirror-row-${escapeHtml(link.id)}">
+                    <a href="${escapeHtml(link.url)}" target="_blank" rel="noopener" class="custom-link-btn${locked ? ' is-locked' : ''}" data-label="${escapeHtml(link.label)}" onclick="return gateDownloadLink(event, this.href)">${escapeHtml(link.label)}${locked ? ' <i class="fa-solid fa-lock"></i>' : ''}</a>
+                    ${lockBtn}
                     <button type="button" class="report-link-btn" data-link-id="${escapeHtml(link.id)}" onclick="reportDeadLink('${escapeHtml(link.id)}', this)"><i class="fa-solid fa-flag"></i> Báo lỗi link</button>
-                </div>`).join('') : `<span class="coming-soon-badge"><i class="fa-solid fa-clock"></i> ${escapeHtml(g.no_link_label || 'Sắp Có Link Tải')}</span>`;
+                </div>`;
+            }).join('') : `<span class="coming-soon-badge"><i class="fa-solid fa-clock"></i> ${escapeHtml(g.no_link_label || 'Sắp Có Link Tải')}</span>`;
 
             const techFields = [
                 ['Dung Lượng', g.file_size], ['Phiên Bản Android Tối Thiểu', g.min_android_version],
@@ -1344,8 +1469,38 @@
             showToast('Cảm ơn bạn đã báo lỗi link.', 'success');
         }
 
+        async function toggleGameMirrorLock(linkId, lock, button) {
+            if (button.disabled) return;
+            button.disabled = true;
+            const { error } = await _supabase.from('game_links').update({ is_locked: lock }).eq('id', linkId);
+            if (error) {
+                button.disabled = false;
+                if (/is_locked/i.test(error.message || '')) showToast('Cần chạy SQL _migration/ADD_LINK_LOCK.sql trong Supabase trước khi khoá link.', 'error');
+                else showToast('Không khoá/mở được link: ' + error.message, 'error');
+                return;
+            }
+            button.disabled = false;
+            button.classList.toggle('is-locked', lock);
+            button.innerHTML = `<i class="fa-solid fa-lock${lock ? '' : '-open'}"></i>`;
+            button.title = lock ? 'Mở khoá — hiện link cho người dùng' : 'Khoá — ẩn link với người dùng';
+            const row = document.getElementById('mirror-row-' + String(linkId));
+            if (row) {
+                row.classList.toggle('locked-row', lock);
+                const anchor = row.querySelector('.custom-link-btn');
+                if (anchor) {
+                    anchor.classList.toggle('is-locked', lock);
+                    anchor.innerHTML = escapeHtml(anchor.dataset.label || '') + (lock ? ' <i class="fa-solid fa-lock"></i>' : '');
+                }
+            }
+            showToast(lock ? 'Đã khoá link — người dùng sẽ không thấy link này.' : 'Đã mở khoá link — người dùng tải được bình thường.', 'success');
+        }
+
         function backToHome(updateUrl = true) {
-            if (updateUrl) window.history.pushState({}, '', getSiteBasePath() || '/');
+            // như openGameDetailPage: không để lỗi pushState (file://) chặn việc quay về trang chủ
+            if (updateUrl) {
+                try { window.history.pushState({}, '', getSiteBasePath() || '/'); }
+                catch (e) { console.warn('Không cập nhật được URL khi về trang chủ:', e); }
+            }
             document.getElementById('gameDetailPageContainer').style.display = 'none';
             document.getElementById('homeContent').style.display = 'block';
             document.getElementById('heroSection').style.display = 'block';
@@ -1457,11 +1612,9 @@
                 for (const mirror of formMirrors) {
                     let mirrorResult;
                     if (mirror.id && existingIds.has(String(mirror.id))) {
-                        const { id, ...mirrorPayload } = mirror;
-                        mirrorResult = await _supabase.from('game_links').update(mirrorPayload).eq('id', id);
+                        mirrorResult = await saveMirrorRow(payload => _supabase.from('game_links').update(payload).eq('id', mirror.id), mirror);
                     } else if (mirror.label && mirror.url) {
-                        const { id, ...mirrorPayload } = mirror;
-                        mirrorResult = await _supabase.from('game_links').insert({ ...mirrorPayload, game_id: savedGameId });
+                        mirrorResult = await saveMirrorRow(payload => _supabase.from('game_links').insert({ ...payload, game_id: savedGameId }), mirror);
                     }
                     if (mirrorResult?.error) {
                         showToast('Không lưu được mirror: ' + mirrorResult.error.message, 'error');
@@ -1490,18 +1643,33 @@
         function getMirrorManagerRows() {
             return [...document.querySelectorAll('#gameLinksManager .game-link-admin-item')].map((row, index) => ({
                 id: row.dataset.id || '', label: row.querySelector('.mirror-label-input').value.trim(), url: row.querySelector('.mirror-url-input').value.trim(),
-                is_active: row.querySelector('.mirror-active-toggle').checked, order_index: index
+                is_active: row.querySelector('.mirror-active-toggle').checked,
+                is_locked: row.querySelector('.mirror-lock-toggle') ? row.querySelector('.mirror-lock-toggle').checked : false,
+                order_index: index
             })).filter(mirror => mirror.label && mirror.url);
+        }
+
+        async function saveMirrorRow(saveFn, mirror) {
+            // Nếu DB chưa có cột is_locked (chưa chạy ADD_LINK_LOCK.sql) thì lưu lại không cột này
+            const { id, ...payload } = mirror;
+            let result = await saveFn(payload);
+            if (result.error && /is_locked/i.test(result.error.message || '')) {
+                const { is_locked, ...legacyPayload } = payload;
+                result = await saveFn(legacyPayload);
+                if (!result.error) showToast('Đã lưu mirror nhưng chưa khoá được — cần chạy SQL ADD_LINK_LOCK.sql.', 'info');
+            }
+            return result;
         }
 
         async function loadGameLinksManager(gameId) {
             const container = document.getElementById('gameLinksManager');
             const { data, error } = await _supabase.from('game_links').select('*').eq('game_id', gameId).order('order_index', { ascending: true });
             if (error) { container.innerHTML = '<p class="game-links-empty">Chưa có mirror chuẩn hoặc cần chạy migration.</p>'; return; }
-            container.innerHTML = (data || []).map((link, index) => `<div class="game-link-admin-item ${link.report_count >= 3 ? 'reported-link' : ''}" data-id="${escapeHtml(link.id)}">
+            container.innerHTML = (data || []).map((link, index) => `<div class="game-link-admin-item ${link.report_count >= 3 ? 'reported-link' : ''}${link.is_locked ? ' locked-link' : ''}" data-id="${escapeHtml(link.id)}">
                 <input class="mirror-label-input" value="${escapeHtml(link.label)}" placeholder="Nhãn">
                 <input class="mirror-url-input" value="${escapeHtml(link.url)}" placeholder="URL">
                 <label class="mirror-active-label"><input class="mirror-active-toggle" type="checkbox" ${link.is_active ? 'checked' : ''}> Hoạt động</label>
+                <label class="mirror-active-label" title="Khoá: ẩn link này với người dùng"><input class="mirror-lock-toggle" type="checkbox" ${link.is_locked ? 'checked' : ''}> <i class="fa-solid fa-lock"></i> Khoá</label>
                 <span class="mirror-report-count">Báo lỗi: ${link.report_count || 0}</span>
                 <button type="button" onclick="moveGameMirror(this, -1)" ${index === 0 ? 'disabled' : ''}>↑</button><button type="button" onclick="moveGameMirror(this, 1)" ${index === (data || []).length - 1 ? 'disabled' : ''}>↓</button>
                 <button type="button" class="mirror-delete-btn" onclick="deleteGameMirror('${escapeHtml(link.id)}', this)"><i class="fa-solid fa-trash"></i></button>
@@ -1514,7 +1682,7 @@
             if (!label || !url) { showToast('Vui lòng nhập nhãn và URL mirror.', 'error'); return; }
             const container = document.getElementById('gameLinksManager');
             if (container.querySelector('.game-links-empty')) container.innerHTML = '';
-            container.insertAdjacentHTML('beforeend', `<div class="game-link-admin-item" data-id=""><input class="mirror-label-input" value="${escapeHtml(label)}"><input class="mirror-url-input" value="${escapeHtml(url)}"><label class="mirror-active-label"><input class="mirror-active-toggle" type="checkbox" checked> Hoạt động</label><span class="mirror-report-count">Báo lỗi: 0</span><button type="button" onclick="moveGameMirror(this, -1)">↑</button><button type="button" onclick="moveGameMirror(this, 1)">↓</button><button type="button" class="mirror-delete-btn" onclick="this.closest('.game-link-admin-item').remove()"><i class="fa-solid fa-trash"></i></button></div>`);
+            container.insertAdjacentHTML('beforeend', `<div class="game-link-admin-item" data-id=""><input class="mirror-label-input" value="${escapeHtml(label)}"><input class="mirror-url-input" value="${escapeHtml(url)}"><label class="mirror-active-label"><input class="mirror-active-toggle" type="checkbox" checked> Hoạt động</label><label class="mirror-active-label" title="Khoá: ẩn link này với người dùng"><input class="mirror-lock-toggle" type="checkbox"> <i class="fa-solid fa-lock"></i> Khoá</label><span class="mirror-report-count">Báo lỗi: 0</span><button type="button" onclick="moveGameMirror(this, -1)">↑</button><button type="button" onclick="moveGameMirror(this, 1)">↓</button><button type="button" class="mirror-delete-btn" onclick="this.closest('.game-link-admin-item').remove()"><i class="fa-solid fa-trash"></i></button></div>`);
             document.getElementById('newMirrorLabel').value = '';
             document.getElementById('newMirrorUrl').value = '';
         }
@@ -1544,7 +1712,7 @@
                 const canSetLinkVisibility = currentUser.role === 'admin' || currentUser.role === 'superadmin';
                 const canUseColors = ['vip', 'admin', 'superadmin'].includes(currentUser.role);
                 const colorTools = canUseColors ? `<span class="editor-color-tools" aria-label="Màu chữ"><button type="button" style="--editor-color:#ff4757" onclick="formatPost('foreColor', '#ff4757')" title="Đỏ"></button><button type="button" style="--editor-color:#ffa502" onclick="formatPost('foreColor', '#ffa502')" title="Cam"></button><button type="button" style="--editor-color:#2ed573" onclick="formatPost('foreColor', '#2ed573')" title="Xanh lá"></button><button type="button" style="--editor-color:#1e90ff" onclick="formatPost('foreColor', '#1e90ff')" title="Xanh dương"></button><button type="button" style="--editor-color:#ffffff" onclick="formatPost('foreColor', '#ffffff')" title="Trắng"></button></span>` : '';
-                container.innerHTML = `<div class="post-box"><h3 id="postFormTitle">Đăng bài viết hoặc báo lỗi:</h3><input type="hidden" id="editPostId"><input id="postTitle" class="post-title-input" type="text" maxlength="160" placeholder="Tiêu đề bài viết (không bắt buộc)"><div class="post-editor-toolbar"><button type="button" onclick="formatPost('bold')" title="In đậm"><i class="fa-solid fa-bold"></i></button><button type="button" onclick="formatPost('italic')" title="In nghiêng"><i class="fa-solid fa-italic"></i></button><select onchange="formatPost('fontName', this.value); this.value = ''" aria-label="Kiểu chữ"><option value="">Kiểu chữ</option><option value="Segoe UI">Segoe UI</option><option value="Georgia">Georgia</option><option value="Verdana">Verdana</option><option value="monospace">Monospace</option></select>${colorTools}</div><div id="postContent" class="post-editor" contenteditable="true" role="textbox" aria-multiline="true" data-placeholder="Nhập nội dung..."></div><div class="post-link-fields"><input id="postLinkLabel" type="text" maxlength="80" placeholder="Tên đường liên kết (không bắt buộc)"><input id="postLinkUrl" type="url" placeholder="Dán đường liên kết (không bắt buộc)"><select id="postLinkVisibility" ${canSetLinkVisibility ? '' : 'disabled'} title="Ai được xem link"><option value="guest">Khách truy cập</option><option value="member" selected>Thành viên đã đăng nhập</option><option value="vip">Thành viên VIP</option><option value="regular">Thành viên thường</option><option value="admin">Admin / Mod</option><option value="superadmin">SuperAdmin</option></select></div><label class="post-image-picker">Ảnh kèm theo<input id="postImage" type="file" accept="image/*" onchange="previewPostImage(this)"></label><div id="postImagePreview" class="post-image-preview"></div><button id="postSubmitButton" onclick="addNewPost()" class="btn-post">Đăng Bài</button></div>`;
+                container.innerHTML = `<div class="post-box"><h3 id="postFormTitle">Đăng bài viết hoặc báo lỗi:</h3><input type="hidden" id="editPostId"><input id="postTitle" class="post-title-input" type="text" maxlength="160" placeholder="Tiêu đề bài viết (không bắt buộc)"><div class="post-editor-toolbar"><button type="button" onclick="formatPost('bold')" title="In đậm"><i class="fa-solid fa-bold"></i></button><button type="button" onclick="formatPost('italic')" title="In nghiêng"><i class="fa-solid fa-italic"></i></button><select onchange="formatPost('fontName', this.value); this.value = ''" aria-label="Kiểu chữ"><option value="">Kiểu chữ</option><option value="Segoe UI">Segoe UI</option><option value="Georgia">Georgia</option><option value="Verdana">Verdana</option><option value="monospace">Monospace</option></select>${colorTools}</div><div id="postContent" class="post-editor" contenteditable="true" role="textbox" aria-multiline="true" data-placeholder="Nhập nội dung..."></div><div class="post-link-fields"><input id="postLinkLabel" type="text" maxlength="80" placeholder="Tên đường liên kết (không bắt buộc)"><input id="postLinkUrl" type="url" placeholder="Dán đường liên kết (không bắt buộc)"><select id="postLinkVisibility" ${canSetLinkVisibility ? '' : 'disabled'} title="Ai được xem link"><option value="guest">Khách truy cập</option><option value="member" selected>Thành viên đã đăng nhập (kể cả VIP/Admin)</option><option value="vip">Thành viên VIP</option><option value="regular">Thành viên thường (không VIP)</option><option value="admin">Admin / Mod</option><option value="superadmin">SuperAdmin</option></select></div><p class="post-link-note"><i class="fa-solid fa-circle-info"></i> Người đã đăng nhập cần nhấn <b>Thích</b> bài viết để mở link theo quyền ở trên. Ngoài ra, mọi link ẩn tự động mở cho thành viên đăng nhập vào <b>Thứ 3 &amp; Thứ 7 hàng tuần (5:00–23:59)</b>.</p><label class="post-image-picker">Ảnh kèm theo<input id="postImage" type="file" accept="image/*" onchange="previewPostImage(this)"></label><div id="postImagePreview" class="post-image-preview"></div><button id="postSubmitButton" onclick="addNewPost()" class="btn-post">Đăng Bài</button></div>`;
             } else {
                 container.innerHTML = `<div class="post-box" style="text-align:center;"><p>Bạn cần đăng nhập để thảo luận.</p><button onclick="openAuthModal('login')" class="btn-post" style="max-width:150px;">Đăng Nhập</button></div>`;
             }
@@ -1649,26 +1817,37 @@
             loadPosts();
         }
 
-        /* HÀM THÍCH BÀI VIẾT */
-        async function likePost(postId) {
-            const { data: currentPost, error: fetchErr } = await _supabase
-                .from('posts')
-                .select('likes_count')
-                .eq('id', postId)
-                .single();
-            if (fetchErr) return;
+        /* HÀM THÍCH BÀI VIẾT (yêu cầu đăng nhập; thích để mở link) */
+        async function likePost(postId, button) {
+            if (!currentUser) { showToast('Vui lòng đăng nhập để thích bài viết và mở link.', 'info'); openAuthModal('login'); return; }
+            if (button && button.disabled) return;
+            if (button) button.disabled = true;
 
-            const newCount = (currentPost?.likes_count || 0) + 1;
-            const { error } = await _supabase
-                .from('posts')
-                .update({ likes_count: newCount })
-                .eq('id', postId);
+            const { data, error } = await _supabase.rpc('like_post', { target_post_id: postId });
+            if (error) {
+                if (button) button.disabled = false;
+                /* Fallback: schema cũ chưa có like_post — giữ hành vi +1 lượt thích */
+                if (error.code === 'PGRST202' || /like_post/i.test(error.message || '')) {
+                    const { data: currentPost, error: fetchErr } = await _supabase.from('posts').select('likes_count').eq('id', postId).single();
+                    if (fetchErr) { showToast('Lỗi thả tim: ' + fetchErr.message, 'error'); return; }
+                    const newCount = (currentPost?.likes_count || 0) + 1;
+                    const { error: updateErr } = await _supabase.from('posts').update({ likes_count: newCount }).eq('id', postId);
+                    if (updateErr) { showToast('Lỗi thả tim: ' + updateErr.message, 'error'); return; }
+                    const countSpan = document.getElementById(`likes-${postId}`);
+                    if (countSpan) countSpan.innerText = newCount;
+                    showToast('Đã thích bài viết! (Chạy SQL mở link theo lượt thích để mở link)', 'info');
+                    return;
+                }
+                showToast('Không thích được bài viết: ' + error.message, 'error');
+                return;
+            }
 
-            if (!error) {
-                const countSpan = document.getElementById(`likes-${postId}`);
-                if (countSpan) countSpan.innerText = newCount;
-            } else {
-                showToast('Lỗi thả tim: ' + error.message, 'error');
+            const countSpan = document.getElementById(`likes-${postId}`);
+            if (countSpan) countSpan.innerText = Number(data?.likes_count || 0);
+            if (button) { button.classList.add('is-liked'); }
+            if (data?.first_like) {
+                showToast('Cảm ơn bạn đã thích! Link sẽ mở nếu quyền của bạn đủ xem.', 'success');
+                await loadPosts();
             }
         }
 
@@ -1770,10 +1949,21 @@
                 const commentInputHtml = `<div class="comment-input-box"><input type="text" id="commentInput-${p.id}" placeholder="${currentUser ? 'Viết bình luận...' : `Bình luận với ${getGuestName()}...`}" onkeydown="if(event.key==='Enter') addComment('${p.id}')"><button onclick="addComment('${p.id}')" aria-label="Gửi bình luận"><i class="fa-solid fa-paper-plane"></i></button></div>`;
 
                 const postStyle = p.is_pinned ? 'border: 2px solid #f39c12; background: #1a1c26;' : '';
-                const canViewPostLink = canViewLinkForRole(p.link_visibility, currentUser);
-                const postLinkHtml = p.link_url && canViewPostLink
-                    ? `<a class="post-attached-link" href="${escapeHtml(safeHttpUrl(p.link_url))}" target="_blank" rel="noopener"><i class="fa-solid fa-link"></i> ${escapeHtml(p.link_label || 'Mở liên kết')}</a>`
-                    : p.link_is_hidden ? '<span class="post-link-hidden"><i class="fa-solid fa-lock"></i> Liên kết giới hạn quyền xem</span>' : '';
+                let postLinkHtml = '';
+                if (p.link_url) {
+                    postLinkHtml = `<a class="post-attached-link" href="${escapeHtml(safeHttpUrl(p.link_url))}" target="_blank" rel="noopener"><i class="fa-solid fa-link"></i> ${escapeHtml(p.link_label || 'Mở liên kết')}</a>`;
+                } else if (p.link_is_hidden) {
+                    const visibilityHint = linkVisibilityLabel(p.link_visibility);
+                    if (!currentUser) {
+                        postLinkHtml = `<div class="post-link-lock"><i class="fa-solid fa-lock"></i><span>Link đang ẩn — <b>đăng nhập</b> và thích bài viết để mở link (yêu cầu quyền: ${visibilityHint}).</span></div>`;
+                    } else if (!p.link_has_liked) {
+                        postLinkHtml = `<div class="post-link-lock"><i class="fa-solid fa-lock"></i><span>Link đang ẩn — nhấn <b>Thích</b> bài viết để mở link.</span><button type="button" class="post-link-unlock-btn" onclick="likePost('${p.id}', this)"><i class="fa-solid fa-heart"></i> Thích &amp; mở link</button></div>`;
+                    } else if (isLinkOpenWindowNow()) {
+                        postLinkHtml = `<div class="post-link-lock"><i class="fa-solid fa-rotate"></i><span>Đang trong khung giờ mở link nhưng link chưa hiện — hãy <b>tải lại trang</b> nhé.</span></div>`;
+                    } else {
+                        postLinkHtml = `<div class="post-link-lock"><i class="fa-solid fa-user-lock"></i><span>Link dành cho quyền: <b>${visibilityHint}</b>. Link sẽ tự mở cho mọi thành viên vào Thứ 3 &amp; Thứ 7 (5:00–23:59).</span></div>`;
+                    }
+                }
 
                 return `
                     <div class="post-item" id="post-${p.id}" style="${postStyle}">
@@ -1787,7 +1977,7 @@
                         ${postLinkHtml}
                         
                         <div style="display: flex; gap: 8px; align-items: center; margin-bottom: 12px; flex-wrap: wrap;">
-                            <button onclick="likePost('${p.id}')" style="background: #ff4757; color: #fff; border: none; padding: 6px 14px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: bold; display: inline-flex; align-items: center; gap: 6px; transition: background 0.2s;">
+                            <button onclick="likePost('${p.id}', this)" class="post-like-button ${p.link_has_liked ? 'is-liked' : ''}" style="background: #ff4757; color: #fff; border: none; padding: 6px 14px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: bold; display: inline-flex; align-items: center; gap: 6px; transition: background 0.2s;">
                                 <i class="fa-solid fa-heart"></i> Thích (<span id="likes-${p.id}">${p.likes_count || 0}</span>)
                             </button>
                             ${pinButton}
@@ -1965,6 +2155,68 @@
             window.history.pushState({}, '', '#donate-id');
             updateActiveNav('donate');
             switchTab('donate', null, false);
+        }
+
+        /* ================= POPUP QR ỦNG HỘ KHI TẢI VỀ ================= */
+
+        let downloadSupportTimer = null;
+        let downloadSupportPending = null;
+
+        function openDownloadSupport(onConfirm) {
+            downloadSupportPending = typeof onConfirm === 'function' ? onConfirm : null;
+            const modal = document.getElementById('downloadSupportModal');
+            if (!modal) {
+                if (downloadSupportPending) downloadSupportPending();
+                downloadSupportPending = null;
+                return;
+            }
+            modal.style.display = 'flex';
+            startDownloadCountdown(15);
+        }
+
+        function startDownloadCountdown(seconds) {
+            clearInterval(downloadSupportTimer);
+            const confirmButton = document.getElementById('downloadConfirmBtn');
+            const text = document.getElementById('downloadCountdownText');
+            const bar = document.getElementById('downloadCountdownBar');
+            if (confirmButton) { confirmButton.disabled = true; }
+            let remaining = seconds;
+            const render = () => {
+                if (text) text.innerHTML = `Vui lòng đợi <b>${remaining}</b> giây...`;
+                if (bar) bar.style.width = `${((seconds - remaining) / seconds) * 100}%`;
+                if (confirmButton) confirmButton.innerHTML = `<i class="fa-solid fa-hourglass-half"></i> Vui lòng đợi ${remaining}s`;
+            };
+            render();
+            downloadSupportTimer = setInterval(() => {
+                remaining -= 1;
+                if (remaining > 0) { render(); return; }
+                clearInterval(downloadSupportTimer);
+                if (bar) bar.style.width = '100%';
+                if (text) text.innerHTML = 'Đã đủ 15 giây — cảm ơn bạn đã ghé qua mục ủng hộ!';
+                if (confirmButton) {
+                    confirmButton.disabled = false;
+                    confirmButton.innerHTML = '<i class="fa-solid fa-check"></i> Xác Nhận & Tiếp Tục';
+                }
+            }, 1000);
+        }
+
+        function confirmDownloadSupport() {
+            const modal = document.getElementById('downloadSupportModal');
+            if (modal) modal.style.display = 'none';
+            clearInterval(downloadSupportTimer);
+            const pending = downloadSupportPending;
+            downloadSupportPending = null;
+            if (pending) pending();
+        }
+
+        function requestDownloadFromCard(gameId) {
+            openDownloadSupport(() => openGameDetailPage(gameId));
+        }
+
+        function gateDownloadLink(event, url) {
+            event.preventDefault();
+            openDownloadSupport(() => window.open(url, '_blank', 'noopener'));
+            return false;
         }
     </script>
 </body>

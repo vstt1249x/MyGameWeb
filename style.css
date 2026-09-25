@@ -1260,8 +1260,13 @@ img { max-width: 100%; }
     transform: translateY(-2px);
 }
 .mirror-links-list { margin-top: 20px; max-width: 520px; }
-.mirror-link-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; align-items: stretch; margin-bottom: 10px; }
+.mirror-link-row { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: 8px; align-items: stretch; margin-bottom: 10px; }
 .mirror-link-row .custom-link-btn { margin-bottom: 0; }
+.mirror-lock-btn { background: transparent; color: #a4b0be; border: 1px solid #465064; border-radius: 6px; padding: 0 12px; font-size: 13px; cursor: pointer; }
+.mirror-lock-btn:hover { color: #fff; border-color: #a4b0be; }
+.mirror-lock-btn.is-locked { color: #ffa502; border-color: #ffa502; }
+.mirror-link-row.locked-row .custom-link-btn.is-locked { opacity: .55; border-style: dashed; }
+.mirror-link-row.locked-row .custom-link-btn.is-locked:hover { background: #1a1d24; border-color: #ffa502; transform: none; }
 .report-link-btn { background: transparent; color: #a4b0be; border: 1px solid #465064; border-radius: 6px; padding: 0 10px; font-size: 11px; cursor: pointer; white-space: nowrap; }
 .report-link-btn:hover, .report-link-btn.reported { color: #ffa502; border-color: #ffa502; }
 .report-link-btn:disabled { cursor: default; opacity: .85; }
@@ -1286,8 +1291,9 @@ img { max-width: 100%; }
 .game-links-admin-heading { display: flex; justify-content: space-between; gap: 10px; color: #ffa502; font-size: 13px; margin-bottom: 10px; }
 .game-links-admin-heading span, .game-links-empty { color: #747d8c; font-size: 12px; }
 .game-links-manager { display: flex; flex-direction: column; gap: 8px; }
-.game-link-admin-item { display: grid; grid-template-columns: 1fr 1.5fr auto auto auto auto auto; gap: 6px; align-items: center; padding: 8px; background: #161922; border: 1px solid #2f3542; border-radius: 5px; }
+.game-link-admin-item { display: grid; grid-template-columns: 1fr 1.5fr auto auto auto auto auto auto; gap: 6px; align-items: center; padding: 8px; background: #161922; border: 1px solid #2f3542; border-radius: 5px; }
 .game-link-admin-item.reported-link { border-color: #ffa502; box-shadow: inset 3px 0 #ffa502; }
+.game-link-admin-item.locked-link { border-color: #5a4a1f; box-shadow: inset 3px 0 #ffa502; opacity: .85; }
 .game-link-admin-item input[type="text"], .game-link-admin-item input.mirror-label-input, .game-link-admin-item input.mirror-url-input { min-width: 0; padding: 7px; background: #0d0e12; border: 1px solid #2f3542; color: #fff; border-radius: 4px; }
 .mirror-active-label, .mirror-report-count { color: #a4b0be; font-size: 11px; white-space: nowrap; }
 .game-link-admin-item > button { background: #2f3542; color: #fff; border: 0; border-radius: 4px; padding: 6px 8px; cursor: pointer; }
@@ -1511,6 +1517,7 @@ footer {
     .btn-download { font-size: 12px; padding: 7px; }
     .mirror-link-row { grid-template-columns: 1fr; }
     .report-link-btn { padding: 7px 10px; }
+    .mirror-lock-btn { padding: 7px 10px; }
     .game-tech-form-grid, .game-links-add-row { grid-template-columns: 1fr; }
     .game-tech-form-wide { grid-column: auto; }
     .game-link-admin-item { grid-template-columns: 1fr 1fr; }
@@ -1536,4 +1543,175 @@ footer {
         width: 100%;
         margin: 8px 0 0;
     }
+}
+
+/* ================= KHUNG GIỜ MỞ LINK (Thứ 3 & Thứ 7) ================= */
+.link-window-banner {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+    border-radius: 10px;
+    font-size: 13px;
+    line-height: 1.55;
+    margin-bottom: 20px;
+    border: 1px solid #465064;
+    background: rgba(116, 125, 140, 0.12);
+    color: #a4b0be;
+}
+
+.link-window-banner i {
+    font-size: 18px;
+    flex-shrink: 0;
+}
+
+.link-window-banner.is-open {
+    border-color: #2ed573;
+    background: rgba(46, 213, 115, 0.12);
+    color: #7bedb0;
+}
+
+.link-window-banner b { color: #fff; }
+
+/* ================= LINK ẨN — THÍCH ĐỂ MỞ ================= */
+.post-link-lock {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 10px 14px;
+    border-radius: 8px;
+    border: 1px dashed #465064;
+    background: rgba(116, 125, 140, 0.1);
+    color: #a4b0be;
+    font-size: 13px;
+    margin-bottom: 12px;
+}
+
+.post-link-lock i { color: #ffa502; flex-shrink: 0; }
+.post-link-lock b { color: #fff; }
+
+.post-link-unlock-btn {
+    background: #ff4757;
+    color: #fff;
+    border: none;
+    padding: 7px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 13px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: background 0.2s, transform 0.2s;
+}
+
+.post-link-unlock-btn:hover { background: #ff6b81; transform: translateY(-1px); }
+.post-link-unlock-btn:disabled { opacity: 0.6; cursor: wait; transform: none; }
+
+.post-like-button.is-liked { box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.35) inset; }
+.post-like-button.is-liked i { animation: post-like-pop 0.35s ease; }
+
+@keyframes post-like-pop {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.45); }
+    100% { transform: scale(1); }
+}
+
+.post-link-note {
+    font-size: 12px;
+    color: #747d8c;
+    line-height: 1.6;
+    margin: 8px 0 0;
+}
+
+.post-link-note i { color: #ffa502; margin-right: 4px; }
+
+/* ================= POPUP QR ỦNG HỘ KHI TẢI VỀ ================= */
+.download-support-content {
+    max-width: 460px;
+    width: min(460px, calc(100vw - 32px));
+    text-align: center;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.download-support-title {
+    color: #ff4757;
+    margin: 0 0 6px;
+    font-size: 22px;
+}
+
+.download-support-sub {
+    color: #a4b0be;
+    font-size: 13px;
+    margin: 0 0 14px;
+}
+
+.download-support-layout {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    text-align: left;
+}
+
+.download-support-layout .donate-qr {
+    flex-shrink: 0;
+    text-align: center;
+}
+
+.download-support-layout .donate-qr img { width: 150px; height: 150px; }
+
+.download-support-text {
+    font-size: 12.5px;
+    color: #a4b0be;
+    line-height: 1.7;
+}
+
+.download-support-text strong { color: #ffa502; }
+.download-support-thanks { font-weight: 700; color: #fff; }
+
+.download-support-countdown {
+    margin-top: 14px;
+    font-size: 14px;
+    color: #fff;
+}
+
+.download-support-countdown b { color: #ffa502; font-size: 16px; }
+
+.download-support-progress {
+    height: 6px;
+    border-radius: 999px;
+    background: #0d0e12;
+    border: 1px solid #2f3542;
+    overflow: hidden;
+    margin: 10px 0 14px;
+}
+
+.download-support-progress span {
+    display: block;
+    height: 100%;
+    width: 0;
+    border-radius: 999px;
+    background: linear-gradient(90deg, #ff4757, #ffa502);
+    transition: width 1s linear;
+}
+
+#downloadConfirmBtn {
+    width: 100%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+#downloadConfirmBtn:disabled {
+    background: #2f3542;
+    color: #a4b0be;
+    cursor: not-allowed;
+}
+
+@media (max-width: 480px) {
+    .download-support-layout { flex-direction: column; align-items: center; text-align: center; }
+    .download-support-text { text-align: left; }
 }
